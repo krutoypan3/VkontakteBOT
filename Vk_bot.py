@@ -3,7 +3,7 @@ import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.utils import get_random_id
 import random
-
+import os
 
 f = open('D://VK_BOT/APIKEY.txt', 'r')
 APIKEYSS = f.read()
@@ -37,21 +37,21 @@ def main():
                     random_id=get_random_id(),
                     message=("Прощай")
                 )
-            elif event.obj.text == "Братик инфо" or event.obj.text == "братик инфо":
+            elif event.obj.text == "-инфо" or event.obj.text == "-инфо":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
 
                     random_id=get_random_id(),
                     message=("Мой разработчик - студет АГПУ Оганесян Артем.\nВсе вопросы по реализации к нему: vk.com/aom13")
                 )
-            elif event.obj.text == "Братик команды" or event.obj.text == "братик команды" or event.obj.text == "братик" or event.obj.text == "Братик":
+            elif event.obj.text == "-команды" or event.obj.text == "-команды" or event.obj.text == "братик" or event.obj.text == "Братик":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
 
                     random_id=get_random_id(),
                     message=("Команды: просто напишите няша и нужную вам команду\n-лоли \n-команды\n-инфо\n-хентай\n-арты\n-стикер")
                 )
-            elif event.obj.text == "Братик лоли" or event.obj.text == "братик лоли":
+            elif event.obj.text == "-лоли" or event.obj.text == "-лоли":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages('D://VK_BOT/Lolis/(' + str(random.randint(1, 10010)) + ').jpg') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
@@ -60,7 +60,7 @@ def main():
                 attachment = f'photo{owner_id}_{photo_id}_{access_key}'
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
 
-            elif event.obj.text == "Братик арты" or event.obj.text == "братик арты":
+            elif event.obj.text == "-арты" or event.obj.text == "-арты":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages('D://VK_BOT/Artos/ (' + str(random.randint(1, 23)) + ').jpg') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
@@ -69,7 +69,7 @@ def main():
                 attachment = f'photo{owner_id}_{photo_id}_{access_key}'
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
 
-            elif event.obj.text == "Братик хентай" or event.obj.text == "братик хентай":
+            elif event.obj.text == "-Хентай" or event.obj.text == "-хентай":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages('D://VK_BOT/Hentai/ (' + str(random.randint(1, 101)) + ').jpg') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
@@ -78,7 +78,7 @@ def main():
                 attachment = f'photo{owner_id}_{photo_id}_{access_key}'
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
 
-            elif event.obj.text == "Братик стикер" or event.obj.text == "братик стикер":
+            elif event.obj.text == "-стикер" or event.obj.text == "-стикер":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages('D://VK_BOT/Stick/ (' + str(random.randint(1, 101)) + ').png') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
@@ -87,31 +87,45 @@ def main():
                 attachment = f'photo{owner_id}_{photo_id}_{access_key}'
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
 
-            elif event.obj.text == "Братик игра" or event.obj.text == "братик игра":
+            elif event.obj.text == "-Игра" or event.obj.text == "-игра":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
 
                     random_id=get_random_id(),
                     message=(
-                        "Запустился режим игры. Выберите игру ниже из списка: \n-угадай число\n")
+                        "Выберите игру ниже из списка: \n-угадай число\n")
                 )
 
-            elif event.obj.text == "Братик игра угадай число" or event.obj.text == "братик игра угадай число":
+            elif event.obj.text == "-Угадай число" or event.obj.text == "-угадай число":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
-                    message=("Какое число я загадал? От 1 до до 10"))
-                chislos = random.randint(1,10)
-                if event.obj.text == "chislo":
-                    vk.messages.send(
-                        peer_id=event.object.peer_id,
-                        random_id=get_random_id(),
-                        message=("Правильно"))
-                else:
-                    vk.messages.send(
-                        peer_id=event.object.peer_id,
-                        random_id=get_random_id(),
-                        message=("Неправильно"))
+                    message=("Какое число я загадал? От 1 до 5\nНаграда: экслюзивный хентай"))
+                chislos = random.randint(1, 5)
+
+                for event in longpoll.listen():
+                    # Проверка на приход сообщения
+                    if event.type == VkBotEventType.MESSAGE_NEW:
+                        if event.type == VkBotEventType.MESSAGE_NEW:
+                            if event.obj.text == str(chislos):
+                                vk.messages.send(
+                                    peer_id=event.object.peer_id,
+                                    random_id=get_random_id(),
+                                    message=("Правильно"))
+                                upload = vk_api.VkUpload(vk)
+                                photo = upload.photo_messages('D://VK_BOT/Hentai/ (' + str(
+                                    random.randint(1, 101)) + ').jpg')  # Отправляет с пк файлы в беседы
+                                owner_id = photo[0]['owner_id']
+                                photo_id = photo[0]['id']
+                                access_key = photo[0]['access_key']
+                                attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+                                vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
+                            else:
+                                vk.messages.send(
+                                    peer_id=event.object.peer_id,
+                                    random_id=get_random_id(),
+                                    message=("Неправильно\n правильный ответ:"+str(chislos)))
+                    break
 
 
 
