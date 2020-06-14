@@ -3,11 +3,10 @@ import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.utils import get_random_id
 import random
-import os
+import nhentaidl
 
 f = open('D://VK_BOT/APIKEY.txt', 'r')
 APIKEYSS = f.read()
-
 def main():
     """ Пример использования bots longpoll
         https://vk.com/dev/bots_longpoll
@@ -49,11 +48,11 @@ def main():
                     peer_id=event.object.peer_id,
 
                     random_id=get_random_id(),
-                    message=("Команды: просто напишите няша и нужную вам команду\n-лоли \n-команды\n-инфо\n-хентай\n-арты\n-стикер")
+                    message=("Команды: просто напишите няша и нужную вам команду\n-лоли \n-команды\n-инфо\n-хентай\n-арты\n-стикер\n-игра")
                 )
             elif event.obj.text == "-лоли" or event.obj.text == "-лоли":
                 upload = vk_api.VkUpload(vk)
-                photo = upload.photo_messages('D://VK_BOT/Lolis/(' + str(random.randint(1, 10010)) + ').jpg') # Отправляет с пк файлы в беседы
+                photo = upload.photo_messages('D://VK_BOT/Lolis/ (' + str(random.randint(1, 46219)) + ').jpg') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
                 photo_id = photo[0]['id']
                 access_key = photo[0]['access_key']
@@ -71,14 +70,14 @@ def main():
 
             elif event.obj.text == "-Хентай" or event.obj.text == "-хентай":
                 upload = vk_api.VkUpload(vk)
-                photo = upload.photo_messages('D://VK_BOT/Hentai/ (' + str(random.randint(1, 101)) + ').jpg') # Отправляет с пк файлы в беседы
+                photo = upload.photo_messages('D://VK_BOT/Hentai/ (' + str(random.randint(1, 419)) + ').jpg') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
                 photo_id = photo[0]['id']
                 access_key = photo[0]['access_key']
                 attachment = f'photo{owner_id}_{photo_id}_{access_key}'
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
 
-            elif event.obj.text == "-стикер" or event.obj.text == "-стикер":
+            elif event.obj.text == "-стикер" or event.obj.text == "-стик":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages('D://VK_BOT/Stick/ (' + str(random.randint(1, 101)) + ').png') # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
