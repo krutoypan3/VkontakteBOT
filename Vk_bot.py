@@ -3,6 +3,10 @@ import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.utils import get_random_id
 import random
+import requests
+import json
+import re
+
 # Импорт API ключа из отдельного файла
 f = open('D://VK_BOT/APIKEY.txt', 'r')
 APIKEYSS = f.read()
@@ -16,6 +20,7 @@ def main():
     longpoll = VkBotLongPoll(vk_session, '196288744')
     vk = vk_session.get_api()
 
+
     # Постоянный листинг сообщений
     for event in longpoll.listen():
         # Проверка на приход сообщения
@@ -25,27 +30,34 @@ def main():
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
-                    message=("Приветик")
+                    message=("&#128075; Приветик")
                 )
             elif event.obj.text == "Братик пока" or event.obj.text == "братик пока":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
-                    message=("Прощай")
+                    message=("&#128546; Прощай")
                 )
             elif event.obj.text == "-инфо" or event.obj.text == "-инфо":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
-                    message=("Мой разработчик - студет АГПУ Оганесян Артем.\nВсе вопросы по реализации к нему: "
+                    message=("Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: "
                              "vk.com/aom13")
                 )
+            
             elif event.obj.text == "-команды" or event.obj.text == "-команды" or event.obj.text == "братик" or event.obj.text == "Братик":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
-                    message=("Команды: просто напишите няша и нужную вам команду\n-лоли "
-                             "\n-команды\n-инфо\n-хентай\n-арты\n-стикер\n-игры")
+                    message=('&#129302; Команды: просто напишите "-" и нужную вам команду\n&#128540; -лоли'
+                             '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; -стикер\n')
+                )
+            elif event.obj.text == "-видео" or event.obj.text == "-видос":
+                vk.messages.send(
+                    peer_id=event.object.peer_id,
+                    random_id=get_random_id(),
+                    message=("https://coub.com/view/293lfm")
                 )
             elif event.obj.text == "-лоли" or event.obj.text == "-лоли":
                 upload = vk_api.VkUpload(vk)
@@ -76,7 +88,7 @@ def main():
             elif event.obj.text == "-хент" or event.obj.text == "-хентай":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages(
-                    'D://VK_BOT/Hentai/ (' + str(random.randint(1, 419)) + ').jpg')  # Отправляет с пк файлы в беседы
+                    'D://VK_BOT/Hentai2/ (' + str(random.randint(1, 551)) + ').jpg')  # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
                 photo_id = photo[0]['id']
                 access_key = photo[0]['access_key']
@@ -99,19 +111,19 @@ def main():
                     random_id=0,
                     attachment=attachment
                 )
-            elif event.obj.text == "-список игр" or event.obj.text == "-игры":
+            """elif event.obj.text == "-список игр" or event.obj.text == "-игры" or event.obj.text == "-игра":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
                     message=(
-                        "Выберите игру ниже из списка: \n-угадай число\n")
+                        "&#127918; Выберите игру ниже из списка: \n-угадай число\n")
                 )
             elif event.obj.text == "-угадай число":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
-                    message=("Какое число я загадал? От 1 до 5\nНаграда: экслюзивный хентай"))
-                chislos = random.randint(1, 5)
+                    message=("Какое число я загадал? От 1 до 3\nНаграда: экслюзивный хентай &#128527;"))
+                chislos = random.randint(1, 3)
                 for event in longpoll.listen():
                     # Проверка на приход сообщения
                     if event.type == VkBotEventType.MESSAGE_NEW:
@@ -120,10 +132,10 @@ def main():
                                 vk.messages.send(
                                     peer_id=event.object.peer_id,
                                     random_id=get_random_id(),
-                                    message=("Правильно! Вот твоя награда:"))
+                                    message=("Правильно! Вот твоя награда &#128523;:"))
                                 upload = vk_api.VkUpload(vk)
-                                photo = upload.photo_messages('D://VK_BOT/Hentai/ (' + str(
-                                    random.randint(1, 101)) + ').jpg')  # Отправляет с пк файлы в беседы
+                                photo = upload.photo_messages('D://VK_BOT/Hentai/(' + str(
+                                    random.randint(1, 9)) + ').png')  # Отправляет с пк файлы в беседы
                                 owner_id = photo[0]['owner_id']
                                 photo_id = photo[0]['id']
                                 access_key = photo[0]['access_key']
@@ -133,8 +145,8 @@ def main():
                                 vk.messages.send(
                                     peer_id=event.object.peer_id,
                                     random_id=get_random_id(),
-                                    message=("Неправильно\n правильный ответ:" + str(chislos)))
-                    break
+                                    message=("Неправильно &#128162;\n правильный ответ:" + str(chislos)))
+                    break"""
         # Вывод в консоли информации о происходящем
         if event.type == VkBotEventType.MESSAGE_NEW:
             print('Новое сообщение:')
@@ -166,7 +178,6 @@ def main():
         else:
             print(event.type)
             print()
-
 
 if __name__ == '__main__':
     main()
