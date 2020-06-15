@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.utils import get_random_id
 import random
-import requests
-import json
-import re
 
 # Импорт API ключа из отдельного файла
 f = open('D://VK_BOT/APIKEY.txt', 'r')
@@ -45,15 +41,15 @@ def main():
                     message=("Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: "
                              "vk.com/aom13")
                 )
-            
+
             elif event.obj.text == "-команды" or event.obj.text == "-команды" or event.obj.text == "братик" or event.obj.text == "Братик":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
                     message=('&#129302; Команды: просто напишите "-" и нужную вам команду\n&#128540; -лоли'
-                             '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; -стикер\n')
+                             '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; -стикер\n-цитата\n-видео')
                 )
-            elif event.obj.text == "-видео" or event.obj.text == "-видос":
+            elif event.obj.text == "-видыео" or event.obj.text == "-видыос":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
@@ -72,10 +68,10 @@ def main():
                     random_id=0,
                     attachment=attachment
                 )
-            elif event.obj.text == "-арты" or event.obj.text == "-арты":
+            elif event.obj.text == "-арты" or event.obj.text == "-арт":
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages(
-                    'D://VK_BOT/Artos/ (' + str(random.randint(1, 23)) + ').jpg')  # Отправляет с пк файлы в беседы
+                    'D://VK_BOT/Artos/ (' + str(random.randint(1, 59)) + ').jpg')  # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
                 photo_id = photo[0]['id']
                 access_key = photo[0]['access_key']
@@ -84,6 +80,14 @@ def main():
                     peer_id=event.object.peer_id,
                     random_id=0,
                     attachment=attachment
+                )
+            elif event.obj.text == "-видос" or event.obj.text == "-видео":
+                vivi = 'video-196288744_'
+                vivord = str(random.randint(456239025,456239044))
+                vk.messages.send(
+                    peer_id=event.object.peer_id,
+                    random_id=0,
+                    attachment=vivi + vivord
                 )
             elif event.obj.text == "-хент" or event.obj.text == "-хентай":
                 upload = vk_api.VkUpload(vk)
@@ -102,6 +106,19 @@ def main():
                 upload = vk_api.VkUpload(vk)
                 photo = upload.photo_messages(
                     'D://VK_BOT/Stick/ (' + str(random.randint(1, 101)) + ').png')  # Отправляет с пк файлы в беседы
+                owner_id = photo[0]['owner_id']
+                photo_id = photo[0]['id']
+                access_key = photo[0]['access_key']
+                attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+                vk.messages.send(
+                    peer_id=event.object.peer_id,
+                    random_id=0,
+                    attachment=attachment
+                )
+            elif event.obj.text == "-цитаты" or event.obj.text == "-цитата":
+                upload = vk_api.VkUpload(vk)
+                photo = upload.photo_messages(
+                    'D://VK_BOT/Tsitati/ (' + str(random.randint(1, 2)) + ').jpg')  # Отправляет с пк файлы в беседы
                 owner_id = photo[0]['owner_id']
                 photo_id = photo[0]['id']
                 access_key = photo[0]['access_key']
