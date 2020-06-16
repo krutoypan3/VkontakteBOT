@@ -119,42 +119,6 @@ def main():
                     random_id=0,
                     attachment=attachment
                 )
-            """elif event.obj.text == "-список игр" or event.obj.text == "-игры" or event.obj.text == "-игра":
-                vk.messages.send(
-                    peer_id=event.object.peer_id,
-                    random_id=get_random_id(),
-                    message=(
-                        "&#127918; Выберите игру ниже из списка: \n-угадай число\n")
-                )
-            elif event.obj.text == "-угадай число":
-                vk.messages.send(
-                    peer_id=event.object.peer_id,
-                    random_id=get_random_id(),
-                    message=("Какое число я загадал? От 1 до 3\nНаграда: экслюзивный хентай &#128527;"))
-                chislos = random.randint(1, 3)
-                for event in longpoll.listen():
-                    # Проверка на приход сообщения
-                    if event.type == VkBotEventType.MESSAGE_NEW:
-                        if event.type == VkBotEventType.MESSAGE_NEW:
-                            if event.obj.text == str(chislos):
-                                vk.messages.send(
-                                    peer_id=event.object.peer_id,
-                                    random_id=get_random_id(),
-                                    message=("Правильно! Вот твоя награда &#128523;:"))
-                                upload = vk_api.VkUpload(vk)
-                                photo = upload.photo_messages('D://VK_BOT/Hentai/(' + str(
-                                    random.randint(1, 9)) + ').png')  # Отправляет с пк файлы в беседы
-                                owner_id = photo[0]['owner_id']
-                                photo_id = photo[0]['id']
-                                access_key = photo[0]['access_key']
-                                attachment = f'photo{owner_id}_{photo_id}_{access_key}'
-                                vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
-                            else:
-                                vk.messages.send(
-                                    peer_id=event.object.peer_id,
-                                    random_id=get_random_id(),
-                                    message=("Неправильно &#128162;\n правильный ответ:" + str(chislos)))
-                    break"""
         # Вывод в консоли информации о происходящем
         if event.type == VkBotEventType.MESSAGE_NEW:
             print('Новое сообщение:')
