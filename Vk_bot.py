@@ -63,7 +63,7 @@ def main():
                 )
             elif event.obj.text == "-видос" or event.obj.text == "-видео":
                 vivi = 'video-196288744_'
-                vivord = str(random.randint(456239025,456239044))
+                vivord = str(random.randint(456239025, 456239134))
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=0,
@@ -72,6 +72,14 @@ def main():
             elif event.obj.text == "-хентай" or event.obj.text == "-хент":
                 vivi = 'photo-196288744_'
                 vivord = str(random.randint(457239410, 457239961))
+                vk.messages.send(
+                    peer_id=event.object.peer_id,
+                    random_id=0,
+                    attachment=vivi + vivord
+                )
+            elif event.obj.text == "-ахегао":
+                vivi = 'photo-196288744_'
+                vivord = str(random.randint(457241147, 457241266))
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=0,
