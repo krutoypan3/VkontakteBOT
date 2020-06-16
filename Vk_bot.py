@@ -41,32 +41,12 @@ def main():
                     message=("Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: "
                              "vk.com/aom13")
                 )
-
             elif event.obj.text == "-команды" or event.obj.text == "-команды" or event.obj.text == "братик" or event.obj.text == "Братик":
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
                     message=('&#129302; Команды: просто напишите "-" и нужную вам команду\n&#128540; -лоли'
                              '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; -стикер\n-цитата\n-видео')
-                )
-            elif event.obj.text == "-видыео" or event.obj.text == "-видыос":
-                vk.messages.send(
-                    peer_id=event.object.peer_id,
-                    random_id=get_random_id(),
-                    message=("https://coub.com/view/293lfm")
-                )
-            elif event.obj.text == "-лоли" or event.obj.text == "-лоли":
-                upload = vk_api.VkUpload(vk)
-                photo = upload.photo_messages(
-                    'D://VK_BOT/Lolis/ (' + str(random.randint(1, 46219)) + ').jpg')  # Отправляет с пк файлы в беседы
-                owner_id = photo[0]['owner_id']
-                photo_id = photo[0]['id']
-                access_key = photo[0]['access_key']
-                attachment = f'photo{owner_id}_{photo_id}_{access_key}'
-                vk.messages.send(
-                    peer_id=event.object.peer_id,
-                    random_id=0,
-                    attachment=attachment
                 )
             elif event.obj.text == "-арты" or event.obj.text == "-арт":
                 upload = vk_api.VkUpload(vk)
@@ -89,18 +69,21 @@ def main():
                     random_id=0,
                     attachment=vivi + vivord
                 )
-            elif event.obj.text == "-хент" or event.obj.text == "-хентай":
-                upload = vk_api.VkUpload(vk)
-                photo = upload.photo_messages(
-                    'D://VK_BOT/Hentai2/ (' + str(random.randint(1, 551)) + ').jpg')  # Отправляет с пк файлы в беседы
-                owner_id = photo[0]['owner_id']
-                photo_id = photo[0]['id']
-                access_key = photo[0]['access_key']
-                attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+            elif event.obj.text == "-хентай" or event.obj.text == "-хент":
+                vivi = 'photo-196288744_'
+                vivord = str(random.randint(457239410, 457239961))
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=0,
-                    attachment=attachment
+                    attachment=vivi + vivord
+                )
+            elif event.obj.text == "-лоли" or event.obj.text == "-лоля":
+                vivi = 'photo-196288744_'
+                vivord = str(random.randint(457239962, 457241144))
+                vk.messages.send(
+                    peer_id=event.object.peer_id,
+                    random_id=0,
+                    attachment=vivi + vivord
                 )
             elif event.obj.text == "-стикер" or event.obj.text == "-стик":
                 upload = vk_api.VkUpload(vk)
