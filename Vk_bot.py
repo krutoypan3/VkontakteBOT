@@ -3,7 +3,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.utils import get_random_id
 import random
 
-# Импорт API ключа из отдельного файла
+# Импорт API ключа(токена) из отдельного файла
 f = open('D://VK_BOT/APIKEY.txt', 'r')
 APIKEYSS = f.read()
 
@@ -15,7 +15,6 @@ def main():
     # Указываем id сообщества
     longpoll = VkBotLongPoll(vk_session, '196288744')
     vk = vk_session.get_api()
-
 
     # Постоянный листинг сообщений
     for event in longpoll.listen():
@@ -46,7 +45,7 @@ def main():
                     peer_id=event.object.peer_id,
                     random_id=get_random_id(),
                     message=('&#129302; Команды: просто напишите "-" и нужную вам команду\n&#128540; -лоли'
-                             '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; -стикер\n-цитата\n-видео')
+                             '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; -стикер\n-цитата\n-видео\n-ахегао\n-неко')
                 )
             elif event.obj.text == "-арты" or event.obj.text == "-арт":
                 upload = vk_api.VkUpload(vk)
@@ -80,6 +79,17 @@ def main():
             elif event.obj.text == "-ахегао":
                 vivi = 'photo-196288744_'
                 vivord = str(random.randint(457241147, 457241266))
+                vk.messages.send(
+                    peer_id=event.object.peer_id,
+                    random_id=0,
+                    attachment=vivi + vivord
+                )
+            elif event.obj.text == "-неко":
+                vivi = 'photo-196288744_'
+                if random.randint(0, 1) == 1:
+                    vivord = str(random.randint(457241325, 457241424))
+                else:
+                    vivord = str(random.randint(457241502, 457241601))
                 vk.messages.send(
                     peer_id=event.object.peer_id,
                     random_id=0,
@@ -150,6 +160,7 @@ def main():
         else:
             print(event.type)
             print()
+
 
 if __name__ == '__main__':
     main()
