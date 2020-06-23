@@ -1,8 +1,6 @@
 import socket
-import json
 import requests
 import vk_api
-import sqlite3
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import random
 
@@ -61,6 +59,19 @@ def main():
             vivord = str(random.randint(first_el, end_el))
             vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment='video-196288744_' + vivord)
 
+        def adm_prov():
+            try:
+                he_admin = False
+                response = vk.messages.getConversationMembers(peer_id=event.object.peer_id)
+                for i in response["items"]:
+                    if i["member_id"] == event.object.from_id:
+                        he_admin = i.get('is_admin')
+                if not he_admin:
+                    he_admin = False
+                return he_admin
+            except:
+                send_msg('Для доступа к данной команде боту необходимы права администратора беседы')
+
         for event in longpoll.listen():  # Постоянный листинг сообщений
             if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                 # Логика ответов
@@ -74,7 +85,7 @@ def main():
                 elif event.obj.text == "-команды" or event.obj.text == "братик" or event.obj.text == "Братик":
                     send_msg('&#129302; Команды: просто напишите "-" и нужную вам команду\n&#128540; -лоли'
                              '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; '
-                             '\n-видео\n-ахегао\n-неко')
+                             '\n-видео\n-ахегао\n-неко\n-запрет "команда" например: (-запрет -лоли)')
                 # Ответы со вложениями
                 elif event.obj.text == "-арты" or event.obj.text == "-арт":
                     provzapret('-арт', 457241615, 457241726)
@@ -85,13 +96,30 @@ def main():
                 elif event.obj.text == "-ахегао":
                     provzapret('-ахегао', 457241147, 457241266)
                 elif event.obj.text == "-запрет -лоли":
-                    zapret('-лоли')
+                    if adm_prov():
+                        zapret('-лоли')
+                    else:
+                        send_msg('Недостаточно прав')
                 elif event.obj.text == "-запрет -ахегао":
-                    zapret('-ахегао')
+                    if adm_prov():
+                        zapret('-ахегао')
+                    else:
+                        send_msg('Недостаточно прав')
                 elif event.obj.text == "-запрет -хентай":
-                    zapret('-хент')
+                    if adm_prov():
+                        zapret('-хент')
+                    else:
+                        send_msg('Недостаточно прав')
                 elif event.obj.text == "-запрет -арт":
-                    zapret('-арт')
+                    if adm_prov():
+                        zapret('-арт')
+                    else:
+                        send_msg('Недостаточно прав')
+                elif event.obj.text == "-запрет -неко":
+                    if adm_prov():
+                        zapret('-неко')
+                    else:
+                        send_msg('Недостаточно прав')
                 elif event.obj.text == "-лоли" or event.obj.text == "-лоля":
                     provzapret('-лоли', 457239962, 457241144)
                 elif event.obj.text == "-неко":
@@ -99,13 +127,11 @@ def main():
                         provzapret('-неко', 457241325, 457241424)
                     else:
                         provzapret('-неко', 457241502, 457241601)
-                """elif event.obj.text == "-тест":
-                                    send_msg(event.object.from_id)
-                                    response = vk.messages.getConversationMembers(peer_id=event.object.from_id,
-                                                                                  group_id=event.object.peer_id)
-                                    with open('fact.json', 'w') as fact:
-                                        json.dump(response, fact)
-                                    send_msg(response['items']['is_admin'])"""
+                elif event.obj.text == "-я админ":
+                    if adm_prov():
+                        send_msg('Да, ты админ')
+                    else:
+                        send_msg('Увы но нет')
     except (requests.exceptions.ReadTimeout, socket.timeout):
         print("SHTEFAN NINE!!!")
         if __name__ == '__main__':
