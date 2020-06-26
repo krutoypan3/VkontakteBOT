@@ -1,3 +1,4 @@
+import json
 import socket
 import threading
 import requests
@@ -20,9 +21,18 @@ threads = list()
 eventhr = []
 kolpot = -1
 
+
+def error(Error):
+    global oshibka
+    oshibka = oshibka + 1
+    print("Произошла ошибка" + '№' + str(oshibka) + Error)
+    if Error == " - ошибка подключения к вк":
+        time.sleep(5.0)
+    main()
+
+
 def main():
-    global oshibka  # Счетчик ошибок
-    global kolpot
+    global oshibka, kolpot  # Счетчик ошибок
     try:
         vk_session = vk_api.VkApi(token=APIKEYSS)  # Авторизация под именем сообщества
         longpoll = VkBotLongPoll(vk_session, group_id)
@@ -188,20 +198,26 @@ def main():
                             break
 
             def game_ugadai_chislo(my_peer, my_from):
-                send_msg('Угадай число от 1 до 5')
+                global he_name
+                response = vk.users.get(user_ids=my_from)
+                he_name = response[0]['first_name']
+                he_family = response[0]['last_name']
+                chel = '[' + 'id' + str(event.object.from_id) + '|' + str(he_name) + ' ' + str(he_family) + ']' + ', '
+                send_msg(chel + 'игра началась для тебя:\n' + ' угадай число от 1 до 3')
                 timing = time.time()
-                game_chislo = random.randint(1, 5)
+                game_chislo = random.randint(1, 3)
                 for eventhr[kolpot] in longpoll.listen():
                     if time.time() - timing > 10.0:
-                        send_msg_new(my_peer, 'Время ожидания истекло')
+                        send_msg_new(my_peer, chel + 'время ожидания истекло...')
                         break
                     if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
                         if eventhr[kolpot].object.peer_id == my_peer and eventhr[kolpot].object.from_id == my_from:
                             if str(game_chislo) == str(event.obj.text):
-                                send_msg_new(my_peer, 'Правильно!')
+                                send_msg_new(my_peer, chel + 'правильно!')
                                 break
                             else:
-                                send_msg_new(my_peer, 'Не правильно! Загаданное число: ' + str(game_chislo))
+                                send_msg_new(my_peer, chel + 'не правильно!' +
+                                             ' - загаданное число: ' + str(game_chislo))
                                 break
 
             for event in longpoll.listen():  # Постоянный листинг сообщений
@@ -213,7 +229,7 @@ def main():
                     if event.obj.text == "братик привет":
                         send_msg("&#128075; Приветик")
                         main_keyboard()
-                    elif event.obj.text == 'угадай число' or event.obj.text == 'угадай число':
+                    elif event.obj.text == 'угадай число' or event.obj.text == 'Угадай число':
                         thread_start2(game_ugadai_chislo, event.object.peer_id, event.object.from_id)
                     elif event.obj.text == "пока" or event.obj.text == "спокойной ночи" or event.obj.text == "споки" \
                             or event.obj.text == "bb":
@@ -266,22 +282,16 @@ def main():
                         adm_prov_and_zapret('арт')
                     elif event.obj.text == "запрет неко":
                         adm_prov_and_zapret('неко')
+
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
-            oshibka = oshibka + 1
-            print("Произошла ошибка" + '№' + str(oshibka) + " - ошибка подключения к вк!!! Бот будет перезапущен!!!")
-            time.sleep(5.0)
-            main()
+            error(" - ошибка подключения к вк")
+
         finally:
-            oshibka = oshibka + 1
-            print("Произошла ошибка" + '№' + str(oshibka) + "!!! Бот будет перезапущен!!!")
-            main()
+            error('')
     except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
             urllib3.exceptions.NewConnectionError, socket.gaierror):
-        oshibka = oshibka + 1
-        print("Произошла ошибка" + '№' + str(oshibka) + " - ошибка подключения к вк!!! Бот будет перезапущен!!!")
-        time.sleep(5.0)
-        main()
+        error(" - ошибка подключения к вк")
 
 
 #     elif event.obj.text == "-dump":
