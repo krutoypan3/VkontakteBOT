@@ -206,14 +206,15 @@ def main():
                 send_msg(chel + 'игра началась для тебя:\n' + ' угадай число от 1 до 3')
                 timing = time.time()
                 game_chislo = random.randint(1, 3)
+                time.sleep(0.1)
                 for eventhr[kolpot] in longpoll.listen():
                     if time.time() - timing > 10.0:
                         send_msg_new(my_peer, chel + 'время ожидания истекло...')
                         break
                     if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
                         if eventhr[kolpot].object.peer_id == my_peer and eventhr[kolpot].object.from_id == my_from:
-                            if str(game_chislo) == str(event.obj.text):
-                                send_msg_new(my_peer, chel + 'правильно!')
+                            if str(game_chislo) == str(eventhr[kolpot].obj.text):
+                                send_msg_new(my_peer, chel + 'правильно!' + ' - загаданное число: ' + str(game_chislo))
                                 break
                             else:
                                 send_msg_new(my_peer, chel + 'не правильно!' +
