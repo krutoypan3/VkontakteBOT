@@ -16,10 +16,13 @@ APIKEYSS = f.read()  # токен нужно поместить в файл вы
 print("Бот работает...")
 group_id = '196288744'  # Указываем id сообщества, изменять только здесь!
 oshibka = 0  # обнуление счетчика ошибок
-
+threads = list()
+eventhr = []
+kolpot = -1
 
 def main():
     global oshibka  # Счетчик ошибок
+    global kolpot
     try:
         vk_session = vk_api.VkApi(token=APIKEYSS)  # Авторизация под именем сообщества
         longpoll = VkBotLongPoll(vk_session, group_id)
@@ -61,19 +64,26 @@ def main():
                 if asq == 0:
                     send_ft(a, b)
 
-            # Проверка чата на нецензурную брань
-            def provbadword(mat):
-                zap_wordf = open('zap_word.txt', 'r')
-                asq = 0
-                for line in zap_wordf:
-                    if (str(mat)).lower() + '\n' == line:
-                        asq = 1
-                zap_wordf.close()
-                return asq
+            def provbadwordth(slovaf):
+                for i in slovaf:
+                    zap_wordf = open('zap_word.txt', 'r')
+                    asq = False
+                    for line in zap_wordf:
+                        if (str(i)).lower() + '\n' == line:
+                            asq = True
+                    zap_wordf.close()
+                    if asq:
+                        if str(i) != '':
+                            send_msg('[' + 'id' + str(event.object.from_id) + '|' + 'Осуждаю' + ']')
+                            break
 
             # Отправка текстового сообщения
             def send_msg(ms_g):
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, message=ms_g)
+
+            # Отправка текстового сообщения
+            def send_msg_new(peerid, ms_g):
+                vk.messages.send(peer_id=peerid, random_id=0, message=ms_g)
 
             # Показ онлайна беседы
             def who_online():
@@ -152,24 +162,66 @@ def main():
                     vk.messages.send(peer_id=event.object.peer_id, random_id=get_random_id(),
                                      keyboard=keyboard.get_keyboard(), message='Выберите команду:')
 
+            def thread_start(Func, Arg):
+                global kolpot
+                x = threading.Thread(target=Func, args=(Arg,))
+                threads.append(x)
+                kolpot += 1
+                eventhr.append(kolpot)
+                x.start()
+
+            def thread_start2(Func, Arg, Arg2):
+                x = threading.Thread(target=Func, args=(Arg, Arg2))
+                threads.append(x)
+                x.start()
+
+            def testmultipot(my_peer, my_from):
+                send_msg(str(time.ctime()))
+                timing = time.time()
+                for eventhr[kolpot] in longpoll.listen():
+                    if time.time() - timing > 10.0:
+                        send_msg_new(my_peer, 'Время ожидания истекло')
+                        break
+                    if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
+                        if eventhr[kolpot].object.peer_id == my_peer and eventhr[kolpot].object.from_id == my_from:
+                            send_msg_new(my_peer, 'Тест прошел удачно')
+                            break
+
+            def game_ugadai_chislo(my_peer, my_from):
+                send_msg('Угадай число от 1 до 5')
+                timing = time.time()
+                game_chislo = random.randint(1, 5)
+                for eventhr[kolpot] in longpoll.listen():
+                    if time.time() - timing > 10.0:
+                        send_msg_new(my_peer, 'Время ожидания истекло')
+                        break
+                    if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
+                        if eventhr[kolpot].object.peer_id == my_peer and eventhr[kolpot].object.from_id == my_from:
+                            if str(game_chislo) == str(event.obj.text):
+                                send_msg_new(my_peer, 'Правильно!')
+                                break
+                            else:
+                                send_msg_new(my_peer, 'Не правильно! Загаданное число: ' + str(game_chislo))
+                                break
+
             for event in longpoll.listen():  # Постоянный листинг сообщений
                 if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                     # Логика ответов
                     # Текстовые ответы -----------------------------------------------------------------------------
                     slova = event.obj.text.split()
-                    for i in slova:
-                        if provbadword(i):
-                            if str(i) != '':
-                                send_msg('[' + 'id' + str(event.object.from_id) + '|' + 'Осуждаю' + ']')
-                                break
+                    thread_start(provbadwordth, slova)
                     if event.obj.text == "братик привет":
                         send_msg("&#128075; Приветик")
                         main_keyboard()
+                    elif event.obj.text == 'угадай число' or event.obj.text == 'угадай число':
+                        thread_start2(game_ugadai_chislo, event.object.peer_id, event.object.from_id)
                     elif event.obj.text == "пока" or event.obj.text == "спокойной ночи" or event.obj.text == "споки" \
                             or event.obj.text == "bb":
                         send_msg("&#128546; Прощай")
                     elif event.obj.text == "время":
                         send_msg(str(time.ctime()))
+                    elif event.obj.text == "тест мультипоточности":
+                        thread_start2(testmultipot, event.object.peer_id, event.object.from_id)
                     elif event.obj.text == "-команды" or event.obj.text == "братик" or event.obj.text == "Братик":
                         send_msg('&#129302; Команды: просто напишите "-" и нужную вам команду\n&#128540; -лоли'
                                  '\n&#129302; -команды\n&#8505; -инфо\n&#9832; -хентай\n&#127924; -арты\n&#128076; '
