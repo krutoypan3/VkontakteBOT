@@ -1,4 +1,5 @@
 # import json
+import json
 import socket
 import threading
 import requests
@@ -22,8 +23,6 @@ oshibka = 0  # обнуление счетчика ошибок
 threads = list()
 eventhr = []
 kolpot = -1
-z = open('zapusk_game.txt', 'w')
-z.close()
 group_sob = "@bratikbot"  # Указываем короткое имя бота (если нет то id)
 group_name = "Братик"  # Указываем название сообщества
 
@@ -40,29 +39,44 @@ def sql_connection():
 # Создание таблицы в БД
 def sql_table(conc3):
     cursorObj4 = conc3.cursor()  # Курсор БД
-    cursorObj4.execute("CREATE TABLE peer_params(peer_id integer PRIMARY KEY, zapusk_game text, filter_mata integer)")
+    cursorObj4.execute("CREATE TABLE from_params(from_id integer PRIMARY KEY, money integer, warn integer)")
     conc3.commit()
 
 
 con = sql_connection()  # Соединение с БД
 
 
-# Вставка СТРОКИ в ТАБЛИЦУ в БД
+# Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
 def sql_insert(conc2, entities):
     cursorObj3 = conc2.cursor()
     cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata) VALUES(?, ?, ?)', entities)
     conc2.commit()
 
 
-# Обновление параметра в таблице
-def sql_update(conc5, what_fetch, what_fetch_new, peer_id_val):
-    cursorObj1 = conc5.cursor()
-    cursorObj1.execute('UPDATE peer_params SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) + ' where peer_id = '
-                       + str(peer_id_val))
-    conc5.commit()
+# Вставка СТРОКИ в ТАБЛИЦУ from_params в БД
+def sql_insert_from(conc2, entities):
+    cursorObj3 = conc2.cursor()
+    cursorObj3.execute('INSERT INTO from_params(peer_id, from_id, money, m_time, warn, marry_id) VALUES(?, ?, ?, ?, ?, ?)', entities)
+    conc2.commit()
 
 
-# Получение параметров из таблицы
+# Обновление параметра в таблице peer_params
+def sql_update(con5, what_fetch, what_fetch_new, peer_id_val):
+    cursorObj1 = con5.cursor()
+    cursorObj1.execute('UPDATE peer_params SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
+                       ' where peer_id = ' + str(peer_id_val))
+    con5.commit()
+
+
+# Обновление параметра в таблице from_params
+def sql_update_from(con5, what_fetch, what_fetch_new, peer_id_val, from_id_val):
+    cursorObj1 = con5.cursor()
+    cursorObj1.execute('UPDATE from_params SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
+                       ' where peer_id = ' + str(peer_id_val) + ' AND from_id = ' + str(from_id_val))
+    con5.commit()
+
+
+# Получение параметров из таблицы peer_params
 def sql_fetch(conc, what_return, peer_id_val):
     cursorObj2 = conc.cursor()
     cursorObj2.execute('SELECT ' + str(what_return) + ' FROM peer_params WHERE peer_id = ' + str(peer_id_val))
@@ -74,6 +88,20 @@ def sql_fetch(conc, what_return, peer_id_val):
         return rows
     else:
         return rows
+
+
+# Получение параметров из таблицы from_params
+def sql_fetch_from(conc, what_return, peer_id_val, from_id_val):
+    cursorObj2 = conc.cursor()
+    cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_params WHERE peer_id = ' + str(
+        peer_id_val) + ' AND from_id = ' + str(from_id_val))
+    rows = cursorObj2.fetchall()
+    if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
+        entities = str(peer_id_val), str(from_id_val), '0', '0', '0', '0'
+        sql_insert_from(conc, entities)
+        rows = sql_fetch_from(conc, what_return, peer_id_val, from_id_val)
+        return rows
+    return rows
 
 
 # Обнуление игр во всех беседах
@@ -94,21 +122,118 @@ def error(ErrorF):
 
 try:
     def main():
-        global oshibka, kolpot  # Счетчик ошибок
+        global oshibka, kolpot  # Счетчик ошибок и счетчик количества потоков
         try:
             vk_session = vk_api.VkApi(token=APIKEYSS)  # Авторизация под именем сообщества
             longpoll = VkBotLongPoll(vk_session, group_id)
             vk = vk_session.get_api()
 
+            # Статус брака
+            def marry_status(my_peer, my_from):
+                marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
+                if marry_id == 'None' or marry_id == '0':
+                    send_msg_new(my_peer, 'Вы не состоите в браке')
+                else:
+                    marry_user2 = vk.users.get(user_ids=marry_id, name_case='ins')
+                    he_name2 = marry_user2[0]['first_name']
+                    he_family2 = marry_user2[0]['last_name']
+                    chel2 = '[' + 'id' + str(marry_id) + '|' + str(he_name2) + ' ' + str(he_family2) + ']'
+                    send_msg_new(my_peer, 'Вы состоите в браке с ' + chel2)
+
+            # Развод
+            def marry_disvorse(my_peer, my_from):
+                marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
+                if str(marry_id) == 'None' or str(marry_id) == '0':
+                    send_msg_new(my_peer, 'Вы не состоите в браке!')
+                else:
+                    marry_user = vk.users.get(user_ids=my_from)
+                    marry_user2 = vk.users.get(user_ids=marry_id, name_case='ins')
+                    he_name = marry_user[0]['first_name']
+                    he_family = marry_user[0]['last_name']
+                    he_name2 = marry_user2[0]['first_name']
+                    he_family2 = marry_user2[0]['last_name']
+                    chel = '[' + 'id' + str(my_from) + '|' + str(he_name) + ' ' + str(he_family) + ']'
+                    chel2 = '[' + 'id' + str(marry_id) + '|' + str(he_name2) + ' ' + str(he_family2) + ']'
+                    sql_update_from(con, 'marry_id', str('0'), str(my_peer), str(my_from))
+                    sql_update_from(con, 'marry_id', str('0'), str(my_peer), str(marry_id))
+                    send_msg_new(my_peer, chel + ' разводится с ' + chel2)
+
+            # Создание брака
+            def marry_create(my_peer, my_from, id2):
+                our_from =''
+                for i in id2:
+                    if '0' <= i <= '9':
+                        our_from += i
+                    if i == '|':
+                        break
+                if str(my_from) == str(our_from):
+                    send_msg_new(my_peer, 'Ты чо? Дебил?')
+                else:
+                    marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
+                    marry_id2 = str(sql_fetch_from(con, 'marry_id', my_peer, our_from)[0][0])
+                    if (marry_id == 'None' or marry_id == '0') and (marry_id2 == 'None' or marry_id2 == '0'):
+                        marry_user = vk.users.get(user_ids=my_from, name_case='gen')
+                        marry_user2 = vk.users.get(user_ids=our_from)
+                        he_name = marry_user[0]['first_name']
+                        he_family = marry_user[0]['last_name']
+                        he_name2 = marry_user2[0]['first_name']
+                        he_family2 = marry_user2[0]['last_name']
+                        chel = '[' + 'id' + str(my_from) + '|' + str(he_name) + ' ' + str(he_family) + ']'
+                        chel2 = '[' + 'id' + str(our_from) + '|' + str(he_name2) + ' ' + str(he_family2) + ']'
+                        timing = time.time()
+                        keyboard = VkKeyboard(inline=True)
+                        keyboard.add_button('💝да', color=VkKeyboardColor.PRIMARY)
+                        keyboard.add_button('💔нет', color=VkKeyboardColor.NEGATIVE)
+                        vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                                         keyboard=keyboard.get_keyboard(), message=chel2 + ', готов ли ты выйти за ' + chel + ' ?')
+                        for eventhr[kolpot] in longpoll.listen():
+                            if time.time() - timing > 30.0:
+                                send_msg_new(my_peer, 'Время заключения брака истекло...')
+                                break
+                            if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
+                                if str(eventhr[kolpot].object.peer_id) == str(my_peer) and str(eventhr[kolpot].object.from_id) == str(our_from):
+                                    slova_m = eventhr[kolpot].obj.text.split()
+                                    if len(slova_m) == 2:
+                                        if slova_m[1] == "💝да":
+                                            sql_update_from(con, 'marry_id', str(our_from), str(my_peer), str(my_from))
+                                            sql_update_from(con, 'marry_id', str(my_from), str(my_peer), str(our_from))
+                                            send_msg_new(my_peer, 'Брак успешно заключен!')
+                                            break
+                                        elif slova_m[1] == "💔нет":
+                                            send_msg_new(my_peer, 'Увы, но брак не будет заключен')
+                                            break
+                    else:
+                        send_msg_new(my_peer, 'Один из вас уже находится в браке!')
+
+            # Статус фильтра мата
             def filter_mata_status(my_peer):
                 if str(sql_fetch(con, 'filter_mata', my_peer)[0][0]) == '1':
                     return True
                 return False
 
+            # Проверка баланса
+            def balans_status(my_peer, my_from):
+                balans = str(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
+                send_msg_new(my_peer, 'Ваш баланс : ' + str(balans) + ' бро-коинов')
+
+            # Зачисление ежедневного вознаграждения
+            def add_balans_every_day(my_peer, my_from):
+                if int(sql_fetch_from(con, 'm_time', my_peer, my_from)[0][0]) < (time.time() - 8 * 60 * 60):
+                    add_balans(my_peer, my_from, 1000)
+                    send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
+                else:
+                    send_msg_new(my_peer, 'Бро-коины можно получить не чаще, чем 1 раз в 8 часов!')
+
+            # Добавление n-ой суммы на баланс
+            def add_balans(my_peer, my_from, zp_balans):
+                balans = int(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
+                balans += int(zp_balans)
+                sql_update_from(con, 'money', str(balans), str(my_peer), str(my_from))
+                sql_update_from(con, 'm_time', str(time.time()), str(my_peer), str(my_from))
+
             # Проверка на запрет запуска другой игры в данной беседе
             def prov_zap_game(my_peer):
                 if str(sql_fetch(con, 'zapusk_game', my_peer)[0][0]) == '1':
-                    send_msg_new(my_peer, '&#128377;Другая игра уже запущена!')
                     return True
                 return False
 
@@ -121,7 +246,7 @@ try:
                     sql_update(con, 'zapusk_game', 1, my_peer)
                     return False
 
-            # Запрет команды для определенной беседы
+            # Запрет команды для определенной беседы -------------------------------------------- НУЖНА ОПТИМИЗАЦИЯ
             def zapret(chto):
                 zap_command = open('zap_command.txt', 'r')
                 asq = 0
@@ -189,7 +314,7 @@ try:
                             send_msg('[' + 'club' + str(
                                 -event.object.from_id) + '|' + 'Ты, как бот, подаешь плохой пример' + ']')
 
-            # Отправка текстового сообщения
+            # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
             def send_msg(ms_g):
                 vk.messages.send(peer_id=event.object.peer_id, random_id=0, message=ms_g)
 
@@ -286,8 +411,20 @@ try:
 
             # Запуск потока с двумя аргрументами
             def thread_start2(Func, Arg, Arg2):
+                global kolpot
                 x = threading.Thread(target=Func, args=(Arg, Arg2))
                 threads.append(x)
+                kolpot += 1
+                eventhr.append(kolpot)
+                x.start()
+
+            # Запуск потока с двумя аргрументами
+            def thread_start3(Func, Arg, Arg2, Arg3):
+                global kolpot
+                x = threading.Thread(target=Func, args=(Arg, Arg2, Arg3))
+                threads.append(x)
+                kolpot += 1
+                eventhr.append(kolpot)
                 x.start()
 
             # Игра угадай число
@@ -455,82 +592,6 @@ try:
                 vk.messages.send(peer_id=my_peer_klava, random_id=get_random_id(),
                                  keyboard=keyboard.get_keyboard(), message='Список игр:')
 
-            def money_reward(my_peer_money, my_from_money):
-                money_playerf = open('money_reward.txt', 'r')
-                responsemr = vk.users.get(user_ids=my_from_money)
-                he_name = responsemr[0]['first_name']
-                he_family = responsemr[0]['last_name']
-                chel = '[' + 'id' + str(my_from_money) + '|' + str(he_name) + ' ' + str(
-                    he_family) + ']'
-                asqmoney = False
-                moneyall = money_playerf.readlines()
-                for line in moneyall:
-                    line_slovo = line.split()
-                    if len(line_slovo) >= 4:
-                        if str(my_peer_money) + ' ' + str(my_from_money) == str(line_slovo[0]) + ' ' + str(
-                                line_slovo[1]):
-                            asqmoney = True
-                            if (float(line_slovo[3]) + 10 * 60) < time.time():
-                                money_playerf.close()
-                                money_playerf = open('money_reward.txt', 'w')
-                                for linec in moneyall:
-                                    linec_slovo = linec.split()
-                                    if (str(linec_slovo[0]) + ' ' + str(linec_slovo[1])) != (
-                                            (str(my_peer_money)) + ' ' + str(my_from_money)):
-                                        money_playerf.write(linec)
-                                    else:
-                                        newlinec = linec_slovo
-                                        newlinec[2] = str(int(line_slovo[2]) + 500)
-                                        newlinec[3] = str(time.time())
-                                        whatwrite = ''
-                                        for i in range(len(newlinec)):
-                                            whatwrite += (newlinec[i] + ' ')
-                                        whatwrite += '\n'
-                                        money_playerf.write(whatwrite)
-                                        send_msg_new(my_peer_money, 'Получено 500 бро-коинов!')
-                                money_playerf.close()
-                                send_msg_new(my_peer_money,
-                                             chel + ', теперь у тебя ' + str(
-                                                 int(line_slovo[2]) + 500) + ' бро-коинов')
-                                break
-                            else:
-                                money_playerf.close()
-                                send_msg_new(my_peer_money,
-                                             chel + ', ты уже получил свои деньги за последние 10 минут!')
-                                break
-                if not asqmoney:
-                    money_playerf.close()
-                    money_playerf = open('money_reward.txt', 'a')
-                    send_msg_new(my_peer_money, chel + ', вот тебе 1000 бро-коинов на начальные расходы')
-                    money_playerf.write(
-                        str(my_peer_money) + ' ' + str(my_from_money) + ' ' + '1000' + ' ' + str(
-                            time.time()) + ' \n')
-                    money_playerf.close()
-
-            def balans(my_peer_balans, my_from_balans):
-                money_playerfb = open('money_reward.txt', 'r')
-                responsemr = vk.users.get(user_ids=my_from_balans)
-                he_name = responsemr[0]['first_name']
-                he_family = responsemr[0]['last_name']
-                chel = '[' + 'id' + str(my_from_balans) + '|' + str(he_name) + ' ' + str(
-                    he_family) + ']'
-                moneyallb = money_playerfb.readlines()
-                asqb = False
-                for line in moneyallb:
-                    line_slovo = line.split()
-                    if len(line_slovo) >= 4:
-                        if str(my_peer_balans) + ' ' + str(my_from_balans) == str(line_slovo[0]) + ' ' + str(
-                                line_slovo[1]):
-                            send_msg_new(my_peer_balans, chel + ', у тебя ' + line_slovo[2] + ' бро-коинов')
-                            asqb = True
-                            money_playerfb.close()
-                            break
-                money_playerfb.close()
-                if not asqb:
-                    send_msg_new(my_peer_balans,
-                                 'Ой, похоже у тебя еще нет бро-коинов...\nДля получения первых 1000 бро-коинов '
-                                 'напиши "бро награда"')
-
             for event in longpoll.listen():  # Постоянный листинг сообщений
                 if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                     slova = event.obj.text.split()  # Разделение сообщения на слова
@@ -543,15 +604,18 @@ try:
                         if slova[1] + ' ' + slova[2] == 'угадай число':
                             if not prov_zap_game(event.object.peer_id):
                                 thread_start2(game_ugadai_chislo, event.object.peer_id, event.object.from_id)
+                            else:
+                                send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
                         elif slova[1] + ' ' + slova[2] == 'кто круче':
                             if not prov_zap_game(event.object.peer_id):
                                 thread_start(game_kto_kruche, event.object.peer_id)
+                            else:
+                                send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
                         elif slova[1] + ' ' + slova[2] == 'бросок кубика':
                             if not prov_zap_game(event.object.peer_id):
                                 thread_start(game_brosok_kubika, event.object.peer_id)
-                        elif slova[1] == 'участвую':
-                            if not prov_zap_game(event.object.peer_id):
-                                send_msg_new(event.object.peer_id, 'Игра уже закончилась')
+                            else:
+                                send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
                     # Текстовые ответы -----------------------------------------------------------------------------
                     if event.obj.text == "братик привет":
                         send_msg("&#128075; Приветик")
@@ -574,9 +638,9 @@ try:
                         klava_game(event.object.peer_id)
                     elif event.obj.text == "Бро награда" or event.obj.text == "бро награда" or \
                             event.obj.text == "бро шекель":
-                        thread_start2(money_reward, event.object.peer_id, event.object.from_id)
+                        thread_start2(add_balans_every_day, event.object.peer_id, event.object.from_id)  # DB
                     elif event.obj.text == "Бро баланс" or event.obj.text == "бро баланс":
-                        thread_start2(balans, event.object.peer_id, event.object.from_id)
+                        thread_start2(balans_status, event.object.peer_id, event.object.from_id)  # DB
                     elif event.obj.text == "онлайн" or event.obj.text == "кто тут":
                         send_msg_new(event.object.peer_id, who_online())
                     elif event.obj.text == "инфо":
@@ -587,10 +651,9 @@ try:
                             send_msg('Да, ты админ')
                         else:
                             send_msg('Увы но нет')
-
                     # Ответы со вложениями -----------------------------------------------------------------------
 
-                    elif event.obj.text == "Арт" or event.obj.text == "арт":
+                    if event.obj.text == "Арт" or event.obj.text == "арт":
                         provzapret('арт', 457241615, 457241726)  # изменять только здесь!
                     elif event.obj.text == "Стикер" or event.obj.text == "стикер":
                         provzapret('стикер', 457241746, 457241786)  # изменять только здесь!
@@ -610,18 +673,27 @@ try:
                     elif len(slova) > 1:
                         if slova[0] == 'запрет' or slova[0] == 'Запрет':
                             adm_prov_and_zapret(slova[1])
+                        elif slova[1] == 'участвую':
+                            if not prov_zap_game(event.object.peer_id):
+                                send_msg_new(event.object.peer_id, 'Игра уже закончилась')
+                        elif slova[0] + ' ' + slova[1] == 'брак статус' or slova[0] + ' ' + slova[1] == 'Брак статус':
+                            thread_start2(marry_status, event.object.peer_id, event.object.from_id)
+                        elif slova[0] == "брак":
+                            thread_start3(marry_create, event.object.peer_id, event.object.from_id, slova[1])
+                    elif event.obj.text == "развод" or event.obj.text == "Развод":
+                        thread_start2(marry_disvorse, event.object.peer_id, event.object.from_id)
                     # Отладка -------------------------------------------------------------------------------------
-                    """if event.obj.text == 'dump':
+                    elif event.obj.text == 'dump':
                         with open('dump.json', 'w') as dump:
                             send_msg(event.object.peer_id)
-                            response = vk.messages.getHistory(offset='0', count='50', peer_id=event.object.peer_id,
-                                                              start_message_id='-1')
+                            response = vk.users.get(user_ids=event.object.from_id, fields='photo_max')
                             json.dump(response, dump)
-                            send_msg('dumped')"""
+                            send_msg('dumped')
 
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
             error(" - ошибка подключения к вк")
+
 
     main()
 
@@ -631,9 +703,3 @@ except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
 
 finally:
     error('- а хрен его знает')
-#     elif event.obj.text == "-dump":
-#         with open('dump.json', 'w') as dump:
-#             response = vk.messages.getConversationMembers(peer_id=event.object.peer_id)
-#             json.dump(response, dump)
-#             send_msg('dumped')
-#             print(response['profiles'][0]['first_name'])
