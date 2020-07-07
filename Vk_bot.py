@@ -49,9 +49,7 @@ try:
     f1 = open('C://client_secret.txt', 'r')
     client_secret = f1.read()
     f1.close()
-    vk_session_SERVISE = vk_api.VkApi(app_id=7530210,
-                                      token=ser_token,
-                                      client_secret=client_secret)
+    vk_session_SERVISE = vk_api.VkApi(app_id=7530210, token=ser_token, client_secret=client_secret)
     vk_session_SERVISE.server_auth()
     vk_SERVISE = vk_session_SERVISE.get_api()
     vk_session_SERVISE.token = {'access_token': ser_token, 'expires_in': 0}
@@ -59,9 +57,9 @@ try:
     photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
     photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
     photo_hent = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418234, count=1000)  # по которым внизу
-    photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться фото
-    photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613,
-                                       count=1000)  # и скинутся пользователю
+    photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться
+    photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото
+    photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)
 
     '''
     with open('dump.json', 'w') as dump:
@@ -394,7 +392,6 @@ try:
     def send_ft(my_peer, idphoto):
         vk.messages.send(peer_id=my_peer, random_id=0,
                          attachment='photo-' + group_id + '_' + idphoto)
-        main_keyboard(my_peer)
 
 
     # Отправка видео с сервера ВК
@@ -402,8 +399,6 @@ try:
         vivord = str(random.randint(first_el, end_el))
         vk.messages.send(peer_id=my_peer, random_id=0,
                          attachment='video-' + group_id + '_' + vivord)
-        time.sleep(1)
-        main_keyboard(my_peer)
 
 
     # Проверка админки и последующий запрет при ее наличии
@@ -451,9 +446,10 @@ try:
             keyboard.add_button('неко', color=VkKeyboardColor.PRIMARY)
             keyboard.add_button('ахегао', color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()  # Отступ строки
-            keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('coub', color=VkKeyboardColor.POSITIVE)
             keyboard.add_line()
-            keyboard.add_button('видео', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('манга арт', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
 
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выберите команду:')
@@ -565,7 +561,8 @@ try:
                                 else:
                                     uchastniki.append(eventhr[kolpot].object.from_id)
                                     send_msg_new(my_peer_game,
-                                                 '&#127918;Заявка на участие принята. Участников: ' +
+                                                 '&#127918;' + '[' + 'id' + str(eventhr[kolpot].object.from_id) + '|' +
+                                                 'Ты в танцах! ' + ']' + 'Заявка на участие принята. Участников: ' +
                                                  str(len(uchastniki)))
                             else:
                                 send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
@@ -706,8 +703,6 @@ try:
                         send_msg_new(event.object.peer_id, '⚙️ Полный список команд доступен по ссылке ' +
                                      'vk.com/@bratikbot-commands')
                         main_keyboard(event.object.peer_id)
-                    elif event.obj.text == "начать" or event.obj.text == "Начать":
-                        main_keyboard(event.object.peer_id)
                     elif event.obj.text == "игры" or event.obj.text == "Игры":
                         klava_game(event.object.peer_id)
                     elif event.obj.text == "Бро награда" or event.obj.text == "бро награда" or \
@@ -735,7 +730,7 @@ try:
                         randid = (random.randint(0, photo_stik['count'] - 1))
                         idphoto = (photo_stik['items'][randid]['id'])
                         provzapret(event.object.peer_id, 'стикер', str(idphoto))
-                    elif event.obj.text == "видео" or event.obj.text == "Видео":
+                    elif event.obj.text == "coub" or event.obj.text == "Coub":
                         send_vd(event.object.peer_id, 456239025, 456239134)  # изменять только здесь!
                     elif event.obj.text == "хентай" or event.obj.text == "Хентай":
                         randid = (random.randint(0, photo_hent['count'] - 1))
@@ -752,6 +747,10 @@ try:
                     elif event.obj.text == "неко" or event.obj.text == "Неко":
                         randid = (random.randint(0, photo_neko['count'] - 1))
                         idphoto = (photo_neko['items'][randid]['id'])
+                        provzapret(event.object.peer_id, 'неко', str(idphoto))  # изменять только здесь!
+                    elif event.obj.text == "манга арт" or event.obj.text == "Манга арт":
+                        randid = (random.randint(0, photo_mart['count'] - 1))
+                        idphoto = (photo_mart['items'][randid]['id'])
                         provzapret(event.object.peer_id, 'неко', str(idphoto))  # изменять только здесь!
                     elif len(slova) > 1:
                         if slova[0] == 'запрет' or slova[0] == 'Запрет':
@@ -780,13 +779,21 @@ try:
                             print(auth.text)
                             json.dump(auth.text, dump)
                             send_msg_new(event.object.peer_id, 'dumped')
+                    if lich_or_beseda:
+                        main_keyboard(event.object.peer_id)
 
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
             error(" - ошибка подключения к вк")
+
+        finally:
+            error('Ошибочка')
 
 
     main()
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
     error(" - ошибка подключения к вк")
+
+finally:
+    error('Ошибочка')
