@@ -156,6 +156,14 @@ try:
             return rows
         return rows
 
+    # Получение параметров из таблицы from_params
+    def sql_fetch_from_all(conc, what_return, peer_id_val):
+        cursorObj2 = conc.cursor()
+        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_params WHERE peer_id = ' + str(
+            peer_id_val))
+        rows = cursorObj2.fetchall()
+        return rows
+
 
     # Обнуление игр во всех беседах
     cursorObj = con.cursor()
@@ -261,6 +269,28 @@ try:
     def balans_status(my_peer, my_from):
         balans = str(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
         send_msg_new(my_peer, 'Ваш баланс : ' + str(balans) + ' бро-коинов')
+
+    # Баланс топ
+    def balans_top(my_peer):
+        send_msg_new(my_peer, 'Считаем деньги...')
+        kol_vo = str(sql_fetch_from_all(con, 'money', my_peer))
+        mesta = str(sql_fetch_from_all(con, 'from_id', my_peer))
+        idall = mesta.split()
+        monall = kol_vo.split()
+        mess = ''
+        for i in range(len(idall) - 1):
+            a = ''
+            b = ''
+            for j in (idall[i]):
+                if '0' <= str(j) <= '9':
+                    a += str(j)
+            for k in (monall[i]):
+                if '0' <= str(k) <= '9':
+                    b += str(k)
+            user = vk.users.get(user_ids=a)
+            a = str(user[0]['first_name']) + ' ' + str(user[0]['last_name'])
+            mess += '💰' + str(a) + ' - ' + str(b) + ' бро-коинов\n'
+        send_msg_new(my_peer, mess)
 
 
     # Зачисление ежедневного вознаграждения
@@ -754,6 +784,8 @@ try:
                         thread_start2(add_balans_every_day, event.object.peer_id, event.object.from_id)  # DB
                     elif event.obj.text == "Бро баланс" or event.obj.text == "бро баланс":
                         thread_start2(balans_status, event.object.peer_id, event.object.from_id)  # DB
+                    elif event.obj.text == "Бро баланс топ" or event.obj.text == "бро баланс топ":
+                        thread_start(balans_top, event.object.peer_id)  # DB
                     elif event.obj.text == "онлайн" or event.obj.text == "кто тут":
                         send_msg_new(event.object.peer_id, who_online(event.object.peer_id))
                     elif event.obj.text == "инфо":
