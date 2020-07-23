@@ -90,12 +90,11 @@ try:
     # Создание таблицы в БД
     def sql_table(conc3):
         cursorObj4 = conc3.cursor()  # Курсор БД
-        cursorObj4.execute("CREATE TABLE from_params(from_id integer PRIMARY KEY, money integer, warn integer)")
+        cursorObj4.execute("CREATE TABLE anime_base(name string PRIMARY KEY, genre string, series string)")
         conc3.commit()
 
 
     con = sql_connection()  # Соединение с БД
-
 
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
     def sql_insert(conc2, entities):
@@ -163,6 +162,55 @@ try:
             peer_id_val))
         rows = cursorObj2.fetchall()
         return rows
+
+    # Посоветуй аниме
+    def anime_sovet(peer_id):
+        time.sleep(1)
+        timing = time.time()
+        keyboard = VkKeyboard(one_time=True)
+        keyboard.add_button('Исекай', color=VkKeyboardColor.POSITIVE)
+        keyboard.add_button('Романтика', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_button('Приключения', color=VkKeyboardColor.POSITIVE)
+        keyboard.add_button('Гарем', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_line()  # Отступ строки
+        keyboard.add_button('Фэнтези', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_button('Этти', color=VkKeyboardColor.POSITIVE)
+        keyboard.add_button('Повседневность', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_button('Детектив', color=VkKeyboardColor.POSITIVE)
+        vk.messages.send(peer_id=peer_id, random_id=get_random_id(),
+                         keyboard=keyboard.get_keyboard(), message='Выберите жанр:')
+        for event_stavka in longpoll.listen():
+            if time.time() - timing < 60.0:
+                if event_stavka.type == VkBotEventType.MESSAGE_NEW:
+                    slovo = event_stavka.obj.text.split()
+                    if len(slovo) > 1:
+                        if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
+                                (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
+                            thread_start3(sql_fetch_anime_base, con, slovo[1], peer_id)
+                    elif len(slovo) == 1:
+                        thread_start3(sql_fetch_anime_base, con, slovo[0], peer_id)
+                    break
+
+
+
+
+    # Получение параметров из таблицы anime_base
+    def sql_fetch_anime_base(conc, janr, peer_id):
+        cursorObj2 = conc.cursor()
+        cursorObj2.execute('SELECT ' + str('name') + ' FROM anime_base WHERE janr = "' + str(janr) + '" OR janr2 = "'
+                           + str(janr) + '" OR janr3 = "' + str(janr) + '"')
+        rows = cursorObj2.fetchall()
+        message = 'Аниме в жанре ' + janr + ':\n'
+        for i in rows:
+            message += i[0] + '\n'
+        send_msg_new(peer_id, message)
+
+    # Вставка строки в таблицу anime_base
+    def sql_insert_anime_base(conc2, entities):
+        cursorObj3 = conc2.cursor()
+        cursorObj3.execute(
+            'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(?, ?, ?, ?, ?)', entities)
+        conc2.commit()
 
 
     # Обнуление игр во всех беседах
@@ -761,10 +809,26 @@ try:
                                 thread_start(game_brosok_kubika, event.object.peer_id)
                             else:
                                 send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
+                        elif slova[0] == 'DB' and slova[1] == 'insert':
+                            anime_name = ''
+                            for i in range(len(slova)-4):
+                                if i > 1:
+                                    anime_name += slova[i] + ' '
+                            entities = str(anime_name), str(slova[-4]), str(slova[-3]), str(slova[-2]), str(slova[-1])
+                            sql_insert_anime_base(con, entities)
+                            send_msg_new(event.object.peer_id, "Операция выполнена")
+                    if len(slova) > 1:
+                        if slova[0] == 'DB' and slova[1] == 'help':
+                            send_msg_new(event.object.peer_id, "Для вставки новой строки в таблицу напишите:"
+                                                               "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
+                                                               "'кол-во серий'\n\nНапример:\nDB insert Этот "
+                                                               "замечательный мир Комедия Исекай Приключения 24")
                     # Текстовые ответы -----------------------------------------------------------------------------
                     if event.obj.text == "братик привет":
                         send_msg_new(event.object.peer_id, "&#128075; Приветик")
                         main_keyboard(event.object.peer_id)
+                    elif event.obj.text == "посоветуй аниме" or event.obj.text == "Посоветуй аниме":
+                        thread_start(anime_sovet, event.object.peer_id)
                     elif event.obj.text == "пока" or event.obj.text == "спокойной ночи" or \
                             event.obj.text == "споки" or event.obj.text == "bb":
                         send_msg_new(event.object.peer_id, "&#128546; Прощай")
