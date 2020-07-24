@@ -299,13 +299,6 @@ try:
                 send_msg_new(my_peer, 'Один из вас уже находится в браке!')
 
 
-    # Статус фильтра мата
-    def filter_mata_status(my_peer):
-        if str(sql_fetch(con, 'filter_mata', my_peer)[0][0]) == '1':
-            return True
-        return False
-
-
     # Проверка баланса
     def balans_status(my_peer, my_from):
         balans = str(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
@@ -403,42 +396,6 @@ try:
         zap_command.close()
         if asq == 0:
             send_ft(my_peer, idphoto)
-
-
-   ''' # Включение \ Отключение фильтра мата
-    def proverka_slov(peer_id_mat, my_from, slova):
-        if len(slova) > 1:
-            if slova[0] + ' ' + slova[1] == 'фильтр мата' or slova[0] + ' ' + slova[1] == 'Фильтр мата':
-                if adm_prov(peer_id_mat, my_from):
-                    if str(sql_fetch(con, 'filter_mata', peer_id_mat)[0][0]) == '1':
-                        sql_update(con, 'filter_mata', '0', peer_id_mat)
-                        send_msg_new(peer_id_mat, 'Фильтр мата отключен')
-                    else:
-                        sql_update(con, 'filter_mata', '1', peer_id_mat)
-                        send_msg_new(peer_id_mat, 'Фильтр мата включен')
-                else:
-                    send_msg_new(peer_id_mat, 'Как станешь админом, так сразу')
-
-
-    # Проверка матерных слов в сообщении
-    def provbadwordth(my_peer, my_from, slovaf):
-        for i in slovaf:
-            zap_wordf = open('zap_word.txt', 'r')
-            asq = False
-            for line in zap_wordf:
-                if (str(i)).lower() + '\n' == line:
-                    asq = True
-            zap_wordf.close()
-            if my_from > 0:
-                if asq:
-                    if str(i) != '':
-                        send_msg_new(my_peer, '[' + 'id' + str(my_from) + '|' + 'За мат осуждаю' + ']')
-                        break
-            else:
-                if asq:
-                    send_msg_new(my_peer, '[' + 'club' + str(
-                        -my_from) + '|' + 'Ты, как бот, подаешь плохой пример' + ']')'''
-
 
     # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
     def send_msg_new(peerid, ms_g):
@@ -781,9 +738,6 @@ try:
             for event in longpoll.listen():  # Постоянный листинг сообщений
                 if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                     slova = event.obj.text.split()  # Разделение сообщения на слова
-                    if filter_mata_status(event.object.peer_id):  # Проверка чата на матерные слова
-                        thread_start3(provbadwordth, event.object.peer_id, event.object.from_id, slova)
-                    thread_start3(proverka_slov, event.object.peer_id, event.object.from_id, slova)
                     # Логика ответов
                     # Игры -----------------------------------------------------------------------------------------
                     if len(slova) > 2:
