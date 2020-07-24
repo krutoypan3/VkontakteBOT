@@ -1,1 +1,1 @@
-web: Vk_bot.py
+worker: python Vk-bot.py
