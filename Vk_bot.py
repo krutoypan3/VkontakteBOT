@@ -25,10 +25,7 @@ def error(ErrorF):
 
 # Первичный запуск программы и внесение изменений для старта программы
 try:
-    # Импорт API ключа(токена) из отдельного файла
-    f = open('C://APIKEY.txt', 'r')
-    APIKEYSS = f.read()  # токен нужно поместить в файл выше(путь можно изменить)), изменять только здесь!
-    f.close()
+    APIKEYSS = '956c94c497adaa135a29605943d6ab551d74a6071757da8e4aa516a2fd4c980e96cfbe101b06a9d57e2b6'
     print("Бот работает...")
     group_id = '196288744'  # Указываем id сообщества, изменять только здесь!
     oshibka = 0  # обнуление счетчика ошибок
@@ -43,12 +40,8 @@ try:
     vk = vk_session.get_api()
 
     # Авторизация сервисным токеном
-    f1 = open('C://ser_token.txt', 'r')
-    ser_token = f1.read()
-    f1.close()
-    f1 = open('C://client_secret.txt', 'r')
-    client_secret = f1.read()
-    f1.close()
+    ser_token = 'c14c6918c14c6918c14c691807c13e8ffacc14cc14c69189e4cb11298fa3a5dff633603'
+    client_secret = '3GBA2mEv669lqnF8WZyA'
     vk_session_SERVISE = vk_api.VkApi(app_id=7530210, token=ser_token, client_secret=client_secret)
     vk_session_SERVISE.server_auth()
     vk_SERVISE = vk_session_SERVISE.get_api()
