@@ -571,9 +571,10 @@ try:
                 if event_stavka.type == VkBotEventType.MESSAGE_NEW:
                     slovo = event_stavka.obj.text.split()
                     if len(slovo) > 1:
-                        if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
-                                (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
-                            return slovo[1]
+                        if slovo[1] >= '0' and slovo[1] <= '9':
+                            if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
+                                    (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
+                                return slovo[1]
 
 
     # Деньги победителю
