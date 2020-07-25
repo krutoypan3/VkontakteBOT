@@ -25,7 +25,8 @@ def error(ErrorF):
 
 # Первичный запуск программы и внесение изменений для старта программы
 try:
-    APIKEYSS = '956c94c497adaa135a29605943d6ab551d74a6071757da8e4aa516a2fd4c980e96cfbe101b06a9d57e2b6'
+    API_GROUP_KEY = '956c94c497adaa135a29605943d6ab551d74a6071757da8e4aa516a2fd4c980e96cfbe101b06a9d57e2b6'
+    API_USER_KEY = '34469a24e88620d4ee0961cc31e2c1c96d5cb01edd3ee50ed1f08fac299571630f4f602564c89419cbc58'
     print("Бот работает...")
     group_id = '196288744'  # Указываем id сообщества, изменять только здесь!
     oshibka = 0  # обнуление счетчика ошибок
@@ -35,9 +36,12 @@ try:
     group_sob = "@bratikbot"  # Указываем короткое имя бота (если нет то id)
     group_name = "Братик"  # Указываем название сообщества
 
-    vk_session = vk_api.VkApi(token=APIKEYSS)  # Авторизация под именем сообщества
+    vk_session = vk_api.VkApi(token=API_GROUP_KEY)  # Авторизация под именем сообщества
     longpoll = VkBotLongPoll(vk_session, group_id)
     vk = vk_session.get_api()
+
+    vk_session_user = vk_api.VkApi(token=API_USER_KEY)  # Авторизация под именем пользователя
+    vk_polzovat = vk_session_user.get_api()
 
     # Авторизация сервисным токеном
     ser_token = 'c14c6918c14c6918c14c691807c13e8ffacc14cc14c69189e4cb11298fa3a5dff633603'
@@ -53,12 +57,13 @@ try:
     photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться
     photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото
     photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # + 10 сек к запуску
+    video_coub = vk_polzovat.video.get(owner_id='-' + group_id, count=200)                       # album_id=1,
 
     '''
-    with open('dump.json', 'w') as dump:
-        rndid = (random.randint(0, photo_stik['count']))
-        print(photo_stik['items'][rndid]['id'])
-        json.dump(photo_loli, dump)
+    with open('dump_video.json', 'w') as dump:
+        rndid = (random.randint(0, video_coub['count'] - 1))
+        print(video_coub['items'][rndid]['id'])
+        json.dump(video_coub, dump)
     '''
 
 
@@ -88,6 +93,7 @@ try:
 
 
     con = sql_connection()  # Соединение с БД
+
 
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
     def sql_insert(conc2, entities):
@@ -148,6 +154,7 @@ try:
             return rows
         return rows
 
+
     # Получение параметров из таблицы from_params
     def sql_fetch_from_all(conc, what_return, peer_id_val):
         cursorObj2 = conc.cursor()
@@ -156,11 +163,15 @@ try:
         rows = cursorObj2.fetchall()
         return rows
 
+
     # Посоветуй аниме
     def anime_sovet(peer_id):
         time.sleep(1)
         timing = time.time()
-        keyboard = VkKeyboard(one_time=True)
+        if lich_or_beseda(peer_id):
+            keyboard = VkKeyboard(one_time=True)
+        else:
+            keyboard = VkKeyboard(inline=True)
         keyboard.add_button('Исекай', color=VkKeyboardColor.POSITIVE)
         keyboard.add_button('Романтика', color=VkKeyboardColor.PRIMARY)
         keyboard.add_button('Приключения', color=VkKeyboardColor.POSITIVE)
@@ -185,8 +196,6 @@ try:
                     break
 
 
-
-
     # Получение параметров из таблицы anime_base
     def sql_fetch_anime_base(conc, janr, peer_id):
         cursorObj2 = conc.cursor()
@@ -197,6 +206,7 @@ try:
         for i in rows:
             message += i[0] + '\n'
         send_msg_new(peer_id, message)
+
 
     # Вставка строки в таблицу anime_base
     def sql_insert_anime_base(conc2, entities):
@@ -304,6 +314,7 @@ try:
         balans = str(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
         send_msg_new(my_peer, 'Ваш баланс : ' + str(balans) + ' бро-коинов')
 
+
     # Баланс топ
     def balans_top(my_peer):
         send_msg_new(my_peer, 'Считаем деньги...')
@@ -385,7 +396,7 @@ try:
 
 
     # Проверка команды на наличие в списке запрещенных команд
-    def provzapret(my_peer, chto, idphoto):
+    def provzapret_ft(my_peer, chto, idphoto):
         zap_command = open('zap_command.txt', 'r')
         asq = 0
         for line in zap_command:
@@ -396,6 +407,21 @@ try:
         zap_command.close()
         if asq == 0:
             send_ft(my_peer, idphoto)
+
+
+    # Проверка команды на наличие в списке запрещенных команд
+    def provzapret_vd(my_peer, chto, idvideo):
+        zap_command = open('zap_command.txt', 'r')
+        asq = 0
+        for line in zap_command:
+            if str(my_peer) + ' ' + str(chto) + '\n' == str(line):
+                send_msg_new(my_peer, "Команда запрещена для данной беседы")
+                asq = 1
+                break
+        zap_command.close()
+        if asq == 0:
+            send_vd(my_peer, idvideo)
+
 
     # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
     def send_msg_new(peerid, ms_g):
@@ -423,10 +449,9 @@ try:
 
 
     # Отправка видео с сервера ВК
-    def send_vd(my_peer, first_el, end_el):
-        vivord = str(random.randint(first_el, end_el))
+    def send_vd(my_peer, idvideo):
         vk.messages.send(peer_id=my_peer, random_id=0,
-                         attachment='video-' + group_id + '_' + vivord)
+                         attachment='video-' + group_id + '_' + idvideo)
 
 
     # Проверка админки и последующий запрет при ее наличии
@@ -458,9 +483,9 @@ try:
         try:
             responselic = vk.messages.getConversationMembers(peer_id=my_peer)
             if responselic['count'] <= 2:
-                return 1
+                return 1  # Личка
             else:
-                return 0
+                return 0  # Беседа
         except vk_api.exceptions.ApiError:
             return 0
 
@@ -571,7 +596,7 @@ try:
                 if event_stavka.type == VkBotEventType.MESSAGE_NEW:
                     slovo = event_stavka.obj.text.split()
                     if len(slovo) > 1:
-                        if slovo[1] >= '0' and slovo[1] <= '9':
+                        if '0' <= slovo[1] <= '9':
                             if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
                                     (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
                                 return slovo[1]
@@ -759,7 +784,7 @@ try:
                                 send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
                         elif slova[0] == 'DB' and slova[1] == 'insert':
                             anime_name = ''
-                            for i in range(len(slova)-4):
+                            for i in range(len(slova) - 4):
                                 if i > 1:
                                     anime_name += slova[i] + ' '
                             entities = str(anime_name), str(slova[-4]), str(slova[-3]), str(slova[-2]), str(slova[-1])
@@ -813,33 +838,35 @@ try:
                     if event.obj.text == "Арт" or event.obj.text == "арт":
                         randid = (random.randint(0, photo_arts['count'] - 1))
                         idphoto = (photo_arts['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'арт', str(idphoto))
+                        provzapret_ft(event.object.peer_id, 'арт', str(idphoto))
                     elif event.obj.text == "Стикер" or event.obj.text == "стикер":
                         randid = (random.randint(0, photo_stik['count'] - 1))
                         idphoto = (photo_stik['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'стикер', str(idphoto))
+                        provzapret_ft(event.object.peer_id, 'стикер', str(idphoto))
                     elif event.obj.text == "coub" or event.obj.text == "Coub":
-                        send_vd(event.object.peer_id, 456239025, 456239134)  # изменять только здесь!
+                        randid = (random.randint(0, video_coub['count'] - 1))
+                        idvideo = (video_coub['items'][randid]['id'])
+                        provzapret_vd(event.object.peer_id, 'coubtest', str(idvideo))
                     elif event.obj.text == "хентай" or event.obj.text == "Хентай":
                         randid = (random.randint(0, photo_hent['count'] - 1))
                         idphoto = (photo_hent['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'хентай', str(idphoto))  # изменять только здесь!
+                        provzapret_ft(event.object.peer_id, 'хентай', str(idphoto))
                     elif event.obj.text == "ахегао" or event.obj.text == "Ахегао":
                         randid = (random.randint(0, photo_aheg['count'] - 1))
                         idphoto = (photo_aheg['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'ахегао', str(idphoto))  # изменять только здесь!
+                        provzapret_ft(event.object.peer_id, 'ахегао', str(idphoto))
                     elif event.obj.text == "лоли" or event.obj.text == "Лоли":
-                        randid = (random.randint(0, 999))  # Нельзя чтобы в альбоме было более 1000 фотографий
+                        randid = (random.randint(0, photo_loli['count'] - 1))
                         idphoto = (photo_loli['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'лоли', str(idphoto))  # изменять только здесь!
+                        provzapret_ft(event.object.peer_id, 'лоли', str(idphoto))
                     elif event.obj.text == "неко" or event.obj.text == "Неко":
                         randid = (random.randint(0, photo_neko['count'] - 1))
                         idphoto = (photo_neko['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'неко', str(idphoto))  # изменять только здесь!
+                        provzapret_ft(event.object.peer_id, 'неко', str(idphoto))
                     elif event.obj.text == "манга арт" or event.obj.text == "Манга арт":
                         randid = (random.randint(0, photo_mart['count'] - 1))
                         idphoto = (photo_mart['items'][randid]['id'])
-                        provzapret(event.object.peer_id, 'неко', str(idphoto))  # изменять только здесь!
+                        provzapret_ft(event.object.peer_id, 'неко', str(idphoto))
                     elif len(slova) > 1:
                         if slova[0] == 'запрет' or slova[0] == 'Запрет':
                             adm_prov_and_zapret(event.object.peer_id, event.object.from_id, slova[1])
