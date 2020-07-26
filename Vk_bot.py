@@ -50,14 +50,21 @@ try:
     vk_session_SERVISE.server_auth()
     vk_SERVISE = vk_session_SERVISE.get_api()
     vk_session_SERVISE.token = {'access_token': ser_token, 'expires_in': 0}
-    photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
-    photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
-    photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
-    photo_hent = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418234, count=1000)  # по которым внизу
-    photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться
-    photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото
-    photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # + 10 сек к запуску
-    video_coub = vk_polzovat.video.get(owner_id='-' + group_id, count=200)                       # album_id=1,
+
+    global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub
+    # Отправка запросов на информацию об фотографиях и видео в группе
+    def zapros_ft_vd():
+        global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub
+        photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
+        photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
+        photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
+        photo_hent = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418234, count=1000)  # по которым внизу
+        photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться
+        photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото + 10 сек
+        photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # к запуску
+        video_coub = vk_polzovat.video.get(owner_id='-' + group_id, count=200)                       # album_id=1,
+
+    zapros_ft_vd()
 
     '''
     with open('dump_video.json', 'w') as dump:
@@ -800,6 +807,10 @@ try:
                     if event.obj.text == "братик привет":
                         send_msg_new(event.object.peer_id, "&#128075; Приветик")
                         main_keyboard(event.object.peer_id)
+                    elif event.obj.text == "Admin-reboot":
+                        send_msg_new(event.object.peer_id, "Бот уходит на перезагрузку и будет доступен "
+                                                           "через 10-15 секунд")
+                        zapros_ft_vd()
                     elif event.obj.text == "посоветуй аниме" or event.obj.text == "Посоветуй аниме":
                         thread_start(anime_sovet, event.object.peer_id)
                     elif event.obj.text == "пока" or event.obj.text == "спокойной ночи" or \
