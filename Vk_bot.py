@@ -496,8 +496,55 @@ try:
         except vk_api.exceptions.ApiError:
             return 0
 
+    # Новая основная клавиатура
+    def main_keyboard_1(my_peer):
+        if lich_or_beseda(my_peer):
+            keyboard = VkKeyboard(one_time=True)
+            keyboard.add_button('аниме(в разработке)', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('арты', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('хент 18+', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_line()  # Отступ строки
+            keyboard.add_button('видео', color=VkKeyboardColor.PRIMARY)
 
-    # Основная клавиатура
+            vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')
+
+    def main_keyboard_video(my_peer):
+        if lich_or_beseda(my_peer):
+            keyboard = VkKeyboard(one_time=True)
+            keyboard.add_button('coub', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('amv(в разработке)', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_line()  # Отступ строки
+            keyboard.add_button('главная страница', color=VkKeyboardColor.POSITIVE)
+
+            vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')
+
+    def main_keyboard_arts(my_peer):
+        if lich_or_beseda(my_peer):
+            keyboard = VkKeyboard(one_time=True)
+            keyboard.add_button('арт', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('лоли', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('неко', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()  # Отступ строки
+            keyboard.add_button('главная страница', color=VkKeyboardColor.POSITIVE)
+
+            vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')
+
+    def main_keyboard_hent(my_peer):
+        if lich_or_beseda(my_peer):
+            keyboard = VkKeyboard(one_time=True)
+            keyboard.add_button('ахегао', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('манга арт', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_line()  # Отступ строки
+            keyboard.add_button('главная страница', color=VkKeyboardColor.POSITIVE)
+
+            vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')
+
+    '''# Основная клавиатура
     def main_keyboard(my_peer):
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=True)
@@ -512,7 +559,7 @@ try:
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
 
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
-                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')
+                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')'''
 
 
     # Запуск потока с одним аргрументом
@@ -806,7 +853,6 @@ try:
                     # Текстовые ответы -----------------------------------------------------------------------------
                     if event.obj.text == "братик привет":
                         send_msg_new(event.object.peer_id, "&#128075; Приветик")
-                        main_keyboard(event.object.peer_id)
                     elif event.obj.text == "Admin-reboot":
                         send_msg_new(event.object.peer_id, "Бот уходит на перезагрузку и будет доступен "
                                                            "через 10-15 секунд")
@@ -824,7 +870,6 @@ try:
                             event.obj.text == "Братик" or event.obj.text == "Команды":
                         send_msg_new(event.object.peer_id, '⚙️ Полный список команд доступен по ссылке ' +
                                      'vk.com/@bratikbot-commands')
-                        main_keyboard(event.object.peer_id)
                     elif event.obj.text == "игры" or event.obj.text == "Игры":
                         klava_game(event.object.peer_id)
                     elif event.obj.text == "Бро награда" or event.obj.text == "бро награда" or \
@@ -850,6 +895,7 @@ try:
                         randid = (random.randint(0, photo_arts['count'] - 1))
                         idphoto = (photo_arts['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'арт', str(idphoto))
+                        main_keyboard_arts(event.object.peer_id)
                     elif event.obj.text == "Стикер" or event.obj.text == "стикер":
                         randid = (random.randint(0, photo_stik['count'] - 1))
                         idphoto = (photo_stik['items'][randid]['id'])
@@ -858,26 +904,32 @@ try:
                         randid = (random.randint(0, video_coub['count'] - 1))
                         idvideo = (video_coub['items'][randid]['id'])
                         provzapret_vd(event.object.peer_id, 'coubtest', str(idvideo))
+                        main_keyboard_video(event.object.peer_id)
                     elif event.obj.text == "хентай" or event.obj.text == "Хентай":
                         randid = (random.randint(0, photo_hent['count'] - 1))
                         idphoto = (photo_hent['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'хентай', str(idphoto))
+                        main_keyboard_hent(event.object.peer_id)
                     elif event.obj.text == "ахегао" or event.obj.text == "Ахегао":
                         randid = (random.randint(0, photo_aheg['count'] - 1))
                         idphoto = (photo_aheg['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'ахегао', str(idphoto))
+                        main_keyboard_hent(event.object.peer_id)
                     elif event.obj.text == "лоли" or event.obj.text == "Лоли":
                         randid = (random.randint(0, photo_loli['count'] - 1))
                         idphoto = (photo_loli['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'лоли', str(idphoto))
+                        main_keyboard_arts(event.object.peer_id)
                     elif event.obj.text == "неко" or event.obj.text == "Неко":
                         randid = (random.randint(0, photo_neko['count'] - 1))
                         idphoto = (photo_neko['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'неко', str(idphoto))
+                        main_keyboard_arts(event.object.peer_id)
                     elif event.obj.text == "манга арт" or event.obj.text == "Манга арт":
                         randid = (random.randint(0, photo_mart['count'] - 1))
                         idphoto = (photo_mart['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'неко', str(idphoto))
+                        main_keyboard_hent(event.object.peer_id)
                     elif len(slova) > 1:
                         if slova[0] == 'запрет' or slova[0] == 'Запрет':
                             adm_prov_and_zapret(event.object.peer_id, event.object.from_id, slova[1])
@@ -905,8 +957,19 @@ try:
                             print(auth.text)
                             json.dump(auth.text, dump)
                             send_msg_new(event.object.peer_id, 'dumped')
-                    if lich_or_beseda:
-                        main_keyboard(event.object.peer_id)
+                    elif event.obj.text == "начать" or event.obj.text == "Начать" or \
+                            event.obj.text == "главная" or event.obj.text == "Главная":
+                        if lich_or_beseda:
+                            main_keyboard_1(event.object.peer_id)
+                    elif event.obj.text == "арты":
+                        if lich_or_beseda:
+                            main_keyboard_arts(event.object.peer_id)
+                    elif event.obj.text == "хент 18+":
+                        if lich_or_beseda:
+                            main_keyboard_hent(event.object.peer_id)
+                    elif event.obj.text == "видео":
+                        if lich_or_beseda:
+                            main_keyboard_video(event.object.peer_id)
 
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
