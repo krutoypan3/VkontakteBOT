@@ -51,10 +51,11 @@ try:
     vk_SERVISE = vk_session_SERVISE.get_api()
     vk_session_SERVISE.token = {'access_token': ser_token, 'expires_in': 0}
 
-    global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub
+    global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm
     # Отправка запросов на информацию об фотографиях и видео в группе
     def zapros_ft_vd():
-        global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub
+        global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
+            photo_bdsm
         photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
         photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
         photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
@@ -62,6 +63,7 @@ try:
         photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться
         photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото + 10 сек
         photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # к запуску
+        photo_bdsm = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272201504, count=1000)  #
         video_coub = vk_polzovat.video.get(owner_id='-' + group_id, count=200)                       # album_id=1,
 
     zapros_ft_vd()
@@ -537,6 +539,7 @@ try:
             keyboard = VkKeyboard(one_time=True)
             keyboard.add_button('ахегао', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('манга арт', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('бдсм', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
@@ -909,6 +912,11 @@ try:
                         randid = (random.randint(0, photo_hent['count'] - 1))
                         idphoto = (photo_hent['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'хентай', str(idphoto))
+                        main_keyboard_hent(event.object.peer_id)
+                    elif event.obj.text == "бдсм" or event.obj.text == "Бдсм":
+                        randid = (random.randint(0, photo_bdsm['count'] - 1))
+                        idphoto = (photo_bdsm['items'][randid]['id'])
+                        provzapret_ft(event.object.peer_id, 'бдсм', str(idphoto))
                         main_keyboard_hent(event.object.peer_id)
                     elif event.obj.text == "ахегао" or event.obj.text == "Ахегао":
                         randid = (random.randint(0, photo_aheg['count'] - 1))
