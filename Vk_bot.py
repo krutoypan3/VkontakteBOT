@@ -501,8 +501,8 @@ try:
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=True)
             keyboard.add_button('аниме(в разработке)', color=VkKeyboardColor.NEGATIVE)
-            keyboard.add_button('арты', color=VkKeyboardColor.PRIMARY)
-            keyboard.add_button('хент 18+', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('арты', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('18+', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('видео', color=VkKeyboardColor.PRIMARY)
 
@@ -512,10 +512,10 @@ try:
     def main_keyboard_video(my_peer):
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=True)
-            keyboard.add_button('coub', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('coub', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('amv(в разработке)', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
-            keyboard.add_button('главная страница', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
 
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выберите команду:')
@@ -523,11 +523,11 @@ try:
     def main_keyboard_arts(my_peer):
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=True)
-            keyboard.add_button('арт', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('арт', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('лоли', color=VkKeyboardColor.NEGATIVE)
-            keyboard.add_button('неко', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('неко', color=VkKeyboardColor.POSITIVE)
             keyboard.add_line()  # Отступ строки
-            keyboard.add_button('главная страница', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
 
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выберите команду:')
@@ -535,11 +535,11 @@ try:
     def main_keyboard_hent(my_peer):
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=True)
-            keyboard.add_button('ахегао', color=VkKeyboardColor.PRIMARY)
-            keyboard.add_button('манга арт', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('ахегао', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('манга арт', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
-            keyboard.add_button('главная страница', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
 
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выберите команду:')
@@ -891,7 +891,7 @@ try:
                             send_msg_new(event.object.peer_id, 'Увы но нет')
                     # Ответы со вложениями -----------------------------------------------------------------------
 
-                    if event.obj.text == "Арт" or event.obj.text == "арт":
+                    elif event.obj.text == "Арт" or event.obj.text == "арт":
                         randid = (random.randint(0, photo_arts['count'] - 1))
                         idphoto = (photo_arts['items'][randid]['id'])
                         provzapret_ft(event.object.peer_id, 'арт', str(idphoto))
@@ -964,12 +964,17 @@ try:
                     elif event.obj.text == "арты":
                         if lich_or_beseda:
                             main_keyboard_arts(event.object.peer_id)
-                    elif event.obj.text == "хент 18+":
+                    elif event.obj.text == "18+":
                         if lich_or_beseda:
                             main_keyboard_hent(event.object.peer_id)
                     elif event.obj.text == "видео":
                         if lich_or_beseda:
                             main_keyboard_video(event.object.peer_id)
+                    elif event.obj.text == "аниме(в разработке)" or event.obj.text == "amv(в разработке)":
+                        send_msg_new(event.object.peer_id, "Написано же в разработке))")
+                        main_keyboard_1(event.object.peer_id)
+                    else:
+                        main_keyboard_1(event.object.peer_id)
 
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
