@@ -1,3 +1,4 @@
 vk_api
 requests~=2.24.0
 urllib3~=1.25.9
+psycopg2
