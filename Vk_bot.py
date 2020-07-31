@@ -1,9 +1,10 @@
 import json
 import socket
 import threading
+
+import psycopg2
 import requests
 import urllib3
-import sqlite3
 from sqlite3 import Error
 import random
 import time
@@ -88,7 +89,13 @@ try:
     # Соединение с БД
     def sql_connection():
         try:
-            conc1 = sqlite3.connect('mydatabase.db', check_same_thread=False)  # Подключение к БД
+            conc1 = psycopg2.connect(
+                database="d67k7fgai9grnr",
+                user="xwifncxeppnpby",
+                password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",
+                host="ec2-52-201-55-4.compute-1.amazonaws.com",
+                port="5432"
+            )  # Подключение к БД
             return conc1
         except Error:
             print(Error)
@@ -115,7 +122,7 @@ try:
     def sql_insert_from(conc2, entities):
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
-            'INSERT INTO from_params(peer_id, from_id, money, m_time, warn, marry_id) VALUES(?, ?, ?, ?, ?, ?)',
+            'INSERT INTO from_params(peer_id, from_id, money, m_time, warn, marry_id) VALUES(%s, %s, %s, %s, %s, %s)',
             entities)
         conc2.commit()
 
@@ -221,7 +228,7 @@ try:
     def sql_insert_anime_base(conc2, entities):
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
-            'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(?, ?, ?, ?, ?)', entities)
+            'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
         conc2.commit()
 
 
