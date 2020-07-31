@@ -1,7 +1,6 @@
 import json
 import socket
 import threading
-
 import psycopg2
 import requests
 import urllib3
@@ -508,8 +507,8 @@ try:
     # Новая основная клавиатура
     def main_keyboard_1(my_peer):
         if lich_or_beseda(my_peer):
-            keyboard = VkKeyboard(one_time=True)
-            keyboard.add_button('аниме(в разработке)', color=VkKeyboardColor.NEGATIVE)
+            keyboard = VkKeyboard(one_time=False)
+            # keyboard.add_button('аниме(в разработке)', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_button('арты', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('18+', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
@@ -520,9 +519,9 @@ try:
 
     def main_keyboard_video(my_peer):
         if lich_or_beseda(my_peer):
-            keyboard = VkKeyboard(one_time=True)
+            keyboard = VkKeyboard(one_time=False)
             keyboard.add_button('coub', color=VkKeyboardColor.POSITIVE)
-            keyboard.add_button('amv(в разработке)', color=VkKeyboardColor.NEGATIVE)
+            # keyboard.add_button('amv(в разработке)', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
 
@@ -531,7 +530,7 @@ try:
 
     def main_keyboard_arts(my_peer):
         if lich_or_beseda(my_peer):
-            keyboard = VkKeyboard(one_time=True)
+            keyboard = VkKeyboard(one_time=False)
             keyboard.add_button('арт', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('лоли', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_button('неко', color=VkKeyboardColor.POSITIVE)
@@ -543,7 +542,7 @@ try:
 
     def main_keyboard_hent(my_peer):
         if lich_or_beseda(my_peer):
-            keyboard = VkKeyboard(one_time=True)
+            keyboard = VkKeyboard(one_time=False)
             keyboard.add_button('ахегао', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('манга арт', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('бдсм', color=VkKeyboardColor.NEGATIVE)
