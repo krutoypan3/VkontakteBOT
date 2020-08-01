@@ -84,7 +84,7 @@ try:
 
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
-    error(" - ошибка подключения к вк")
+    print(" - ошибка подключения к вк")
 
 # Работа с базой данных
 try:
@@ -233,7 +233,7 @@ try:
             cursorObj3.execute(
                 'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
         except:
-            error('А ХРЕН ЕГО ЗНАЕТ РОТ Я ЭТОГО ВАШЕГО БАЗА ДАННЫХ')
+            print('А ХРЕН ЕГО ЗНАЕТ РОТ Я ЭТОГО ВАШЕГО БАЗА ДАННЫХ')
         conc2.commit()
 
 
@@ -243,7 +243,7 @@ try:
     con.commit()
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
-    error(" - ошибка подключения к вк")
+    print(" - ошибка подключения к вк")
 
 # ОСНОВНЫЕ ФУНКЦИИ
 try:
@@ -836,7 +836,7 @@ try:
                          keyboard=keyboard.get_keyboard(), message='Список игр:')
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
-    error(" - ошибка подключения к вк")
+    print(" - ошибка подключения к вк")
 
 # Основной цикл программы
 try:
