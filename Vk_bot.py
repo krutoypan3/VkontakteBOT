@@ -19,7 +19,7 @@ def error(ErrorF):
     oshibka += 1
     print("Произошла ошибка " + '№' + str(oshibka) + ' ' + ErrorF)
     if ErrorF == " - ошибка подключения к вк":
-        time.sleep(5.0)
+        time.sleep(1.0)
     main()
 
 
@@ -229,8 +229,11 @@ try:
     # Вставка строки в таблицу anime_base
     def sql_insert_anime_base(conc2, entities):
         cursorObj3 = conc2.cursor()
-        cursorObj3.execute(
-            'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
+        try:
+            cursorObj3.execute(
+                'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
+        except:
+            error('А ХРЕН ЕГО ЗНАЕТ РОТ Я ЭТОГО ВАШЕГО БАЗА ДАННЫХ')
         conc2.commit()
 
 
