@@ -217,13 +217,16 @@ try:
     # Получение параметров из таблицы anime_base
     def sql_fetch_anime_base(conc, janr, peer_id):
         cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str('name') + ' FROM anime_base WHERE janr = "' + janr + '" OR janr2 = "'
-                           + janr + '" OR janr3 = "' + janr + '"')
-        rows = cursorObj2.fetchall()
-        message = 'Аниме в жанре ' + janr + ':\n'
-        for i in rows:
-            message += i[0] + '\n'
-        send_msg_new(peer_id, message)
+        try:
+            cursorObj2.execute('SELECT ' + str('name') + ' FROM anime_base WHERE janr = ' + janr + ' OR janr2 = '
+                               + janr + ' OR janr3 = ' + janr + '')
+            rows = cursorObj2.fetchall()
+            message = 'Аниме в жанре ' + janr + ':\n'
+            for i in rows:
+                message += i[0] + '\n'
+            send_msg_new(peer_id, message)
+        finally:
+            pass
 
 
     # Вставка строки в таблицу anime_base
