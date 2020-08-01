@@ -116,7 +116,7 @@ try:
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
     def sql_insert(conc2, entities):
         cursorObj3 = conc2.cursor()
-        cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata) VALUES(?, ?, ?)', entities)
+        cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata) VALUES(%s, %s, %s)', entities)
         conc2.commit()
 
 
