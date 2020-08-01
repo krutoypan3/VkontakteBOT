@@ -232,7 +232,7 @@ try:
         try:
             cursorObj3.execute(
                 'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
-        except:
+        finally:
             print('А ХРЕН ЕГО ЗНАЕТ РОТ Я ЭТОГО ВАШЕГО БАЗА ДАННЫХ')
         conc2.commit()
 
@@ -562,24 +562,6 @@ try:
                              keyboard=keyboard.get_keyboard(), message='Выбрана команда хентай, выберите команду:')
 
 
-    '''# Основная клавиатура
-    def main_keyboard(my_peer):
-        if lich_or_beseda(my_peer):
-            keyboard = VkKeyboard(one_time=True)
-            keyboard.add_button('арт', color=VkKeyboardColor.PRIMARY)
-            keyboard.add_button('лоли', color=VkKeyboardColor.PRIMARY)
-            keyboard.add_button('неко', color=VkKeyboardColor.PRIMARY)
-            keyboard.add_button('ахегао', color=VkKeyboardColor.PRIMARY)
-            keyboard.add_line()  # Отступ строки
-            keyboard.add_button('coub', color=VkKeyboardColor.POSITIVE)
-            keyboard.add_line()
-            keyboard.add_button('манга арт', color=VkKeyboardColor.NEGATIVE)
-            keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
-
-            vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
-                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')'''
-
-
     # Запуск потока без аргрументов
     def thread_start0(Func):
         global kolpot
@@ -693,7 +675,7 @@ try:
     def nabor_igrokov(my_peer_game, stavka):
         uchastniki = []
         timing = time.time()
-        keyboard = VkKeyboard(inline=True)
+        keyboard = VkKeyboard(one_time=False)
         keyboard.add_button('участвую', color=VkKeyboardColor.POSITIVE)
         keyboard.add_button('начать', color=VkKeyboardColor.NEGATIVE)
         vk.messages.send(peer_id=my_peer_game, random_id=get_random_id(),
@@ -738,6 +720,11 @@ try:
                         send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
                         continue
             if time.time() - timing > 60.0:
+                keyboard = VkKeyboard(one_time=True)
+                keyboard.add_button('Не забудьте подписаться на бота', color=VkKeyboardColor.POSITIVE)
+                vk.messages.send(peer_id=my_peer_game, random_id=get_random_id(),
+                                 keyboard=keyboard.get_keyboard(), message='&#127918;Участники укомплектованы, '
+                                                                           'игра начинается')
                 for i in uchastniki:
                     add_balans(str(my_peer_game), str(i), (str('-') + str(stavka)))
                 return uchastniki
@@ -783,7 +770,6 @@ try:
                 add_balans(str(my_peer_game3), str(i), str(stavka))
             zapret_zap_game(my_peer_game3)
         else:
-            send_msg_new(my_peer_game3, '&#127918;Участники укомплектованы, игра начинается')
             chet = []
             for i in uchastniki:
                 responseg3 = vk.users.get(user_ids=i)
