@@ -218,8 +218,8 @@ try:
     def sql_fetch_anime_base(conc, janr, peer_id):
         cursorObj2 = conc.cursor()
         try:
-            cursorObj2.execute('SELECT ' + str('name') + ' FROM anime_base WHERE janr = ' + janr + ' OR janr2 = '
-                               + janr + ' OR janr3 = ' + janr + '')
+            cursorObj2.execute('SELECT ' + str('name') + " FROM anime_base WHERE janr = '" + janr + "' OR janr2 = '"
+                               + janr + "' OR janr3 = '" + janr + "'")
             rows = cursorObj2.fetchall()
             message = 'Аниме в жанре ' + janr + ':\n'
             for i in rows:
