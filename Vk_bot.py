@@ -1009,7 +1009,7 @@ try:
 
         finally:
             error('Ошибочка')
-
+    main()
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
     error(" - ошибка подключения к вк")
