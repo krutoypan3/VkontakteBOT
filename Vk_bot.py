@@ -236,7 +236,7 @@ except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
 try:
     # Инфа о человеке
     def people_info(people_id):
-        people = vk.users.get(user_ids=people_id, name_case='ins')
+        people = vk.users.get(user_ids=people_id)
         p_name = people[0]['first_name']
         p_family = people[0]['last_name']
         people = '[' + 'id' + str(people_id) + '|' + str(p_name) + ' ' + str(p_family) + ']'
