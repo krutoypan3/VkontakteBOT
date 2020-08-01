@@ -4,7 +4,6 @@ import threading
 import psycopg2
 import requests
 import urllib3
-from sqlite3 import Error
 import random
 import time
 import vk_api
@@ -36,11 +35,13 @@ try:
     group_sob = "@bratikbot"  # Указываем короткое имя бота (если нет то id)
     group_name = "Братик"  # Указываем название сообщества
 
-    vk_session = vk_api.VkApi(token=API_GROUP_KEY)  # Авторизация под именем сообщества
+    # Авторизация под именем сообщества
+    vk_session = vk_api.VkApi(token=API_GROUP_KEY)
     longpoll = VkBotLongPoll(vk_session, group_id)
     vk = vk_session.get_api()
 
-    vk_session_user = vk_api.VkApi(token=API_USER_KEY)  # Авторизация под именем пользователя
+    # Авторизация под именем пользователя
+    vk_session_user = vk_api.VkApi(token=API_USER_KEY)
     vk_polzovat = vk_session_user.get_api()
 
     # Авторизация сервисным токеном
@@ -79,9 +80,6 @@ try:
     '''
 
 
-
-
-
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
     print(" - ошибка подключения к вк")
@@ -90,17 +88,15 @@ except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
 try:
     # Соединение с БД
     def sql_connection():
-        try:
-            conc1 = psycopg2.connect(
-                database="d67k7fgai9grnr",
-                user="xwifncxeppnpby",
-                password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",
-                host="ec2-52-201-55-4.compute-1.amazonaws.com",
-                port="5432"
-            )  # Подключение к БД
-            return conc1
-        except Error:
-            print(Error)
+        conc1 = psycopg2.connect(
+            database="d67k7fgai9grnr",  # Название базы данных
+            user="xwifncxeppnpby",      # Имя пользователя
+            password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",  # Пароль пользователя
+            host="ec2-52-201-55-4.compute-1.amazonaws.com",  # Хост
+            port="5432"                 # Порт
+        )
+        return conc1
+
 
 
     # Создание таблицы в БД
@@ -110,7 +106,7 @@ try:
         conc3.commit()
 
 
-    con = sql_connection()  # Соединение с БД
+    con = sql_connection()  # Создание соединения с БД
 
 
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
@@ -154,9 +150,7 @@ try:
             entities = peer_id_val, '0', '1'
             sql_insert(conc, entities)
             rows = sql_fetch(conc, what_return, peer_id_val)
-            return rows
-        else:
-            return rows
+        return rows
 
 
     # Получение параметров из таблицы from_params
@@ -169,7 +163,6 @@ try:
             entities = str(peer_id_val), str(from_id_val), '0', '0', '0', '0'
             sql_insert_from(conc, entities)
             rows = sql_fetch_from(conc, what_return, peer_id_val, from_id_val)
-            return rows
         return rows
 
 
@@ -186,10 +179,7 @@ try:
     def anime_sovet(peer_id):
         time.sleep(1)
         timing = time.time()
-        if lich_or_beseda(peer_id):
-            keyboard = VkKeyboard(one_time=True)
-        else:
-            keyboard = VkKeyboard(inline=True)
+        keyboard = VkKeyboard(one_time=True)
         keyboard.add_button('Исекай', color=VkKeyboardColor.POSITIVE)
         keyboard.add_button('Романтика', color=VkKeyboardColor.PRIMARY)
         keyboard.add_button('Приключения', color=VkKeyboardColor.POSITIVE)
@@ -217,26 +207,20 @@ try:
     # Получение параметров из таблицы anime_base
     def sql_fetch_anime_base(conc, janr, peer_id):
         cursorObj2 = conc.cursor()
-        try:
-            cursorObj2.execute('SELECT ' + str('name') + " FROM anime_base WHERE janr = '" + janr + "' OR janr2 = '"
-                               + janr + "' OR janr3 = '" + janr + "'")
-            rows = cursorObj2.fetchall()
-            message = 'Аниме в жанре ' + janr + ':\n'
-            for i in rows:
-                message += i[0] + '\n'
-            send_msg_new(peer_id, message)
-        finally:
-            pass
+        cursorObj2.execute('SELECT ' + str('name') + " FROM anime_base WHERE janr = '" + janr + "' OR janr2 = '"
+                           + janr + "' OR janr3 = '" + janr + "'")
+        rows = cursorObj2.fetchall()
+        message = 'Аниме в жанре ' + janr + ':\n'
+        for i in rows:
+            message += i[0] + '\n'
+        send_msg_new(peer_id, message)
 
 
     # Вставка строки в таблицу anime_base
     def sql_insert_anime_base(conc2, entities):
         cursorObj3 = conc2.cursor()
-        try:
-            cursorObj3.execute(
-                'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
-        finally:
-            print('А ХРЕН ЕГО ЗНАЕТ РОТ Я ЭТОГО ВАШЕГО БАЗА ДАННЫХ')
+        cursorObj3.execute(
+            'INSERT INTO anime_base(name, janr, janr2, janr3, series) VALUES(%s, %s, %s, %s, %s)', entities)
         conc2.commit()
 
 
@@ -250,16 +234,21 @@ except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
 
 # ОСНОВНЫЕ ФУНКЦИИ
 try:
+    # Инфа о человеке
+    def people_info(people_id):
+        people = vk.users.get(user_ids=people_id, name_case='ins')
+        p_name = people[0]['first_name']
+        p_family = people[0]['last_name']
+        people = '[' + 'id' + str(people_id) + '|' + str(p_name) + ' ' + str(p_family) + ']'
+        return people
+
     # Статус брака
     def marry_status(my_peer, my_from):
         marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
         if marry_id == 'None' or marry_id == '0':
             send_msg_new(my_peer, 'Вы не состоите в браке')
         else:
-            marry_user2 = vk.users.get(user_ids=marry_id, name_case='ins')
-            he_name2 = marry_user2[0]['first_name']
-            he_family2 = marry_user2[0]['last_name']
-            chel2 = '[' + 'id' + str(marry_id) + '|' + str(he_name2) + ' ' + str(he_family2) + ']'
+            chel2 = people_info(marry_id)
             send_msg_new(my_peer, 'Вы состоите в браке с ' + chel2)
 
 
@@ -269,14 +258,8 @@ try:
         if str(marry_id) == 'None' or str(marry_id) == '0':
             send_msg_new(my_peer, 'Вы не состоите в браке!')
         else:
-            marry_user = vk.users.get(user_ids=my_from)
-            marry_user2 = vk.users.get(user_ids=marry_id, name_case='ins')
-            he_name = marry_user[0]['first_name']
-            he_family = marry_user[0]['last_name']
-            he_name2 = marry_user2[0]['first_name']
-            he_family2 = marry_user2[0]['last_name']
-            chel = '[' + 'id' + str(my_from) + '|' + str(he_name) + ' ' + str(he_family) + ']'
-            chel2 = '[' + 'id' + str(marry_id) + '|' + str(he_name2) + ' ' + str(he_family2) + ']'
+            chel = people_info(my_from)
+            chel2 = people_info(marry_id)
             sql_update_from(con, 'marry_id', str('0'), str(my_peer), str(my_from))
             sql_update_from(con, 'marry_id', str('0'), str(my_peer), str(marry_id))
             send_msg_new(my_peer, chel + ' разводится с ' + chel2)
@@ -296,14 +279,8 @@ try:
             marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
             marry_id2 = str(sql_fetch_from(con, 'marry_id', my_peer, our_from)[0][0])
             if (marry_id == 'None' or marry_id == '0') and (marry_id2 == 'None' or marry_id2 == '0'):
-                marry_user = vk.users.get(user_ids=my_from, name_case='gen')
-                marry_user2 = vk.users.get(user_ids=our_from)
-                he_name = marry_user[0]['first_name']
-                he_family = marry_user[0]['last_name']
-                he_name2 = marry_user2[0]['first_name']
-                he_family2 = marry_user2[0]['last_name']
-                chel = '[' + 'id' + str(my_from) + '|' + str(he_name) + ' ' + str(he_family) + ']'
-                chel2 = '[' + 'id' + str(our_from) + '|' + str(he_name2) + ' ' + str(he_family2) + ']'
+                chel = people_info(my_from)
+                chel2 = people_info(our_from)
                 timing = time.time()
                 keyboard = VkKeyboard(inline=True)
                 keyboard.add_button('💝да', color=VkKeyboardColor.PRIMARY)
@@ -608,11 +585,7 @@ try:
     # Игра угадай число
     def game_ugadai_chislo(my_peer, my_from):
         zapret_zap_game(my_peer)
-        responseg1 = vk.users.get(user_ids=my_from)
-        he_name = responseg1[0]['first_name']
-        he_family = responseg1[0]['last_name']
-        chel = '&#127918;[' + 'id' + str(my_from) + '|' + str(he_name) + ' ' + \
-               str(he_family) + ']' + ', '
+        chel = '&#127918;' + people_info(my_from) + ', '
         send_msg_new(my_peer, chel + 'игра началась для тебя:\n' + ' угадай число от 1 до 3')
         timing = time.time()
         keyboard = VkKeyboard(inline=True)
@@ -645,7 +618,7 @@ try:
                                 zapret_zap_game(my_peer)
                                 break
                         else:
-                            send_msg_new(my_peer, chel + 'Кажется, ты написал что-то не то')
+                            send_msg_new(my_peer, chel + 'кажется, ты написал что-то не то')
 
 
     # Выбор ставки
@@ -710,17 +683,18 @@ try:
                                             int(stavka):
                                         uchastniki.append(event_nabor_game.object.from_id)
                                         send_msg_new(my_peer_game,
-                                                     '&#127918;' + '[' + 'id' + str(event_nabor_game.object.from_id) +
-                                                     '|' +
-                                                     'Ты в игре! ' + ']' + 'Заявка на участие принята. Участников: ' +
+                                                     '&#127918;' + people_info(event_nabor_game.object.from_id)
+                                                     + ', заявка на участие принята. Участников: ' +
                                                      str(len(uchastniki)))
                                     else:
-                                        send_msg_new(my_peer_game, 'У вас недостаточно средств на счете! Получите '
+                                        send_msg_new(my_peer_game, people_info(event_nabor_game.object.from_id) +
+                                                     ', у вас недостаточно средств на счете! Получите '
                                                                    'бро-коины написав "бро награда"')
                             else:
                                 send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
                     except AttributeError:
-                        send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
+                        send_msg_new(my_peer_game, '&#127918;' + people_info(event_nabor_game.object.from_id)
+                                     + 'Ты уже в списке участников')
                         continue
             if time.time() - timing > 60.0:
                 keyboard = VkKeyboard(one_time=True)
@@ -749,11 +723,7 @@ try:
         else:
             send_msg_new(my_peer_game2, '&#127918;Участники укомплектованы, игра начинается')
             priz = random.randint(0, len(uchastniki) - 1)
-            responseg2 = vk.users.get(user_ids=uchastniki[priz])
-            he_name = responseg2[0]['first_name']
-            he_family = responseg2[0]['last_name']
-            chel = '&#127918;[' + 'id' + str(uchastniki[priz]) + '|' + str(he_name) + ' ' + str(
-                he_family) + ']' + ', '
+            chel = '&#127918;' + people_info(str(uchastniki[priz])) + ', '
             send_msg_new(my_peer_game2, chel + 'ты круче')
             money_win(my_peer_game2, uchastniki[priz], stavka, uchastniki)
             zapret_zap_game(my_peer_game2)
@@ -775,13 +745,9 @@ try:
         else:
             chet = []
             for i in uchastniki:
-                responseg3 = vk.users.get(user_ids=i)
-                he_name = responseg3[0]['first_name']
-                he_family = responseg3[0]['last_name']
-                chel = '[' + 'id' + str(i) + '|' + str(he_name) + ' ' + str(
-                    he_family) + ']' + '...'
+                chel = people_info(str(i)) + '...'
                 send_msg_new(my_peer_game3, '&#9745;Кубики бросает ' + chel)
-                time.sleep(3)
+                time.sleep(2)
                 kubiki = random.randint(2, 12)
                 chet.append(kubiki)
                 send_msg_new(my_peer_game3, '&#9989;на кубиках ' + str(kubiki))
@@ -803,11 +769,7 @@ try:
                     add_balans(str(my_peer_game3), str(i), str(stavka))
                 zapret_zap_game(my_peer_game3)
             else:
-                responseg3 = vk.users.get(user_ids=pobeditel)
-                he_name = responseg3[0]['first_name']
-                he_family = responseg3[0]['last_name']
-                chel = '&#127918;[' + 'id' + str(pobeditel) + '|' + str(he_name) + ' ' + str(
-                    he_family) + ']' + '&#127881; '
+                chel = '&#127918;' + people_info(pobeditel) + '&#127881; '
                 send_msg_new(my_peer_game3, chel + 'победил!&#127882;')
                 money_win(my_peer_game3, pobeditel, stavka, uchastniki)
                 zapret_zap_game(my_peer_game3)
@@ -1009,6 +971,8 @@ try:
 
         finally:
             error('Ошибочка')
+
+
     main()
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
