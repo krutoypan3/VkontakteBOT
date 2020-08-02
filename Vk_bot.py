@@ -90,13 +90,12 @@ try:
     def sql_connection():
         conc1 = psycopg2.connect(
             database="d67k7fgai9grnr",  # Название базы данных
-            user="xwifncxeppnpby",      # Имя пользователя
+            user="xwifncxeppnpby",  # Имя пользователя
             password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",  # Пароль пользователя
             host="ec2-52-201-55-4.compute-1.amazonaws.com",  # Хост
-            port="5432"                 # Порт
+            port="5432"  # Порт
         )
         return conc1
-
 
 
     # Создание таблицы в БД
@@ -242,6 +241,7 @@ try:
         people = '[' + 'id' + str(people_id) + '|' + str(p_name) + ' ' + str(p_family) + ']'
         return people
 
+
     # Статус брака
     def marry_status(my_peer, my_from):
         marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
@@ -345,6 +345,7 @@ try:
         if balans_time < (time.time() - 8 * 60 * 60):
             add_balans(my_peer, my_from, 1000)
             send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
+            sql_update_from(con, 'm_time', str(time.time()), str(my_peer), str(my_from))
         else:
             balans_hour = ''
             balans_minut = ''
@@ -364,7 +365,6 @@ try:
         balans = int(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
         balans += int(zp_balans)
         sql_update_from(con, 'money', str(balans), str(my_peer), str(my_from))
-        sql_update_from(con, 'm_time', str(time.time()), str(my_peer), str(my_from))
 
 
     # Проверка на запрет запуска другой игры в данной беседе
@@ -700,7 +700,7 @@ try:
                                     else:
                                         send_msg_new(my_peer_game, people_info(event_nabor_game.object.from_id) +
                                                      ', у вас недостаточно средств на счете! Получите '
-                                                                   'бро-коины написав "бро награда"')
+                                                     'бро-коины написав "бро награда"')
                             else:
                                 send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
                     except AttributeError:
@@ -786,6 +786,89 @@ try:
                 zapret_zap_game(my_peer_game3)
 
 
+    def game_mat_victorina(my_peer, my_from):
+        if int(str(sql_fetch_from(con, 'money', str(my_peer), str(my_from))[0][0])) >= int(300):
+            send_msg_new(my_peer, 'С вашего счета списано 300 монеток\nВремя на каждый ответ - 10 секунд')
+            time.sleep(2)
+            send_msg_new(my_peer, 'Начинаем!')
+            time.sleep(1)
+            add_balans(str(my_peer), str(my_from), '-300')
+            zapret_zap_game(my_peer)
+            dengi = 50
+            for i in range(5):
+                stop = 0
+                nuli = ''.join(['0' for i in range(i)])
+                a = random.randint(1, int('1' + str(nuli)))
+                b = random.randint(1, int('1' + str(nuli)))
+                timing = time.time()
+                znak = '+'
+                send_msg_new(my_peer, 'Сколько будет ' + str(a) + znak + str(b) + ' ?')
+                uravnenie = a + b
+                for event_victorina_game in longpoll.listen():
+                    if time.time() - timing < 10.0:
+                        if event_victorina_game.type == VkBotEventType.MESSAGE_NEW:
+                            if event_victorina_game.object.from_id == my_from:
+                                if event_victorina_game.obj.text == str(uravnenie):
+                                    send_msg_new(my_peer, 'Верно!')
+                                else:
+                                    send_msg_new(my_peer, 'Увы, но нет, вы проиграли!')
+                                    stop = 1
+                                break
+                    elif time.time() - timing > 10.0:
+                        stop = 1
+                        send_msg_new(my_peer, 'Увы, но ваше время истекло, вы проиграли!')
+                        break
+                if stop == 1:
+                    zapret_zap_game(my_peer)
+                    break
+                else:
+                    if i < 4:
+                        if i == 3:
+                            send_msg_new(my_peer, 'Если вы сейчас нажмете продолжить, то ваш выйгрыш '
+                                                  'увеличится в 8 раз!')
+                            time.sleep(2)
+                        keyboard = VkKeyboard(inline=True)
+                        keyboard.add_button('забрать деньги', color=VkKeyboardColor.PRIMARY)
+                        keyboard.add_button('продолжить', color=VkKeyboardColor.PRIMARY)
+                        vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                                         keyboard=keyboard.get_keyboard(), message='Что вы предпочтете, забрать '
+                                                                                   'выйгрыш, '
+                                                                                   'или удвоить его? Ваш выйгрыш: ' +
+                                                                                   str(dengi) + ' монет')
+                        for event_victorina_game in longpoll.listen():
+                            if time.time() - timing < 60.0:
+                                if event_victorina_game.type == VkBotEventType.MESSAGE_NEW:
+                                    if event_victorina_game.object.from_id == my_from:
+                                        if event_victorina_game.obj.text == ('[' + 'club' + str(group_id) + '|' +
+                                                                             group_name + ']' + " забрать деньги") \
+                                                or (event_victorina_game.obj.text == '[' + 'club' + str(group_id) + '|'
+                                                    + group_sob + ']' + " забрать деньги"):
+                                            add_balans(my_peer, my_from, dengi)
+                                            stop = 1
+                                            send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
+                                            break
+                                        elif event_victorina_game.obj.text == ('[' + 'club' + str(group_id) + '|' +
+                                                                               group_name + ']' + " продолжить") \
+                                                or (
+                                                event_victorina_game.obj.text == '[' + 'club' + str(group_id) + '|' +
+                                                group_sob + ']' + " продолжить"):
+                                            dengi *= 2
+                                            time.sleep(1)
+                                            if i == 3:
+                                                dengi *= 4
+                                            break
+                        if stop == 1:
+                            zapret_zap_game(my_peer)
+                            break
+                    else:
+                        zapret_zap_game(my_peer)
+                        send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
+                        add_balans(my_peer, my_from, dengi)
+        else:
+            send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно средств на счете! Получите '
+                                                         'бро-коины написав "бро награда"')
+
+
     # Клавиатура со списком игр
     def klava_game(my_peer_klava):
         keyboard = VkKeyboard(inline=True)
@@ -794,6 +877,8 @@ try:
         keyboard.add_button('бросок кубика', color=VkKeyboardColor.PRIMARY)
         keyboard.add_line()  # Отступ строки
         keyboard.add_button('кто круче', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_line()  # Отступ строки
+        keyboard.add_button('математическая викторина', color=VkKeyboardColor.PRIMARY)
         vk.messages.send(peer_id=my_peer_klava, random_id=get_random_id(),
                          keyboard=keyboard.get_keyboard(), message='Список игр:')
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
@@ -825,6 +910,11 @@ try:
                             elif slova[1] + ' ' + slova[2] == 'бросок кубика':
                                 if not prov_zap_game(event.object.peer_id):
                                     thread_start1(game_brosok_kubika, event.object.peer_id)
+                                else:
+                                    send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
+                            elif slova[1] + ' ' + slova[2] == 'математическая викторина':
+                                if not prov_zap_game(event.object.peer_id):
+                                    thread_start2(game_mat_victorina, event.object.peer_id, event.object.from_id)
                                 else:
                                     send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
                             elif slova[0] == 'DB' and slova[1] == 'insert':
