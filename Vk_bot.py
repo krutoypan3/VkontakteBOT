@@ -788,12 +788,12 @@ try:
 
     def game_mat_victorina(my_peer, my_from):
         if int(str(sql_fetch_from(con, 'money', str(my_peer), str(my_from))[0][0])) >= int(300):
+            zapret_zap_game(my_peer)
             send_msg_new(my_peer, 'С вашего счета списано 300 монеток\nВремя на каждый ответ - 10 секунд')
             time.sleep(2)
             send_msg_new(my_peer, 'Начинаем!')
             time.sleep(1)
             add_balans(str(my_peer), str(my_from), '-300')
-            zapret_zap_game(my_peer)
             dengi = 50
             for i in range(5):
                 stop = 0
