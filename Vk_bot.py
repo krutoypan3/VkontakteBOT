@@ -341,11 +341,22 @@ try:
 
     # Зачисление ежедневного вознаграждения
     def add_balans_every_day(my_peer, my_from):
-        if int(sql_fetch_from(con, 'm_time', my_peer, my_from)[0][0]) < (time.time() - 8 * 60 * 60):
+        balans_time = int(sql_fetch_from(con, 'm_time', my_peer, my_from)[0][0])
+        if balans_time < (time.time() - 8 * 60 * 60):
             add_balans(my_peer, my_from, 1000)
             send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
         else:
-            send_msg_new(my_peer, 'Бро-коины можно получить не чаще, чем 1 раз в 8 часов!')
+            balans_hour = ''
+            balans_minut = ''
+            balans_second = ''
+            balans_time = 28800 - (time.time() - balans_time)
+            if balans_time > 3600:
+                balans_hour += str(int(balans_time // 3600)) + ' часов '
+            if balans_time > 60:
+                balans_minut += str(int(balans_time % 3600 // 60)) + ' минут '
+            balans_second += str(int(balans_time % 3600 % 60)) + ' секунд'
+            send_msg_new(my_peer, 'Бро-коины можно получить не чаще, чем 1 раз в 8 часов! Осталось времени: '
+                         + balans_hour + balans_minut + balans_second)
 
 
     # Добавление n-ой суммы на баланс
