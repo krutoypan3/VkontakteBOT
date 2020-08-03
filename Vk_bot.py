@@ -339,6 +339,28 @@ try:
         send_msg_new(my_peer, mess)
 
 
+    # Отправка денег от одного участника к другому
+    def money_send(my_peer, my_from, our, money):
+        try:
+            our_from = ''
+            for i in our:
+                if '0' <= i <= '9':
+                    our_from += i
+                if i == '|':
+                    break
+            if our_from != '':
+                if int(str(sql_fetch_from(con, 'money', str(my_peer), str(my_from))[0][0])) >= int(money) > 0:
+                    add_balans(str(my_peer), str(my_from), '-' + str(money))
+                    add_balans(str(my_peer), str(our_from), str(money))
+                    send_msg_new(my_peer, people_info(my_from) + ' перевел ' +
+                                 people_info(our_from) + ' ' + str(money) + ' монет')
+                else:
+                    send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
+            else:
+                send_msg_new(my_peer, 'Мне кажется, или ты что-то напутал?!')
+        except ValueError:
+            send_msg_new(my_peer, 'Мне кажется, или ты что-то напутал?!')
+
     # Зачисление ежедневного вознаграждения
     def add_balans_every_day(my_peer, my_from):
         balans_time = int(sql_fetch_from(con, 'm_time', my_peer, my_from)[0][0])
@@ -587,6 +609,15 @@ try:
     def thread_start3(Func, Arg, Arg2, Arg3):
         global kolpot
         x = threading.Thread(target=Func, args=(Arg, Arg2, Arg3))
+        threads.append(x)
+        kolpot += 1
+        eventhr.append(kolpot)
+        x.start()
+
+        # Запуск потока с двумя аргрументами
+    def thread_start4(Func, Arg, Arg2, Arg3, Arg4):
+        global kolpot
+        x = threading.Thread(target=Func, args=(Arg, Arg2, Arg3, Arg4))
         threads.append(x)
         kolpot += 1
         eventhr.append(kolpot)
@@ -1028,6 +1059,9 @@ try:
                                 thread_start2(marry_status, event.object.peer_id, event.object.from_id)
                             elif slova[0] == "брак":
                                 thread_start3(marry_create, event.object.peer_id, event.object.from_id, slova[1])
+                            elif slova[0] == "перевести" or slova[0] == "Перевести":
+                                thread_start4(money_send, event.object.peer_id, event.object.from_id,
+                                              slova[1], slova[2])
                         elif event.obj.text == "развод" or event.obj.text == "Развод":
                             thread_start2(marry_disvorse, event.object.peer_id, event.object.from_id)
                         # Отладка -------------------------------------------------------------------------------------
