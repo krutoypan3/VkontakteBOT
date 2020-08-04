@@ -682,6 +682,8 @@ try:
                             if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
                                     (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
                                 return slovo[1]
+            else:
+                return 0
 
 
     # Деньги победителю
