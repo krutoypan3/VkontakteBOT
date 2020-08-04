@@ -961,31 +961,33 @@ try:
         try:
             for event in longpoll.listen():  # Постоянный листинг сообщений
                 if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
-                    def messege_chek():
+                    message_text = event.obj.text
+
+                    def messege_chek(peer_id, from_id, text):
                         slova = event.obj.text.split()  # Разделение сообщения на слова
                         # Логика ответов
                         # Игры -----------------------------------------------------------------------------------------
                         if len(slova) > 2:
                             if slova[1] + ' ' + slova[2] == 'угадай число':
-                                if not prov_zap_game(event.object.peer_id):
-                                    thread_start2(game_ugadai_chislo, event.object.peer_id, event.object.from_id)
+                                if not prov_zap_game(peer_id):
+                                    thread_start2(game_ugadai_chislo, peer_id, from_id)
                                 else:
-                                    send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
+                                    send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                             elif slova[1] + ' ' + slova[2] == 'кто круче':
-                                if not prov_zap_game(event.object.peer_id):
-                                    thread_start1(game_kto_kruche, event.object.peer_id)
+                                if not prov_zap_game(peer_id):
+                                    thread_start1(game_kto_kruche, peer_id)
                                 else:
-                                    send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
+                                    send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                             elif slova[1] + ' ' + slova[2] == 'бросок кубика':
-                                if not prov_zap_game(event.object.peer_id):
-                                    thread_start1(game_brosok_kubika, event.object.peer_id)
+                                if not prov_zap_game(peer_id):
+                                    thread_start1(game_brosok_kubika, peer_id)
                                 else:
-                                    send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
+                                    send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                             elif slova[1] + ' ' + slova[2] == 'математическая викторина':
-                                if not prov_zap_game(event.object.peer_id):
-                                    thread_start2(game_mat_victorina, event.object.peer_id, event.object.from_id)
+                                if not prov_zap_game(peer_id):
+                                    thread_start2(game_mat_victorina, peer_id, from_id)
                                 else:
-                                    send_msg_new(event.object.peer_id, '&#128377;Другая игра уже запущена!')
+                                    send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                             elif slova[0] == 'DB' and slova[1] == 'insert':
                                 anime_name = ''
                                 for i in range(len(slova) - 4):
@@ -994,154 +996,155 @@ try:
                                 entities = str(anime_name), str(slova[-4]), str(slova[-3]), \
                                            str(slova[-2]), str(slova[-1])
                                 sql_insert_anime_base(con, entities)
-                                send_msg_new(event.object.peer_id, "Операция выполнена")
+                                send_msg_new(peer_id, "Операция выполнена")
                         if len(slova) > 1:
                             if slova[0] == 'DB' and slova[1] == 'help':
-                                send_msg_new(event.object.peer_id, "Для вставки новой строки в таблицу напишите:"
+                                send_msg_new(peer_id, "Для вставки новой строки в таблицу напишите:"
                                                                    "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
                                                                    "'кол-во серий'\n\nНапример:\nDB insert Этот "
                                                                    "замечательный мир Комедия Исекай Приключения 24")
                         # Текстовые ответы -----------------------------------------------------------------------------
-                        if event.obj.text == "братик привет":
-                            send_msg_new(event.object.peer_id, "&#128075; Приветик")
-                        elif event.obj.text == "Admin-reboot":
-                            send_msg_new(event.object.peer_id, "Бот уходит на перезагрузку и будет доступен "
-                                                               "через 10-15 секунд")
-                            zapros_ft_vd()
-                        elif event.obj.text == "посоветуй аниме" or event.obj.text == "Посоветуй аниме":
-                            thread_start1(anime_sovet, event.object.peer_id)
-                        elif event.obj.text == "пока" or event.obj.text == "спокойной ночи" or \
-                                event.obj.text == "споки" or event.obj.text == "bb":
-                            send_msg_new(event.object.peer_id, "&#128546; Прощай")
-                        elif event.obj.text == "время":
-                            send_msg_new(event.object.peer_id, str(time.ctime()))
-                        elif event.obj.text == "времятест":
-                            send_msg_new(event.object.peer_id, str(time.time()))
-                        elif event.obj.text == "команды" or event.obj.text == "братик" or \
-                                event.obj.text == "Братик" or event.obj.text == "Команды":
-                            send_msg_new(event.object.peer_id, '⚙️ Полный список команд доступен по ссылке ' +
-                                         'vk.com/@bratikbot-commands')
-                        elif event.obj.text == "игры" or event.obj.text == "Игры":
-                            klava_game(event.object.peer_id)
-                        elif event.obj.text == "Бро награда" or event.obj.text == "бро награда" or \
-                                event.obj.text == "бро шекель":
-                            thread_start2(add_balans_every_day, event.object.peer_id, event.object.from_id)  # DB
-                        elif event.obj.text == "Бро баланс" or event.obj.text == "бро баланс":
-                            thread_start2(balans_status_new, event.object.peer_id, event.object.from_id)
-                        elif event.obj.text == "Бро баланс топ" or event.obj.text == "бро баланс топ":
-                            thread_start1(balans_top, event.object.peer_id)  # DB
-                        elif event.obj.text == "онлайн" or event.obj.text == "кто тут":
-                            send_msg_new(event.object.peer_id, who_online(event.object.peer_id))
-                        elif event.obj.text == "инфо":
-                            send_msg_new(event.object.peer_id, "Мой разработчик - Оганесян Артем.\nВсе вопросы по "
-                                                               "реализации к нему: vk.com/aom13")
-                        elif event.obj.text == "я админ" or event.obj.text == "Я админ":
-                            if adm_prov(event.object.peer_id, event.object.from_id):
-                                send_msg_new(event.object.peer_id, 'Да, ты админ')
+                        if len(slova) > 0:
+                            if text == "братик привет":
+                                send_msg_new(peer_id, "&#128075; Приветик")
+                            elif text == "Admin-reboot":
+                                send_msg_new(peer_id, "Бот уходит на перезагрузку и будет доступен "
+                                                                   "через 10-15 секунд")
+                                zapros_ft_vd()
+                            elif text == "посоветуй аниме" or text == "Посоветуй аниме":
+                                thread_start1(anime_sovet, peer_id)
+                            elif text == "пока" or text == "спокойной ночи" or \
+                                    text == "споки" or text == "bb":
+                                send_msg_new(peer_id, "&#128546; Прощай")
+                            elif text == "время":
+                                send_msg_new(peer_id, str(time.ctime()))
+                            elif text == "времятест":
+                                send_msg_new(peer_id, str(time.time()))
+                            elif text == "команды" or text == "братик" or \
+                                    text == "Братик" or text == "Команды":
+                                send_msg_new(peer_id, '⚙️ Полный список команд доступен по ссылке ' +
+                                             'vk.com/@bratikbot-commands')
+                            elif text == "игры" or text == "Игры":
+                                klava_game(peer_id)
+                            elif text == "Бро награда" or text == "бро награда" or \
+                                    text == "бро шекель":
+                                thread_start2(add_balans_every_day, peer_id, from_id)  # DB
+                            elif text == "Бро баланс" or text == "бро баланс":
+                                thread_start2(balans_status_new, peer_id, from_id)
+                            elif text == "Бро баланс топ" or text == "бро баланс топ":
+                                thread_start1(balans_top, peer_id)  # DB
+                            elif text == "онлайн" or text == "кто тут":
+                                send_msg_new(peer_id, who_online(peer_id))
+                            elif text == "инфо":
+                                send_msg_new(peer_id, "Мой разработчик - Оганесян Артем.\nВсе вопросы по "
+                                                                   "реализации к нему: vk.com/aom13")
+                            elif text == "я админ" or text == "Я админ":
+                                if adm_prov(peer_id, from_id):
+                                    send_msg_new(peer_id, 'Да, ты админ')
+                                else:
+                                    send_msg_new(peer_id, 'Увы но нет')
+                            # Ответы со вложениями --------------------------------------------------------------------
+
+                            elif text == "Арт" or text == "арт":
+                                randid = (random.randint(0, photo_arts['count'] - 1))
+                                idphoto = (photo_arts['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'арт', str(idphoto))
+                                main_keyboard_arts(peer_id)
+                            elif text == "Юри+" or text == "юри+":
+                                randid = (random.randint(0, photo_ur18['count'] - 1))
+                                idphoto = (photo_ur18['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'юри+', str(idphoto))
+                                main_keyboard_hent(peer_id)
+                            elif text == "Стикер" or text == "стикер":
+                                randid = (random.randint(0, photo_stik['count'] - 1))
+                                idphoto = (photo_stik['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'стикер', str(idphoto))
+                            elif text == "coub" or text == "Coub":
+                                randid = (random.randint(0, video_coub['count'] - 1))
+                                idvideo = (video_coub['items'][randid]['id'])
+                                provzapret_vd(peer_id, 'coubtest', str(idvideo))
+                                main_keyboard_video(peer_id)
+                            elif text == "хентай" or text == "Хентай":
+                                randid = (random.randint(0, photo_hent['count'] - 1))
+                                idphoto = (photo_hent['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'хентай', str(idphoto))
+                                main_keyboard_hent(peer_id)
+                            elif text == "бдсм" or text == "Бдсм":
+                                randid = (random.randint(0, photo_bdsm['count'] - 1))
+                                idphoto = (photo_bdsm['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'бдсм', str(idphoto))
+                                main_keyboard_hent(peer_id)
+                            elif text == "ахегао" or text == "Ахегао":
+                                randid = (random.randint(0, photo_aheg['count'] - 1))
+                                idphoto = (photo_aheg['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'ахегао', str(idphoto))
+                                main_keyboard_hent(peer_id)
+                            elif text == "лоли" or text == "Лоли":
+                                randid = (random.randint(0, photo_loli['count'] - 1))
+                                idphoto = (photo_loli['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'лоли', str(idphoto))
+                                main_keyboard_arts(peer_id)
+                            elif text == "неко" or text == "Неко":
+                                randid = (random.randint(0, photo_neko['count'] - 1))
+                                idphoto = (photo_neko['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'неко', str(idphoto))
+                                main_keyboard_arts(peer_id)
+                            elif text == "манга арт" or text == "Манга арт":
+                                randid = (random.randint(0, photo_mart['count'] - 1))
+                                idphoto = (photo_mart['items'][randid]['id'])
+                                provzapret_ft(peer_id, 'неко', str(idphoto))
+                                main_keyboard_hent(peer_id)
+                            elif len(slova) > 1:
+                                if slova[0] == 'запрет' or slova[0] == 'Запрет':
+                                    adm_prov_and_zapret(peer_id, from_id, slova[1])
+                                elif slova[1] == 'участвую':
+                                    if not prov_zap_game(peer_id):
+                                        send_msg_new(peer_id, 'Игра уже закончилась')
+                                elif slova[0] + ' ' + slova[1] == 'брак статус' or slova[0] + ' ' + \
+                                        slova[1] == 'Брак статус':
+                                    thread_start2(marry_status, peer_id, from_id)
+                                elif slova[0] == "брак":
+                                    thread_start3(marry_create, peer_id, from_id, slova[1])
+                                elif slova[0] == "перевести" or slova[0] == "Перевести":
+                                    thread_start4(money_send, peer_id, from_id,
+                                                  slova[1], slova[2])
+                            elif text == "развод" or text == "Развод":
+                                thread_start2(marry_disvorse, peer_id, from_id)
+                            # Отладка ---------------------------------------------------------------------------------
+                            elif text == 'dump':
+                                with open('dump.json', 'w') as dump:
+                                    send_msg_new(peer_id, peer_id)
+                                    auth = requests.get('https://oauth.vk.com/authorize',
+                                                        params={
+                                                            'client_id': '7522555',
+                                                            'redirect_uri': 'https://oauth.vk.com/blank.html',
+                                                            'response_type': 'token'
+
+                                                        }
+                                                        )
+                                    print(auth.text)
+                                    json.dump(auth.text, dump)
+                                    send_msg_new(peer_id, 'dumped')
+                            elif text == "начать" or text == "Начать" or \
+                                    text == "главная" or text == "Главная":
+                                if lich_or_beseda:
+                                    main_keyboard_1(peer_id)
+                            elif text == "арты":
+                                if lich_or_beseda:
+                                    main_keyboard_arts(peer_id)
+                            elif text == "18+":
+                                if lich_or_beseda:
+                                    main_keyboard_hent(peer_id)
+                            elif text == "видео":
+                                if lich_or_beseda:
+                                    main_keyboard_video(peer_id)
+                            elif text == "аниме(в разработке)" or text == "amv(в разработке)":
+                                send_msg_new(peer_id, "Написано же в разработке))")
+                                main_keyboard_1(peer_id)
                             else:
-                                send_msg_new(event.object.peer_id, 'Увы но нет')
-                        # Ответы со вложениями -----------------------------------------------------------------------
+                                main_keyboard_1(peer_id)
 
-                        elif event.obj.text == "Арт" or event.obj.text == "арт":
-                            randid = (random.randint(0, photo_arts['count'] - 1))
-                            idphoto = (photo_arts['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'арт', str(idphoto))
-                            main_keyboard_arts(event.object.peer_id)
-                        elif event.obj.text == "Юри+" or event.obj.text == "юри+":
-                            randid = (random.randint(0, photo_ur18['count'] - 1))
-                            idphoto = (photo_ur18['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'юри+', str(idphoto))
-                            main_keyboard_hent(event.object.peer_id)
-                        elif event.obj.text == "Стикер" or event.obj.text == "стикер":
-                            randid = (random.randint(0, photo_stik['count'] - 1))
-                            idphoto = (photo_stik['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'стикер', str(idphoto))
-                        elif event.obj.text == "coub" or event.obj.text == "Coub":
-                            randid = (random.randint(0, video_coub['count'] - 1))
-                            idvideo = (video_coub['items'][randid]['id'])
-                            provzapret_vd(event.object.peer_id, 'coubtest', str(idvideo))
-                            main_keyboard_video(event.object.peer_id)
-                        elif event.obj.text == "хентай" or event.obj.text == "Хентай":
-                            randid = (random.randint(0, photo_hent['count'] - 1))
-                            idphoto = (photo_hent['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'хентай', str(idphoto))
-                            main_keyboard_hent(event.object.peer_id)
-                        elif event.obj.text == "бдсм" or event.obj.text == "Бдсм":
-                            randid = (random.randint(0, photo_bdsm['count'] - 1))
-                            idphoto = (photo_bdsm['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'бдсм', str(idphoto))
-                            main_keyboard_hent(event.object.peer_id)
-                        elif event.obj.text == "ахегао" or event.obj.text == "Ахегао":
-                            randid = (random.randint(0, photo_aheg['count'] - 1))
-                            idphoto = (photo_aheg['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'ахегао', str(idphoto))
-                            main_keyboard_hent(event.object.peer_id)
-                        elif event.obj.text == "лоли" or event.obj.text == "Лоли":
-                            randid = (random.randint(0, photo_loli['count'] - 1))
-                            idphoto = (photo_loli['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'лоли', str(idphoto))
-                            main_keyboard_arts(event.object.peer_id)
-                        elif event.obj.text == "неко" or event.obj.text == "Неко":
-                            randid = (random.randint(0, photo_neko['count'] - 1))
-                            idphoto = (photo_neko['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'неко', str(idphoto))
-                            main_keyboard_arts(event.object.peer_id)
-                        elif event.obj.text == "манга арт" or event.obj.text == "Манга арт":
-                            randid = (random.randint(0, photo_mart['count'] - 1))
-                            idphoto = (photo_mart['items'][randid]['id'])
-                            provzapret_ft(event.object.peer_id, 'неко', str(idphoto))
-                            main_keyboard_hent(event.object.peer_id)
-                        elif len(slova) > 1:
-                            if slova[0] == 'запрет' or slova[0] == 'Запрет':
-                                adm_prov_and_zapret(event.object.peer_id, event.object.from_id, slova[1])
-                            elif slova[1] == 'участвую':
-                                if not prov_zap_game(event.object.peer_id):
-                                    send_msg_new(event.object.peer_id, 'Игра уже закончилась')
-                            elif slova[0] + ' ' + slova[1] == 'брак статус' or slova[0] + ' ' + \
-                                    slova[1] == 'Брак статус':
-                                thread_start2(marry_status, event.object.peer_id, event.object.from_id)
-                            elif slova[0] == "брак":
-                                thread_start3(marry_create, event.object.peer_id, event.object.from_id, slova[1])
-                            elif slova[0] == "перевести" or slova[0] == "Перевести":
-                                thread_start4(money_send, event.object.peer_id, event.object.from_id,
-                                              slova[1], slova[2])
-                        elif event.obj.text == "развод" or event.obj.text == "Развод":
-                            thread_start2(marry_disvorse, event.object.peer_id, event.object.from_id)
-                        # Отладка -------------------------------------------------------------------------------------
-                        elif event.obj.text == 'dump':
-                            with open('dump.json', 'w') as dump:
-                                send_msg_new(event.object.peer_id, event.object.peer_id)
-                                auth = requests.get('https://oauth.vk.com/authorize',
-                                                    params={
-                                                        'client_id': '7522555',
-                                                        'redirect_uri': 'https://oauth.vk.com/blank.html',
-                                                        'response_type': 'token'
-
-                                                    }
-                                                    )
-                                print(auth.text)
-                                json.dump(auth.text, dump)
-                                send_msg_new(event.object.peer_id, 'dumped')
-                        elif event.obj.text == "начать" or event.obj.text == "Начать" or \
-                                event.obj.text == "главная" or event.obj.text == "Главная":
-                            if lich_or_beseda:
-                                main_keyboard_1(event.object.peer_id)
-                        elif event.obj.text == "арты":
-                            if lich_or_beseda:
-                                main_keyboard_arts(event.object.peer_id)
-                        elif event.obj.text == "18+":
-                            if lich_or_beseda:
-                                main_keyboard_hent(event.object.peer_id)
-                        elif event.obj.text == "видео":
-                            if lich_or_beseda:
-                                main_keyboard_video(event.object.peer_id)
-                        elif event.obj.text == "аниме(в разработке)" or event.obj.text == "amv(в разработке)":
-                            send_msg_new(event.object.peer_id, "Написано же в разработке))")
-                            main_keyboard_1(event.object.peer_id)
-                        else:
-                            main_keyboard_1(event.object.peer_id)
-
-                    thread_start0(messege_chek)
+                    thread_start3(messege_chek, event.object.peer_id, event.object.from_id, message_text)
 
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
