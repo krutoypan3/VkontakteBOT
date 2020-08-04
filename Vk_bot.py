@@ -236,9 +236,8 @@ try:
     # Инфа о человеке
     def people_info(people_id):
         people = vk.users.get(user_ids=people_id)
-        p_name = people[0]['first_name']
-        p_family = people[0]['last_name']
-        people = '[' + 'id' + str(people_id) + '|' + str(p_name) + ' ' + str(p_family) + ']'
+        people = '[' + 'id' + str(people_id) + '|' + str(people[0]['first_name']) + ' ' +\
+                 str(people[0]['last_name']) + ']'
         return people
 
 
@@ -318,12 +317,13 @@ try:
 
     # Баланс топ
     def balans_top(my_peer):
-        send_msg_new(my_peer, 'Считаем деньги...')
+        send_msg_new(my_peer, 'Считаем деньги... Подождите 10 секундочек')
         kol_vo = str(sql_fetch_from_all(con, 'money', my_peer))
         mesta = str(sql_fetch_from_all(con, 'from_id', my_peer))
         idall = mesta.split()
         monall = kol_vo.split()
         mess = ''
+        people = []
         for i in range(len(idall) - 1):
             a = ''
             b = ''
@@ -333,9 +333,10 @@ try:
             for k in (monall[i]):
                 if '0' <= str(k) <= '9':
                     b += str(k)
-            user = vk.users.get(user_ids=a)
-            a = str(user[0]['first_name']) + ' ' + str(user[0]['last_name'])
-            mess += '💰' + str(a) + ' - ' + str(b) + ' бро-коинов\n'
+            people.append([str(a), int(b)])
+        people = sorted(people, key=lambda peoples: (-peoples[1]))
+        for i in people:
+            mess += '💰' + people_info(i[0]) + ' - ' + str(i[1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
 
@@ -681,6 +682,7 @@ try:
                         if '0' <= slovo[1] <= '9':
                             if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
                                     (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
+                                send_msg_new(my_peer, 'Ставка: ' + str(slovo[1]))
                                 return slovo[1]
             else:
                 return 0
