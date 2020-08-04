@@ -52,13 +52,15 @@ try:
     vk_SERVISE = vk_session_SERVISE.get_api()
     vk_session_SERVISE.token = {'access_token': ser_token, 'expires_in': 0}
 
-    global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm
+    global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
+        photo_ur18
+
 
 
     # Отправка запросов на информацию об фотографиях и видео в группе
     def zapros_ft_vd():
         global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
-            photo_bdsm
+            photo_bdsm, photo_ur18
         photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
         photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
         photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
@@ -67,6 +69,7 @@ try:
         photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото + 10 сек
         photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # к запуску
         photo_bdsm = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272201504, count=1000)  #
+        photo_ur18 = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272411793, count=1000)  #
         video_coub = vk_polzovat.video.get(owner_id='-' + group_id, count=200)  # album_id=1,
 
 
@@ -101,7 +104,7 @@ try:
     # Создание таблицы в БД
     def sql_table(conc3):
         cursorObj4 = conc3.cursor()  # Курсор БД
-        cursorObj4.execute("CREATE TABLE anime_base(name string PRIMARY KEY, genre string, series string)")
+        cursorObj4.execute("CREATE TABLE from_money(id text PRIMARY KEY, money text, m_time text)")
         conc3.commit()
 
 
@@ -124,6 +127,16 @@ try:
         conc2.commit()
 
 
+    # Вставка СТРОКИ в ТАБЛИЦУ from_params в БД
+    def sql_insert_from_money(conc2, entities):
+        cursorObj3 = conc2.cursor()
+        cursorObj3.execute(
+            'INSERT INTO from_money(from_id, money, m_time) VALUES(%s, %s, %s)',
+            entities)
+        conc2.commit()
+
+
+
     # Обновление параметра в таблице peer_params
     def sql_update(con5, what_fetch, what_fetch_new, peer_id_val):
         cursorObj1 = con5.cursor()
@@ -138,6 +151,13 @@ try:
         cursorObj1.execute('UPDATE from_params SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
                            ' where peer_id = ' + str(peer_id_val) + ' AND from_id = ' + str(from_id_val))
         con5.commit()
+
+    # Обновление параметра в таблице from_params
+    def sql_update_from_money(con6, what_fetch, what_fetch_new, from_id_val):
+        cursorObj1 = con6.cursor()
+        cursorObj1.execute('UPDATE from_money SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
+                           ' where from_id = ' + str(from_id_val))
+        con6.commit()
 
 
     # Получение параметров из таблицы peer_params
@@ -164,12 +184,21 @@ try:
             rows = sql_fetch_from(conc, what_return, peer_id_val, from_id_val)
         return rows
 
+    # Получение параметров из таблицы from_money
+    def sql_fetch_from_money(conc, what_return, from_id):
+        cursorObj2 = conc.cursor()
+        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
+        rows = cursorObj2.fetchall()
+        if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
+            entities = str(from_id), '0', '0'
+            sql_insert_from_money(conc, entities)
+            rows = sql_fetch_from_money(conc, what_return, from_id)
+        return rows
 
     # Получение параметров из таблицы from_params
     def sql_fetch_from_all(conc, what_return, peer_id_val):
         cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_params WHERE peer_id = ' + str(
-            peer_id_val))
+        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money')  # WHERE peer_id = ' + str(peer_id_val)
         rows = cursorObj2.fetchall()
         return rows
 
@@ -311,8 +340,11 @@ try:
     # Проверка баланса
     def balans_status(my_peer, my_from):
         balans = str(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
-        send_msg_new(my_peer, 'Ваш баланс : ' + str(balans) + ' бро-коинов')
+        send_msg_new(my_peer, people_info(my_from) + ', ваш баланс : ' + str(balans) + ' бро-коинов')
 
+    def balans_status_new(my_peer, my_from):
+        balans = str(sql_fetch_from_money(con, 'money', my_from)[0][0])
+        send_msg_new(my_peer, people_info(my_from) + ', ваш баланс : ' + str(balans) + ' бро-коинов')
 
     # Баланс топ
     def balans_top(my_peer):
@@ -349,9 +381,9 @@ try:
                 if i == '|':
                     break
             if our_from != '':
-                if int(str(sql_fetch_from(con, 'money', str(my_peer), str(my_from))[0][0])) >= int(money) > 0:
-                    add_balans(str(my_peer), str(my_from), '-' + str(money))
-                    add_balans(str(my_peer), str(our_from), str(money))
+                if int(str(sql_fetch_from_money(con, 'money', str(my_from))[0][0])) >= int(money) > 0:
+                    add_balans(str(my_from), '-' + str(money))
+                    add_balans(str(our_from), str(money))
                     send_msg_new(my_peer, people_info(my_from) + ' перевел ' +
                                  people_info(our_from) + ' ' + str(money) + ' монет')
                 else:
@@ -363,11 +395,11 @@ try:
 
     # Зачисление ежедневного вознаграждения
     def add_balans_every_day(my_peer, my_from):
-        balans_time = int(sql_fetch_from(con, 'm_time', my_peer, my_from)[0][0])
+        balans_time = int(sql_fetch_from_money(con, 'm_time', my_from)[0][0])
         if balans_time < (time.time() - 8 * 60 * 60):
-            add_balans(my_peer, my_from, 1000)
+            add_balans(my_from, 1000)
             send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
-            sql_update_from(con, 'm_time', str(time.time()), str(my_peer), str(my_from))
+            sql_update_from_money(con, 'm_time', str(time.time()), str(my_from))
         else:
             balans_hour = ''
             balans_minut = ''
@@ -383,10 +415,10 @@ try:
 
 
     # Добавление n-ой суммы на баланс
-    def add_balans(my_peer, my_from, zp_balans):
-        balans = int(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
+    def add_balans(my_from, zp_balans):
+        balans = int(sql_fetch_from_money(con, 'money', my_from)[0][0])
         balans += int(zp_balans)
-        sql_update_from(con, 'money', str(balans), str(my_peer), str(my_from))
+        sql_update_from_money(con, 'money', str(balans), str(my_from))
 
 
     # Проверка на запрет запуска другой игры в данной беседе
@@ -565,8 +597,10 @@ try:
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=False)
             keyboard.add_button('ахегао', color=VkKeyboardColor.POSITIVE)
-            keyboard.add_button('манга арт', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('бдсм', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('манга арт', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_line()  # Отступ строки
+            keyboard.add_button('юри+', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
@@ -614,7 +648,8 @@ try:
         eventhr.append(kolpot)
         x.start()
 
-        # Запуск потока с двумя аргрументами
+
+    # Запуск потока с двумя аргрументами
     def thread_start4(Func, Arg, Arg2, Arg3, Arg4):
         global kolpot
         x = threading.Thread(target=Func, args=(Arg, Arg2, Arg3, Arg4))
@@ -688,8 +723,8 @@ try:
 
 
     # Деньги победителю
-    def money_win(my_peer, win_from, stavka, uchastniki):
-        add_balans(str(my_peer), str(win_from), str(int(stavka) * len(uchastniki)))
+    def money_win(win_from, stavka, uchastniki):
+        add_balans(str(win_from), str(int(stavka) * len(uchastniki)))
 
 
     # Набор игроков на игру
@@ -748,7 +783,7 @@ try:
                                  keyboard=keyboard.get_keyboard(), message='&#127918;Участники укомплектованы, '
                                                                            'игра начинается')
                 for i in uchastniki:
-                    add_balans(str(my_peer_game), str(i), (str('-') + str(stavka)))
+                    add_balans(str(i), (str('-') + str(stavka)))
                 return uchastniki
 
 
@@ -763,14 +798,14 @@ try:
         if len(uchastniki) < 2:
             send_msg_new(my_peer_game2, '&#127918;Слишком мало участников, игра отменена')
             for i in uchastniki:
-                add_balans(str(my_peer_game2), str(i), str(stavka))
+                add_balans(str(i), str(stavka))
             zapret_zap_game(my_peer_game2)
         else:
             send_msg_new(my_peer_game2, '&#127918;Участники укомплектованы, игра начинается')
             priz = random.randint(0, len(uchastniki) - 1)
             chel = '&#127918;' + people_info(str(uchastniki[priz])) + ', '
             send_msg_new(my_peer_game2, chel + 'ты круче')
-            money_win(my_peer_game2, uchastniki[priz], stavka, uchastniki)
+            money_win(uchastniki[priz], stavka, uchastniki)
             zapret_zap_game(my_peer_game2)
 
 
@@ -785,7 +820,7 @@ try:
         if len(uchastniki) < 2:
             send_msg_new(my_peer_game3, '&#127918;Слишком мало участников, игра отменена')
             for i in uchastniki:
-                add_balans(str(my_peer_game3), str(i), str(stavka))
+                add_balans(str(i), str(stavka))
             zapret_zap_game(my_peer_game3)
         else:
             chet = []
@@ -811,12 +846,12 @@ try:
             if nich == 1:
                 send_msg_new(my_peer_game3, '&#127918;Ничья!')
                 for i in uchastniki:
-                    add_balans(str(my_peer_game3), str(i), str(stavka))
+                    add_balans(str(i), str(stavka))
                 zapret_zap_game(my_peer_game3)
             else:
                 chel = '&#127918;' + people_info(pobeditel) + '&#127881; '
                 send_msg_new(my_peer_game3, chel + 'победил!&#127882;')
-                money_win(my_peer_game3, pobeditel, stavka, uchastniki)
+                money_win(pobeditel, stavka, uchastniki)
                 zapret_zap_game(my_peer_game3)
 
 
@@ -827,7 +862,7 @@ try:
             time.sleep(2)
             send_msg_new(my_peer, 'Начинаем!')
             time.sleep(1)
-            add_balans(str(my_peer), str(my_from), '-300')
+            add_balans(str(my_from), '-300')
             dengi = 50
             for i in range(5):
                 stop = 0
@@ -877,7 +912,7 @@ try:
                                                                              group_name + ']' + " забрать деньги") \
                                                 or (event_victorina_game.obj.text == '[' + 'club' + str(group_id) + '|'
                                                     + group_sob + ']' + " забрать деньги"):
-                                            add_balans(my_peer, my_from, dengi)
+                                            add_balans(my_from, dengi)
                                             stop = 1
                                             send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
                                             break
@@ -897,7 +932,7 @@ try:
                     else:
                         zapret_zap_game(my_peer)
                         send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
-                        add_balans(my_peer, my_from, dengi)
+                        add_balans(my_from, dengi)
         else:
             send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно средств на счете! Получите '
                                                          'бро-коины написав "бро награда"')
@@ -992,7 +1027,7 @@ try:
                                 event.obj.text == "бро шекель":
                             thread_start2(add_balans_every_day, event.object.peer_id, event.object.from_id)  # DB
                         elif event.obj.text == "Бро баланс" or event.obj.text == "бро баланс":
-                            thread_start2(balans_status, event.object.peer_id, event.object.from_id)  # DB
+                            thread_start2(balans_status_new, event.object.peer_id, event.object.from_id)
                         elif event.obj.text == "Бро баланс топ" or event.obj.text == "бро баланс топ":
                             thread_start1(balans_top, event.object.peer_id)  # DB
                         elif event.obj.text == "онлайн" or event.obj.text == "кто тут":
@@ -1012,6 +1047,11 @@ try:
                             idphoto = (photo_arts['items'][randid]['id'])
                             provzapret_ft(event.object.peer_id, 'арт', str(idphoto))
                             main_keyboard_arts(event.object.peer_id)
+                        elif event.obj.text == "Юри+" or event.obj.text == "юри+":
+                            randid = (random.randint(0, photo_ur18['count'] - 1))
+                            idphoto = (photo_ur18['items'][randid]['id'])
+                            provzapret_ft(event.object.peer_id, 'юри+', str(idphoto))
+                            main_keyboard_hent(event.object.peer_id)
                         elif event.obj.text == "Стикер" or event.obj.text == "стикер":
                             randid = (random.randint(0, photo_stik['count'] - 1))
                             idphoto = (photo_stik['items'][randid]['id'])
