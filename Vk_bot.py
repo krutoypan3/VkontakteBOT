@@ -236,8 +236,7 @@ try:
     # Инфа о человеке
     def people_info(people_id):
         people = vk.users.get(user_ids=people_id)
-        people = '[' + 'id' + str(people_id) + '|' + str(people[0]['first_name']) + ' ' +\
-                 str(people[0]['last_name']) + ']'
+        people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
         return people
 
 
