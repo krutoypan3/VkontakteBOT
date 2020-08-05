@@ -848,7 +848,7 @@ try:
 
 
     def game_mat_victorina(my_peer, my_from):
-        if int(str(sql_fetch_from(con, 'money', str(my_peer), str(my_from))[0][0])) >= int(300):
+        if int(str(sql_fetch_from_money(con, 'money', str(my_from))[0][0])) >= int(300):
             zapret_zap_game(my_peer)
             send_msg_new(my_peer, 'С вашего счета списано 300 монеток\nВремя на каждый ответ - 10 секунд')
             time.sleep(2)
