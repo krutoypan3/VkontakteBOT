@@ -743,8 +743,8 @@ try:
                                 if event_nabor_game.object.from_id in uchastniki:
                                     send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
                                 else:
-                                    if int(str(sql_fetch_from(con, 'money', str(my_peer_game),
-                                                              str(event_nabor_game.object.from_id))[0][0])) >= \
+                                    if int(str(sql_fetch_from_money(con, 'money',
+                                                                    str(event_nabor_game.object.from_id))[0][0])) >= \
                                             int(stavka):
                                         uchastniki.append(event_nabor_game.object.from_id)
                                         send_msg_new(my_peer_game,
