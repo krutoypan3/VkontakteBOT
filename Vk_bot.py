@@ -866,7 +866,7 @@ try:
                 send_msg_new(my_peer, 'Сколько будет ' + str(a) + znak + str(b) + ' ?')
                 uravnenie = a + b
                 for event_victorina_game in longpoll.listen():
-                    if time.time() - timing < 10.0:
+                    if time.time() - timing < 15.0:
                         if event_victorina_game.type == VkBotEventType.MESSAGE_NEW:
                             if event_victorina_game.object.from_id == my_from:
                                 if event_victorina_game.obj.text == str(uravnenie):
@@ -875,7 +875,7 @@ try:
                                     send_msg_new(my_peer, 'Увы, но нет, вы проиграли!')
                                     stop = 1
                                 break
-                    elif time.time() - timing > 10.0:
+                    elif time.time() - timing > 15.0:
                         stop = 1
                         send_msg_new(my_peer, 'Увы, но ваше время истекло, вы проиграли!')
                         break
