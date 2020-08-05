@@ -275,8 +275,7 @@ try:
         if marry_id == 'None' or marry_id == '0':
             send_msg_new(my_peer, 'Вы не состоите в браке')
         else:
-            chel2 = people_info(marry_id)
-            send_msg_new(my_peer, 'Вы состоите в браке с ' + chel2)
+            send_msg_new(my_peer, 'Вы состоите в браке с ' + people_info(marry_id))
 
 
     # Развод
@@ -285,11 +284,9 @@ try:
         if str(marry_id) == 'None' or str(marry_id) == '0':
             send_msg_new(my_peer, 'Вы не состоите в браке!')
         else:
-            chel = people_info(my_from)
-            chel2 = people_info(marry_id)
             sql_update_from(con, 'marry_id', str('0'), str(my_peer), str(my_from))
             sql_update_from(con, 'marry_id', str('0'), str(my_peer), str(marry_id))
-            send_msg_new(my_peer, chel + ' разводится с ' + chel2)
+            send_msg_new(my_peer, people_info(my_from) + ' разводится с ' + people_info(marry_id))
 
 
     # Создание брака
@@ -301,7 +298,7 @@ try:
             if i == '|':
                 break
         if str(my_from) == str(our_from):
-            send_msg_new(my_peer, 'Ты чо? Дебил?')
+            send_msg_new(my_peer, 'Ты чо? Дебил? Одиночество? Да? Иди лучше подрочи...')
         else:
             marry_id = str(sql_fetch_from(con, 'marry_id', my_peer, my_from)[0][0])
             marry_id2 = str(sql_fetch_from(con, 'marry_id', my_peer, our_from)[0][0])
@@ -337,22 +334,16 @@ try:
                 send_msg_new(my_peer, 'Один из вас уже находится в браке!')
 
 
-    # Проверка баланса
-    def balans_status(my_peer, my_from):
-        balans = str(sql_fetch_from(con, 'money', my_peer, my_from)[0][0])
-        send_msg_new(my_peer, people_info(my_from) + ', ваш баланс : ' + str(balans) + ' бро-коинов')
 
-    def balans_status_new(my_peer, my_from):
+    def balans_status(my_peer, my_from):
         balans = str(sql_fetch_from_money(con, 'money', my_from)[0][0])
         send_msg_new(my_peer, people_info(my_from) + ', ваш баланс : ' + str(balans) + ' бро-коинов')
 
     # Баланс топ
     def balans_top(my_peer):
         send_msg_new(my_peer, 'Считаем деньги... Подождите 10 секундочек')
-        kol_vo = str(sql_fetch_from_all(con, 'money', my_peer))
-        mesta = str(sql_fetch_from_all(con, 'from_id', my_peer))
-        idall = mesta.split()
-        monall = kol_vo.split()
+        idall = (str(sql_fetch_from_all(con, 'from_id', my_peer))).split()
+        monall = (str(sql_fetch_from_all(con, 'money', my_peer))).split()
         mess = ''
         people = []
         for i in range(len(idall) - 1):
@@ -545,13 +536,13 @@ try:
     # Личная диалог или беседа
     def lich_or_beseda(my_peer):
         try:
-            responselic = vk.messages.getConversationMembers(peer_id=my_peer)
-            if responselic['count'] <= 2:
+            response = vk.messages.getConversationMembers(peer_id=my_peer)
+            if response['count'] <= 2:
                 return 1  # Личка
             else:
                 return 0  # Беседа
         except vk_api.exceptions.ApiError:
-            return 0
+            return 0  # Беседа, но нет прав у бота
 
 
     # Новая основная клавиатура
@@ -563,7 +554,6 @@ try:
             keyboard.add_button('18+', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('видео', color=VkKeyboardColor.PRIMARY)
-
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выберите команду:')
 
@@ -575,7 +565,6 @@ try:
             # keyboard.add_button('amv(в разработке)', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
-
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выбрана команда видео, выберите видео:')
 
@@ -588,7 +577,6 @@ try:
             keyboard.add_button('неко', color=VkKeyboardColor.POSITIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
-
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выбрана команда арты, выберите команду:')
 
@@ -604,7 +592,6 @@ try:
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
-
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выбрана команда хентай, выберите команду:')
 
@@ -714,10 +701,8 @@ try:
                     slovo = event_stavka.obj.text.split()
                     if len(slovo) > 1:
                         if '0' <= slovo[1] <= '9':
-                            if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
-                                    (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
-                                send_msg_new(my_peer, 'Ставка: ' + str(slovo[1]))
-                                return slovo[1]
+                            send_msg_new(my_peer, 'Ставка: ' + str(slovo[1]))
+                            return slovo[1]
             else:
                 return 0
 
@@ -825,8 +810,7 @@ try:
         else:
             chet = []
             for i in uchastniki:
-                chel = people_info(str(i)) + '...'
-                send_msg_new(my_peer_game3, '&#9745;Кубики бросает ' + chel)
+                send_msg_new(my_peer_game3, '&#9745;Кубики бросает ' + people_info(str(i)) + '...')
                 time.sleep(2)
                 kubiki = random.randint(2, 12)
                 chet.append(kubiki)
@@ -849,8 +833,7 @@ try:
                     add_balans(str(i), str(stavka))
                 zapret_zap_game(my_peer_game3)
             else:
-                chel = '&#127918;' + people_info(pobeditel) + '&#127881; '
-                send_msg_new(my_peer_game3, chel + 'победил!&#127882;')
+                send_msg_new(my_peer_game3, '&#127918;' + people_info(pobeditel) + '&#127881; ' + 'победил!&#127882;')
                 money_win(pobeditel, stavka, uchastniki)
                 zapret_zap_game(my_peer_game3)
 
@@ -961,8 +944,6 @@ try:
         try:
             for event in longpoll.listen():  # Постоянный листинг сообщений
                 if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
-                    message_text = event.obj.text
-
                     def messege_chek(peer_id, from_id, text):
                         slova = event.obj.text.split()  # Разделение сообщения на слова
                         # Логика ответов
@@ -1030,7 +1011,7 @@ try:
                                     text == "бро шекель":
                                 thread_start2(add_balans_every_day, peer_id, from_id)  # DB
                             elif text == "Бро баланс" or text == "бро баланс":
-                                thread_start2(balans_status_new, peer_id, from_id)
+                                thread_start2(balans_status, peer_id, from_id)
                             elif text == "Бро баланс топ" or text == "бро баланс топ":
                                 thread_start1(balans_top, peer_id)  # DB
                             elif text == "онлайн" or text == "кто тут":
@@ -1144,7 +1125,7 @@ try:
                             else:
                                 main_keyboard_1(peer_id)
 
-                    thread_start3(messege_chek, event.object.peer_id, event.object.from_id, message_text)
+                    thread_start3(messege_chek, event.object.peer_id, event.object.from_id, event.obj.text)
 
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
