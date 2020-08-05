@@ -104,7 +104,7 @@ try:
     # Создание таблицы в БД
     def sql_table(conc3):
         cursorObj4 = conc3.cursor()  # Курсор БД
-        cursorObj4.execute("CREATE TABLE from_money(id text PRIMARY KEY, money text, m_time text)")
+        cursorObj4.execute("CREATE TABLE clan_info(clan_name text PRIMARY KEY, clan_money text, clan_admin text)")
         conc3.commit()
 
 
@@ -127,11 +127,11 @@ try:
         conc2.commit()
 
 
-    # Вставка СТРОКИ в ТАБЛИЦУ from_params в БД
+    # Вставка СТРОКИ в ТАБЛИЦУ from_money в БД
     def sql_insert_from_money(conc2, entities):
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
-            'INSERT INTO from_money(from_id, money, m_time) VALUES(%s, %s, %s)',
+            'INSERT INTO from_money(from_id, money, m_time, clan_name) VALUES(%s, %s, %s, %s)',
             entities)
         conc2.commit()
 
@@ -152,7 +152,7 @@ try:
                            ' where peer_id = ' + str(peer_id_val) + ' AND from_id = ' + str(from_id_val))
         con5.commit()
 
-    # Обновление параметра в таблице from_params
+    # Обновление параметра в таблице from_money
     def sql_update_from_money(con6, what_fetch, what_fetch_new, from_id_val):
         cursorObj1 = con6.cursor()
         cursorObj1.execute('UPDATE from_money SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
@@ -190,7 +190,7 @@ try:
         cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
         rows = cursorObj2.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            entities = str(from_id), '0', '0'
+            entities = str(from_id), '0', '0', '0'
             sql_insert_from_money(conc, entities)
             rows = sql_fetch_from_money(conc, what_return, from_id)
         return rows
