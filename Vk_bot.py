@@ -346,7 +346,7 @@ try:
         monall = (str(sql_fetch_from_all(con, 'money', my_peer))).split()
         mess = ''
         people = []
-        for i in range(len(idall) - 1):
+        for i in range(len(idall)):
             a = ''
             b = ''
             for j in (idall[i]):
