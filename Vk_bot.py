@@ -357,8 +357,8 @@ try:
                     b += str(k)
             people.append([str(a), int(b)])
         people = sorted(people, key=lambda peoples: (-peoples[1]))
-        for i in people:
-            mess += '💰' + people_info(i[0]) + ' - ' + str(i[1]) + ' монет\n'
+        for i in range(len(people)):
+            mess += str(i) + '.💰' + people_info(people[i][0]) + ' - ' + str(people[i][1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
 
