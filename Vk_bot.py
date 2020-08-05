@@ -918,6 +918,11 @@ try:
                                             if i == 3:
                                                 dengi *= 4
                                             break
+                            else:
+                                add_balans(my_from, dengi)
+                                stop = 1
+                                send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
+                                break
                         if stop == 1:
                             zapret_zap_game(my_peer)
                             break
