@@ -358,7 +358,16 @@ try:
             people.append([str(a), int(b)])
         people = sorted(people, key=lambda peoples: (-peoples[1]))
         for i in range(len(people)):
-            mess += str(i) + '.💰' + people_info(people[i][0]) + ' - ' + str(people[i][1]) + ' монет\n'
+            if int(people[i][1]) > 0 and i <= 30:
+                if i == 0:
+                    mess += '&#128142;'
+                elif i == 1:
+                    mess += '&#128176;'
+                elif i == 2:
+                    mess += '&#128179;'
+                else:
+                    mess += '&#128182;'
+                mess += str(i+1) + '. ' + people_info(people[i][0]) + ' - ' + str(people[i][1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
 
