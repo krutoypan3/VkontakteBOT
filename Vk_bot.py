@@ -104,12 +104,11 @@ try:
     # Создание таблицы в БД
     def sql_table(conc3):
         cursorObj4 = conc3.cursor()  # Курсор БД
-        cursorObj4.execute("CREATE TABLE clan_info(clan_name text PRIMARY KEY, clan_money text, clan_admin text)")
+        cursorObj4.execute("CREATE TABLE clan_info(clan_name text, clan_money text, clan_admin text)")
         conc3.commit()
 
 
     con = sql_connection()  # Создание соединения с БД
-
 
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
     def sql_insert(conc2, entities):
@@ -123,6 +122,14 @@ try:
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
             'INSERT INTO from_params(peer_id, from_id, money, m_time, warn, marry_id) VALUES(%s, %s, %s, %s, %s, %s)',
+            entities)
+        conc2.commit()
+
+    # Вставка СТРОКИ в ТАБЛИЦУ from_money в БД
+    def sql_insert_clan_info(conc2, entities):
+        cursorObj3 = conc2.cursor()
+        cursorObj3.execute(
+            'INSERT INTO clan_info(clan_name, clan_money, clan_admin) VALUES(%s, %s, %s)',
             entities)
         conc2.commit()
 
@@ -152,13 +159,49 @@ try:
                            ' where peer_id = ' + str(peer_id_val) + ' AND from_id = ' + str(from_id_val))
         con5.commit()
 
-    # Обновление параметра в таблице from_money
-    def sql_update_from_money(con6, what_fetch, what_fetch_new, from_id_val):
+    # Обновление параметра в таблице from_money INT
+    def sql_update_from_money_int(con6, what_fetch, what_fetch_new, from_id_val):
         cursorObj1 = con6.cursor()
         cursorObj1.execute('UPDATE from_money SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
                            ' where from_id = ' + str(from_id_val))
         con6.commit()
 
+        # Обновление параметра в таблице from_money INT
+
+
+    def sql_update_from_money_text(con6, what_fetch, what_fetch_new, from_id_val):
+        cursorObj1 = con6.cursor()  # SELECT CAST ('100' AS INTEGER)
+        cursorObj1.execute('UPDATE from_money SET ' + str(what_fetch) + ' = CAST(' + "'" + str(what_fetch_new) + "'"
+                           + ' AS varchar)' +
+                           ' where from_id = ' + str(from_id_val) + '::int')
+        con6.commit()
+
+    # Обновление параметра в таблице clan_info
+    def sql_update_clan_info(con6, what_fetch, what_fetch_new, clan_id_val):
+        cursorObj1 = con6.cursor()
+        cursorObj1.execute('UPDATE clan_info SET ' + str(what_fetch) + ' = CAST(' + "'" + str(what_fetch_new) + "'"
+                           + ' AS varchar)' +
+                           ' where clan_name = CAST(' + "'" + str(clan_id_val) + "'" + ' AS varchar)')
+        con6.commit()
+
+    # Получение параметров из таблицы clan_info
+    def sql_fetch_clan_info(conc, what_return, clan_name):
+        try:
+            cursorObj2 = conc.cursor()
+            cursorObj2.execute('SELECT ' + str(what_return) + ' FROM clan_info WHERE clan_name = CAST(' + "'" +
+                               str(clan_name) + "'" + ' AS varchar)')
+            rows = cursorObj2.fetchall()[0]
+            return rows
+        except:
+            cursorObj2 = conc.cursor()
+            cursorObj2.execute("ROLLBACK")
+            conc.commit()
+            return 'NULL'
+
+    def sql_delite_clan_info(conc, clan_name):
+        cursorObj2 = conc.cursor()
+        cursorObj2.execute('DELETE FROM clan_info WHERE clan_name = CAST(' + "'" + str(clan_name) +
+                           "'" + ' AS varchar)')
 
     # Получение параметров из таблицы peer_params
     def sql_fetch(conc, what_return, peer_id_val):
@@ -190,9 +233,17 @@ try:
         cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
         rows = cursorObj2.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            entities = str(from_id), '0', '0', '0'
+            entities = str(from_id), '0', '0', 'NULL'
             sql_insert_from_money(conc, entities)
             rows = sql_fetch_from_money(conc, what_return, from_id)
+        return rows
+
+    # Получение параметров из таблицы from_money
+    def sql_fetch_from_money_clan(conc, what_return, clan_name):
+        cursorObj2 = conc.cursor()
+        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE clan_name = CAST(' + "'" +
+                           str(clan_name) + "'" + ' AS varchar)')
+        rows = cursorObj2.fetchall()
         return rows
 
     # Получение параметров из таблицы from_params
@@ -267,6 +318,100 @@ try:
         people = vk.users.get(user_ids=people_id)
         people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
         return people
+
+
+    def clan_create(my_peer, my_from, clan_name):
+        if len(clan_name) >= 3:
+            cln_name = str(sql_fetch_from_money(con, 'clan_name', my_from)[0][0])
+            if (cln_name == 'NULL' or cln_name == 'None') and \
+                    sql_fetch_clan_info(con, 'clan_name', clan_name[2]) == 'NULL':
+                if int(sql_fetch_from_money(con, 'money', my_from)[0][0]) >= 15000:
+                    sql_update_from_money_text(con, 'clan_name', clan_name[2], str(my_from))
+                    add_balans(my_from, '-15000')
+                    entities = str(clan_name[2]), '0', str(my_from)
+                    sql_insert_clan_info(con, entities)
+                    sql_update_clan_info(con, 'clan_admin', my_from, clan_name[2])
+                    send_msg_new(my_peer, 'Клан ' + clan_name[2] + ' успешно создан!')
+                else:
+                    send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ', вы уже состоите в клане!')
+        else:
+            send_msg_new(my_peer, 'Для создания клана напишите "Клан создать "название_клана""\n'
+                                  'Стоимость создания клана - 15000 монет')
+
+
+    def clan_kick(my_peer, my_from, our_from):
+        clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
+        if clan_name != 'NULL' or clan_name != 'None':
+            if sql_fetch_from_money(con, 'clan_name', our_from)[0][0] == clan_name:
+                if str(sql_fetch_clan_info(con, 'clan_admin', clan_name)) == str(my_from):
+                    sql_update_from_money_text(con, 'clan_name', 'NULL', our_from)
+                    send_msg_new(my_peer, people_info(our_from) + ' исключен из клана!')
+                else:
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь адмнистратором клана!')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ', данный человек не состоит в вашем клане!')
+        else:
+            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
+
+    def clan_disvorse(my_peer, my_from):
+        clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
+        clan_adm = sql_fetch_clan_info(con, 'clan_admin', clan_name)
+        if clan_name != 'NULL' or clan_name != 'None':
+            if str(clan_adm[0]) == str(my_from):
+                clan_members = sql_fetch_from_money_clan(con, 'from_id', clan_name)
+                sql_delite_clan_info(con, clan_name)
+                for i in clan_members:
+                    sql_update_from_money_text(con, 'clan_name', 'NULL', i[0])
+                send_msg_new(my_peer, 'Клан ' + clan_name + ' распался')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь администратором клана!')
+        else:
+            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
+    def clan_invite(my_peer, my_from, our_from):
+        clan_name_my = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
+        clan_name_our = sql_fetch_from_money(con, 'clan_name', our_from)
+        if clan_name_my != 'NULL' or clan_name_my != 'None':
+            if str(sql_fetch_clan_info(con, 'clan_admin', clan_name_my)) == str(my_from):
+                if my_from != our_from:
+                    if clan_name_our == 'NULL' or clan_name_our == 'None':
+                        timing = time.time()
+                        keyboard = VkKeyboard(inline=True)
+                        keyboard.add_button('да', color=VkKeyboardColor.PRIMARY)
+                        keyboard.add_button('нет', color=VkKeyboardColor.NEGATIVE)
+                        vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                                         keyboard=keyboard.get_keyboard(),
+                                         message=people_info(our_from) + ', вы были приглашены в клан ' + clan_name_my
+                                                 + '\nВступить в клан?\nПриглашение действует в течении 60 секунд')
+                        for eventhr[kolpot] in longpoll.listen():
+                            if time.time() - timing > 60.0:
+                                send_msg_new(my_peer, 'Срок действия приглашения истек...')
+                                break
+                            if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
+                                if str(eventhr[kolpot].object.peer_id) == str(my_peer) and str(
+                                        eventhr[kolpot].object.from_id) == str(our_from):
+                                    slova_m = eventhr[kolpot].obj.text.split()
+                                    if len(slova_m) == 2:
+                                        if slova_m[1] == "да":
+                                            sql_update_from_money_text(con, 'clan_name', clan_name_my, our_from)
+                                            send_msg_new(my_peer, people_info(our_from) + ', вы вступили в клан ' +
+                                                         clan_name_my)
+                                            break
+                                        elif slova_m[1] == "нет":
+                                            send_msg_new(my_peer, 'Увы, но ' + people_info(our_from) +
+                                                         ' не желает вступать в клан')
+                                            break
+                    else:
+                        send_msg_new(my_peer, people_info(our_from) + ' уже состоит в клане ' + clan_name_our)
+                else:
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не можете пригласить в клан самого себя!')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь администратором клана!')
+        else:
+            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
     # Статус брака
@@ -399,7 +544,7 @@ try:
         if balans_time < (time.time() - 8 * 60 * 60):
             add_balans(my_from, 1000)
             send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
-            sql_update_from_money(con, 'm_time', str(time.time()), str(my_from))
+            sql_update_from_money_int(con, 'm_time', str(time.time()), str(my_from))
         else:
             balans_hour = ''
             balans_minut = ''
@@ -418,7 +563,7 @@ try:
     def add_balans(my_from, zp_balans):
         balans = int(sql_fetch_from_money(con, 'money', my_from)[0][0])
         balans += int(zp_balans)
-        sql_update_from_money(con, 'money', str(balans), str(my_from))
+        sql_update_from_money_int(con, 'money', str(balans), str(my_from))
 
 
     # Проверка на запрет запуска другой игры в данной беседе
@@ -998,7 +1143,16 @@ try:
                                                                    "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
                                                                    "'кол-во серий'\n\nНапример:\nDB insert Этот "
                                                                    "замечательный мир Комедия Исекай Приключения 24")
-                        # Текстовые ответы -----------------------------------------------------------------------------
+
+
+                            '''elif slova[0] + ' ' + slova[1] == 'Клан создать':
+                                thread_start3(clan_create, peer_id, from_id, slova)
+                            elif slova[0] + ' ' + slova[1] == 'Клан распад':
+                                thread_start2(clan_disvorse, peer_id, from_id)
+                            elif slova[0] + ' ' + slova[1] == 'Клан кик':
+                                thread_start3(clan_kick, peer_id, from_id, slova[2])'''
+
+                        # Текстовые ответы ------------------------------------------------------------------------------
                         if len(slova) > 0:
                             if text == "братик привет":
                                 send_msg_new(peer_id, "&#128075; Приветик")
