@@ -1291,8 +1291,7 @@ try:
                                                       "'кол-во серий'\n\nНапример:\nDB insert Этот "
                                                       "замечательный мир Комедия Исекай Приключения 24")
 
-
-                            elif slova[0] + ' ' + slova[1] == 'Клан создать':
+                            '''elif slova[0] + ' ' + slova[1] == 'Клан создать':
                                 thread_start3(clan_create, peer_id, from_id, slova)
                             elif slova[0] + ' ' + slova[1] == 'Клан распад':
                                 thread_start2(clan_disvorse, peer_id, from_id)
@@ -1313,11 +1312,11 @@ try:
                                 if slova[0] + ' ' + slova[1] + ' ' + slova[2] == 'Клан казна пополнить':
                                     thread_start3(clan_add_balance, peer_id, from_id, slova[3])
                                 elif slova[0] + ' ' + slova[1] + ' ' + slova[2] == 'Клан казна вывести':
-                                    thread_start3(clan_rem_balance, peer_id, from_id, slova[3])
+                                    thread_start3(clan_rem_balance, peer_id, from_id, slova[3])'''
 
                         # Текстовые ответы ------------------------------------------------------------------------------
                         if len(slova) > 0:
-                            if text == "Клан" or text == "Кланы" or text == "Клан помощь" or text == "Кланы помощь":
+                            '''if text == "Клан" or text == "Кланы" or text == "Клан помощь" or text == "Кланы помощь":
                                 send_msg_new(peer_id, 'Клановые команды:\n'
                                                       '&#8505;Клан инфо\n'
                                                       '&#127381;Клан создать "название_слитно" |&#128184;15000 монет\n'
@@ -1327,9 +1326,9 @@ try:
                                                       '&#127975;Клан баланс\n'
                                                       '&#128200;Клан баланс топ\n'
                                                       '&#128182;Клан казна пополнить "сумма"\n'
-                                                      '&#128183;Клан казна вывести "сумма"')
+                                                      '&#128183;Клан казна вывести "сумма"')'''
 
-                            elif text == "братик привет":
+                            if text == "братик привет":
                                 send_msg_new(peer_id, "&#128075; Приветик")
                             elif text == "Admin-reboot":
                                 send_msg_new(peer_id, "Бот уходит на перезагрузку и будет доступен "
