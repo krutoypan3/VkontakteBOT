@@ -139,7 +139,7 @@ try:
     def sql_insert_from_money(conc2, entities):
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
-            'INSERT INTO from_money(from_id, money, m_time, clan_name) VALUES(%s, %s, %s, %s)',
+            'INSERT INTO from_money(from_id, money, m_time, clan_name, first_name, last_name, clan_rank) VALUES(%s, %s, %s, %s, %s, %s, %s)',
             entities)
         conc2.commit()
 
@@ -239,7 +239,7 @@ try:
         cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
         rows = cursorObj2.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            entities = str(from_id), '0', '0', 'NULL'
+            entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), str(vk.users.get(user_ids=from_id)[0]['last_name']), '0'
             sql_insert_from_money(conc, entities)
             rows = sql_fetch_from_money(conc, what_return, from_id)
         return rows
@@ -1326,19 +1326,17 @@ try:
 
 
     # Клавиатура со списком игр
-    def klava_game(my_peer_klava):
-        keyboard = VkKeyboard(inline=True)
-        keyboard.add_button('угадай число', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_line()  # Отступ строки
-        keyboard.add_button('бросок кубика', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_line()  # Отступ строки
-        keyboard.add_button('кто круче', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_line()  # Отступ строки
-        keyboard.add_button('математическая викторина', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_line()  # Отступ строки
-        keyboard.add_button('казино', color=VkKeyboardColor.PRIMARY)
-        vk.messages.send(peer_id=my_peer_klava, random_id=get_random_id(),
-                         keyboard=keyboard.get_keyboard(), message='Список игр:')
+    def klava_game(my_peer):
+        send_msg_new(my_peer, '&#8505;Для запуска напишите: игра "номер" Например: игра 1\n'
+                                    '&#8505;Список игр:\n'
+                                    '1&#8419;Угадай число\n'
+                                    '2&#8419;Бросок кубика\n'
+                                    '3&#8419;Кто круче\n'
+                                    '4&#8419;Математическая викторина\n'
+                                    '5&#8419;Казино')
+
+
+
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
     print(" - ошибка подключения к вк")
@@ -1353,31 +1351,11 @@ try:
                 if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                     if event.object.from_id > 0:
                         def messege_chek(peer_id, from_id, text):
-                            slova = event.obj.text.split()  # Разделение сообщения на слова
+                            slova = event.obj.text.lower().split()  # Разделение сообщения на слова
                             # Логика ответов
                             # Игры ------------------------------------------------------------------------------------
                             if len(slova) > 2:
-                                if slova[1] + ' ' + slova[2] == 'угадай число':
-                                    if not prov_zap_game(peer_id):
-                                        thread_start2(game_ugadai_chislo, peer_id, from_id)
-                                    else:
-                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
-                                elif slova[1] + ' ' + slova[2] == 'кто круче':
-                                    if not prov_zap_game(peer_id):
-                                        thread_start1(game_kto_kruche, peer_id)
-                                    else:
-                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
-                                elif slova[1] + ' ' + slova[2] == 'бросок кубика':
-                                    if not prov_zap_game(peer_id):
-                                        thread_start1(game_brosok_kubika, peer_id)
-                                    else:
-                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
-                                elif slova[1] + ' ' + slova[2] == 'математическая викторина':
-                                    if not prov_zap_game(peer_id):
-                                        thread_start2(game_mat_victorina, peer_id, from_id)
-                                    else:
-                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
-                                elif slova[0] == 'DB' and slova[1] == 'insert':
+                                if slova[0] == 'DB' and slova[1] == 'insert':
                                     anime_name = ''
                                     for i in range(len(slova) - 4):
                                         if i > 1:
@@ -1393,7 +1371,27 @@ try:
                                                           "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
                                                           "'кол-во серий'\n\nНапример:\nDB insert Этот "
                                                           "замечательный мир Комедия Исекай Приключения 24")
-                                elif slova[1] == 'казино':
+                                elif slova[0] + ' ' + slova[1] == 'игра 1':
+                                    if not prov_zap_game(peer_id):
+                                        thread_start2(game_ugadai_chislo, peer_id, from_id)
+                                    else:
+                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
+                                elif slova[0] + ' ' + slova[1] == 'игра 2':
+                                    if not prov_zap_game(peer_id):
+                                        thread_start1(game_kto_kruche, peer_id)
+                                    else:
+                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
+                                elif slova[0] + ' ' + slova[1] == 'игра 3':
+                                    if not prov_zap_game(peer_id):
+                                        thread_start1(game_brosok_kubika, peer_id)
+                                    else:
+                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
+                                elif slova[0] + ' ' + slova[1] == 'игра 4':
+                                    if not prov_zap_game(peer_id):
+                                        thread_start2(game_mat_victorina, peer_id, from_id)
+                                    else:
+                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
+                                elif slova[0] + ' ' + slova[1] == 'игра 5':
                                     if not prov_zap_game(peer_id):
                                         thread_start2(game_casino, peer_id, from_id)
                                     else:
@@ -1441,7 +1439,7 @@ try:
                                 elif text == "Донат" or text == "Купить бро коины" or\
                                         text == "донат" or text == "купить бро коины":
                                     send_msg_new(peer_id, 'Для покупки бро коинов перейдите по ссылке и оплатите нужное'
-                                                          ' количество\n1 рубль = 1000 бро-коинов\n'
+                                                          ' количество\n1 рубль = 2000 бро-коинов\n'
                                                           'Ваш баланс будет пополнет в течении суток\n'
                                                           'В комментарии обязательно укажите ссылку на вашу страницу\n'
                                                           'https://yasobe.ru/na/br_koins')
@@ -1582,7 +1580,7 @@ try:
                                 else:
                                     main_keyboard_1(peer_id)
 
-                        thread_start3(messege_chek, event.object.peer_id, event.object.from_id, event.obj.text)
+                        thread_start3(messege_chek, event.object.peer_id, event.object.from_id, event.obj.text.lower())
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
             error(" - ошибка подключения к вк")
