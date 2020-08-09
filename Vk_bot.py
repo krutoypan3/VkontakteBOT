@@ -26,9 +26,11 @@ def error(ErrorF):
 try:
     API_GROUP_KEY = '956c94c497adaa135a29605943d6ab551d74a6071757da8e4aa516a2fd4c980e96cfbe101b06a9d57e2b6'
     API_USER_KEY = '34469a24e88620d4ee0961cc31e2c1c96d5cb01edd3ee50ed1f08fac299571630f4f602564c89419cbc58'
-    print("Бот работает...")
-    group_id = '196288744'  # Указываем id сообщества, изменять только здесь!
-    oshibka = 0  # обнуление счетчика ошибок
+    API_SERVICE_KEY = 'c14c6918c14c6918c14c691807c13e8ffacc14cc14c69189e4cb11298fa3a5dff633603'
+    client_secret = '3GBA2mEv669lqnF8WZyA'
+    print("Бот запускается...")
+    group_id = '196288744'  # Указываем id сообщества
+    oshibka = 0  # обнуление счетчика ошибок | не трогать
     threads = list()
     eventhr = []
     kolpot = -1
@@ -45,12 +47,10 @@ try:
     vk_polzovat = vk_session_user.get_api()
 
     # Авторизация сервисным токеном
-    ser_token = 'c14c6918c14c6918c14c691807c13e8ffacc14cc14c69189e4cb11298fa3a5dff633603'
-    client_secret = '3GBA2mEv669lqnF8WZyA'
-    vk_session_SERVISE = vk_api.VkApi(app_id=7530210, token=ser_token, client_secret=client_secret)
+    vk_session_SERVISE = vk_api.VkApi(app_id=7530210, token=API_SERVICE_KEY, client_secret=client_secret)
     vk_session_SERVISE.server_auth()
     vk_SERVISE = vk_session_SERVISE.get_api()
-    vk_session_SERVISE.token = {'access_token': ser_token, 'expires_in': 0}
+    vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
     global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
         photo_ur18
@@ -361,11 +361,18 @@ try:
 
     def chislo_li_eto(chto):
         a = ''
+        odna_tochka = 0
         for i in str(chto):
             if '0' <= str(i) <= '9':
                 a += str(i)
             elif str(i) == '-':
-                a += str(i)
+                a += str('-')
+            elif str(i) == '.' or str(i) == ',':
+                if not odna_tochka:
+                    a += str('.')
+                    odna_tochka = 1
+                else:
+                    return False
             else:
                 return False
         if a == '':
@@ -650,7 +657,7 @@ try:
             people.append([str(a), int(b)])
         people = sorted(people, key=lambda peoples: (-peoples[1]))
         for i in range(len(people)):
-            if int(people[i][1]) > 0 and i <= 30:
+            if int(people[i][1]) > 0 and 30 >= i > 0:
                 if i == 0:
                     mess += '&#128142;'
                 elif i == 1:
@@ -659,7 +666,7 @@ try:
                     mess += '&#128179;'
                 else:
                     mess += '&#128182;'
-                mess += str(i + 1) + '. ' + people_info(people[i][0]) + ' - ' + str(people[i][1]) + ' монет\n'
+                mess += str(i) + '. ' + people_info(people[i][0]) + ' - ' + str(people[i][1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
 
@@ -1095,6 +1102,96 @@ try:
             money_win(uchastniki[priz], stavka, uchastniki)
             zapret_zap_game(my_peer_game2)
 
+    def game_casino(my_peer, my_from):
+        dengi_game = 0
+        zapret_zap_game(my_peer)
+        send_msg_new(my_peer,
+                     '&#127918;' + people_info(my_from) +', для вас запущена игра "Казино"')
+        keyboard = VkKeyboard(inline=True)
+        keyboard.add_button('100', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_button('500', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_button('1000', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_button('5000', color=VkKeyboardColor.PRIMARY)
+        vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                         keyboard=keyboard.get_keyboard(), message='Выберите ставку - чем выше ставка, '
+                                                                   'тем меньше шанс победить!\n'
+                                                                   'Шанс победы = (100 / Ставка * 1.1)%\n'
+                                                                   'И помните, бесплатный сыр только в мышеловке!')
+        timing = time.time()
+        stop = 0
+        for event_casino_game in longpoll.listen():
+            if time.time() - timing < 15.0:
+                if event_casino_game.type == VkBotEventType.MESSAGE_NEW:
+                    if event_casino_game.object.from_id == my_from:
+                        slovo = event_casino_game.obj.text.split()
+                        if len(slovo) > 1:
+                            if chislo_li_eto(slovo[1]):
+                                if float(slovo[1]) > 0:
+                                    dengi_game = float(slovo[1])
+                                    if int(sql_fetch_from_money(con, 'money', my_from)[0][0]) >= dengi_game:
+                                        break
+                                    else:
+                                        send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!\n'
+                                                                                     'Игра отменена!')
+                                        stop = 1
+                                        break
+                                else:
+                                    send_msg_new(my_peer, people_info(my_from) + ', ставка не может быть '
+                                                                                 'отрицательна!\n'
+                                                                                 'Введите правильное число!')
+                            else:
+                                send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
+            if time.time() - timing >= 15:
+                stop = 1
+                send_msg_new(my_peer, people_info(my_from) + ', время истекло!\n'
+                                                             'Игра отменена!')
+                break
+        if stop != 1:
+            keyboard = VkKeyboard(inline=True)
+            keyboard.add_button('2.0', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('3.0', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('4.0', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('5.0', color=VkKeyboardColor.PRIMARY)
+            vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                             keyboard=keyboard.get_keyboard(), message='Выберите множитель - чем выше множитель, '
+                                                                       'тем меньше шанс победить!\n'
+                                                                       'Шанс победы = (100 / множитель * 1.1)%')
+            timing = time.time()
+            for event_casino_game in longpoll.listen():
+                if time.time() - timing < 15.0:
+                    if event_casino_game.type == VkBotEventType.MESSAGE_NEW:
+                        if event_casino_game.object.from_id == my_from:
+                            slovo = event_casino_game.obj.text.split()
+                            if len(slovo) > 1:
+                                if chislo_li_eto(slovo[1]):
+                                    if float(slovo[1]) > 0:
+                                        add_balans(my_from, '-' + str(int(dengi_game)))
+                                        s = random.random()
+                                        send_msg_new(my_peer, 'Колесо фортуны запущено!\n'
+                                                              'Ваша ставка: ' + str(int(dengi_game)) +
+                                                     '\nВаш множитель: ' + str(slovo[1]) +
+                                                     '\nШанс победить: ' + str(100 / (float(slovo[1]) * 1.1)) + '%')
+                                        time.sleep(3)
+                                        if (s * 100) < (100 / (float(slovo[1]) * 1.1)):
+                                            add_balans(my_from, (float(int(dengi_game)) * float(slovo[1])))
+                                            send_msg_new(my_peer, people_info(my_from) + ', вы выйграли '
+                                                         + str(float(dengi_game) * float(slovo[1])) + ' монет!')
+                                        else:
+                                            send_msg_new(my_peer, people_info(my_from) + ', к сожалению, вы проиграли!')
+                                        break
+                                    else:
+                                        send_msg_new(my_peer, people_info(my_from) + ', ставка не может быть '
+                                                                                     'отрицательна!\n'
+                                                                                     'Введите правильное число!')
+                                else:
+                                    send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
+                else:
+                    send_msg_new(my_peer, 'вы так и не сделали ставку\n'
+                                          'Игра отменена!')
+                    break
+            zapret_zap_game(my_peer)
+        else:
+            zapret_zap_game(my_peer)
 
     # Игра бросок кубика
     def game_brosok_kubika(my_peer_game3):
@@ -1238,6 +1335,8 @@ try:
         keyboard.add_button('кто круче', color=VkKeyboardColor.PRIMARY)
         keyboard.add_line()  # Отступ строки
         keyboard.add_button('математическая викторина', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_line()  # Отступ строки
+        keyboard.add_button('казино', color=VkKeyboardColor.PRIMARY)
         vk.messages.send(peer_id=my_peer_klava, random_id=get_random_id(),
                          keyboard=keyboard.get_keyboard(), message='Список игр:')
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
@@ -1246,6 +1345,7 @@ except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
 
 # Основной цикл программы
 try:
+    print("Бот работает...")
     def main():
         global oshibka, kolpot  # Счетчик ошибок и счетчик количества потоков
         try:
@@ -1255,7 +1355,7 @@ try:
                         def messege_chek(peer_id, from_id, text):
                             slova = event.obj.text.split()  # Разделение сообщения на слова
                             # Логика ответов
-                            # Игры --------------------------------------------------------------------------------------
+                            # Игры ------------------------------------------------------------------------------------
                             if len(slova) > 2:
                                 if slova[1] + ' ' + slova[2] == 'угадай число':
                                     if not prov_zap_game(peer_id):
@@ -1293,7 +1393,11 @@ try:
                                                           "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
                                                           "'кол-во серий'\n\nНапример:\nDB insert Этот "
                                                           "замечательный мир Комедия Исекай Приключения 24")
-
+                                elif slova[1] == 'казино':
+                                    if not prov_zap_game(peer_id):
+                                        thread_start2(game_casino, peer_id, from_id)
+                                    else:
+                                        send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                                 elif slova[0] + ' ' + slova[1] == 'Клан создать':
                                     thread_start3(clan_create, peer_id, from_id, slova)
                                 elif slova[0] + ' ' + slova[1] == 'Клан распад':
@@ -1477,7 +1581,7 @@ try:
             error(" - ошибка подключения к вк")
 
         finally:
-            error('Ошибочка')
+            error('Неизвестная мне ошибка, но не критично, наверное')
 
 
     main()
@@ -1486,4 +1590,4 @@ except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
     error(" - ошибка подключения к вк")
 
 finally:
-    error('Ошибочка')
+    error('Неизвестная мне ошибка, но не критично, наверное')
