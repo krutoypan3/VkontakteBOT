@@ -339,17 +339,19 @@ try:
     def clan_create(my_peer, my_from, clan_name):
         if len(clan_name) >= 3:
             cln_name = str(sql_fetch_from_money(con, 'clan_name', my_from)[0][0])
-            if (cln_name == 'NULL' or cln_name is None) and \
-                    sql_fetch_clan_info(con, 'clan_name', clan_name[2]) == 'NULL':
-                if int(sql_fetch_from_money(con, 'money', my_from)[0][0]) >= 15000:
-                    sql_update_from_money_text(con, 'clan_name', clan_name[2], str(my_from))
-                    add_balans(my_from, '-15000')
-                    entities = str(clan_name[2]), '0', str(my_from)
-                    sql_insert_clan_info(con, entities)
-                    sql_update_clan_info(con, 'clan_admin', my_from, clan_name[2])
-                    send_msg_new(my_peer, 'Клан ' + clan_name[2] + ' успешно создан!')
+            if (cln_name == 'NULL') or (cln_name is None) or (cln_name == 'None'):
+                if sql_fetch_clan_info(con, 'clan_name', clan_name[2]) == 'NULL':
+                    if int(sql_fetch_from_money(con, 'money', my_from)[0][0]) >= 15000:
+                        sql_update_from_money_text(con, 'clan_name', clan_name[2], str(my_from))
+                        add_balans(my_from, '-15000')
+                        entities = str(clan_name[2]), '0', str(my_from)
+                        sql_insert_clan_info(con, entities)
+                        sql_update_clan_info(con, 'clan_admin', my_from, clan_name[2])
+                        send_msg_new(my_peer, 'Клан ' + clan_name[2] + ' успешно создан!')
+                    else:
+                        send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
                 else:
-                    send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
+                    send_msg_new(my_peer, people_info(my_from) + ', клан с таким названием уже существует!')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы уже состоите в клане!')
         else:
@@ -1470,8 +1472,6 @@ try:
                                     main_keyboard_1(peer_id)
 
                         thread_start3(messege_chek, event.object.peer_id, event.object.from_id, event.obj.text)
-                    else:
-                        send_msg_new(event.object.peer_id, 'Господин бот, охлади свое траханье')
         except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                 urllib3.exceptions.NewConnectionError, socket.gaierror):
             error(" - ошибка подключения к вк")
