@@ -337,7 +337,7 @@ try:
         people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
         return people
 
-
+    # Создание клана
     def clan_create(my_peer, my_from, clan_name):
         if len(clan_name) >= 3:
             cln_name = str(sql_fetch_from_money(con, 'clan_name', my_from)[0][0])
@@ -382,11 +382,11 @@ try:
         else:
             return True
 
-
+    # Снятие денег с баланса клана rank 4+
     def clan_rem_balance(my_peer, my_from, money):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
-            if str(sql_fetch_clan_info(con, 'clan_admin', clan_name)[0]) == str(my_from):
+            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) >= 4:
                 clan_bals = sql_fetch_clan_info(con, 'clan_money', clan_name)[0]
                 if chislo_li_eto(money):
                     if int(clan_bals) >= int(money):
@@ -397,11 +397,12 @@ try:
                 else:
                     send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
             else:
-                send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь адмнистратором клана!')
+                send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                             'выполнения данной команды!')
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
-
+    # Пополнение баланса клана
     def clan_add_balance(my_peer, my_from, money):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
@@ -420,12 +421,16 @@ try:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
-    # Баланс клана
+    # Баланс клана rank 1+
     def clan_balance(my_peer, my_from):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
-            money = sql_fetch_clan_info(con, 'clan_money', clan_name)[0]
-            send_msg_new(my_peer, 'В казне вашего клана ' + str(money) + ' монет')
+            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) >= 1:
+                money = sql_fetch_clan_info(con, 'clan_money', clan_name)[0]
+                send_msg_new(my_peer, 'В казне вашего клана ' + str(money) + ' монет')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                             'выполнения данной команды!')
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
@@ -434,6 +439,30 @@ try:
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             send_msg_new(my_peer, people_info(my_from) + ', вы состоите в клане ' + clan_name)
+            first_all = (sql_fetch_from_money_clan(con, 'first_name', str(clan_name)))
+            last_all = (sql_fetch_from_money_clan(con, 'last_name', str(clan_name)))
+            rank_all = (sql_fetch_from_money_clan(con, 'clan_rank', str(clan_name)))
+            mess = ''
+            people = []
+            for i in range(len(rank_all)):
+                people.append([first_all[i][0], last_all[i][0], rank_all[i][0]])
+            people = sorted(people, key=lambda peoples: (-peoples[2]))
+            for i in range(len(people)):
+                if int(people[i][2]) == 5:
+                    mess += '⭐⭐⭐⭐⭐'
+                elif int(people[i][2]) == 4:
+                    mess += '⭐⭐⭐⭐'
+                elif int(people[i][2]) == 3:
+                    mess += '⭐⭐⭐'
+                elif int(people[i][2]) == 2:
+                    mess += '⭐⭐'
+                elif int(people[i][2]) == 1:
+                    mess += '⭐'
+                else:
+                    mess += '-'
+                mess += str(i) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
+                        str(people[i][2]) + ' монет\n'
+            send_msg_new(my_peer, mess)
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
@@ -467,7 +496,7 @@ try:
                 mess += str(i + 1) + '. ' + clan[i][0] + ' - ' + str(clan[i][1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
-
+    # rank 2+
     def clan_kick(my_peer, my_from, id2):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         our_from = ''
@@ -478,26 +507,29 @@ try:
                 break
         if clan_name != 'NULL' and clan_name is not None:
             if sql_fetch_from_money(con, 'clan_name', our_from)[0][0] == clan_name:
-                if str(sql_fetch_clan_info(con, 'clan_admin', clan_name)[0]) == str(my_from):
+                if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) > \
+                        int(sql_fetch_from_money(con, 'clan_rank', str(our_from))[0]) >= 2:
                     sql_update_from_money_text(con, 'clan_name', 'NULL', our_from)
+                    sql_update_from_money_int(con, 'clan_rank', '0', our_from)
                     send_msg_new(my_peer, people_info(our_from) + ' исключен из клана!')
                 else:
-                    send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь адмнистратором клана!')
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                                 'выполнения данной команды!')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', данный человек не состоит в вашем клане!')
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
-
+    # rank 5
     def clan_disvorse(my_peer, my_from):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
-            clan_adm = sql_fetch_clan_info(con, 'clan_admin', clan_name)
-            if str(clan_adm[0]) == str(my_from):
+            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) == 5:
                 clan_members = sql_fetch_from_money_clan(con, 'from_id', clan_name)
                 sql_delite_clan_info(con, clan_name)
                 for i in clan_members:
                     sql_update_from_money_text(con, 'clan_name', 'NULL', i[0])
+                    sql_update_from_money_int(con, 'clan_name', '0', i[0])
                 send_msg_new(my_peer, 'Клан ' + clan_name + ' распался')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь администратором клана!')
@@ -517,7 +549,7 @@ try:
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
-
+    # rank 2+
     def clan_invite(my_peer, my_from, id2):
         clan_name_my = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         our_from = ''
@@ -529,8 +561,7 @@ try:
         if our_from != '':
             clan_name_our = sql_fetch_from_money(con, 'clan_name', our_from)[0][0]
             if clan_name_my != 'NULL' and clan_name_my != 'None':
-                clan_adm = sql_fetch_clan_info(con, 'clan_admin', clan_name_my)[0]
-                if str(clan_adm) == str(my_from):
+                if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) >= 2:
                     if my_from != our_from:
                         if clan_name_our == 'NULL' or clan_name_our is None:
                             timing = time.time()
@@ -565,9 +596,50 @@ try:
                     else:
                         send_msg_new(my_peer, people_info(my_from) + ', вы не можете пригласить в клан самого себя!')
                 else:
-                    send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь администратором клана!')
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                                 'выполнения данной команды!')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
+
+    def clan_up_down(my_peer, my_from, id2, up_or_down):
+        clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
+        our_from = ''
+        for i in id2:
+            if '0' <= i <= '9':
+                our_from += i
+            if i == '|':
+                break
+        if clan_name != 'NULL' and clan_name is not None:
+            if sql_fetch_from_money(con, 'clan_name', our_from)[0][0] == clan_name:
+                my_rank = int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0])
+                our_rank = int(sql_fetch_from_money(con, 'clan_rank', str(our_from))[0])
+                if my_rank > our_rank:
+                    if my_rank >= 3:
+                        if up_or_down:
+                            sql_update_from_money_text(con, 'clan_rank', str(our_rank + 1), our_from)
+                            send_msg_new(my_peer, people_info(my_from) + ' повысил ранг ' + people_info(our_from) + '!')
+                        else:
+                            if our_rank > 0:
+                                sql_update_from_money_text(con, 'clan_rank', str(our_rank - 1), our_from)
+                                send_msg_new(my_peer,
+                                             people_info(my_from) + ' понизил ранг ' + people_info(our_from) + '!')
+                            else:
+                                send_msg_new(my_peer, 'У ' + people_info(our_from) + ' нисший ранг!')
+                    else:
+                        send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                                     'выполнения данной команды!\n'
+                                                                     'У вас должен быть минимум 3-ий ранг')
+                else:
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                                 'выполнения данной команды!\n'
+                                                                 'Вы не можете присвоить кому-либо ранг своего '
+                                                                 'уровня или выше')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ', данный человек не состоит в вашем клане!')
+        else:
+            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
 
 
     # Статус брака
@@ -1406,6 +1478,10 @@ try:
                                         thread_start1(clan_balance_top, peer_id)
                                 if slova[0] + ' ' + slova[1] == 'клан баланс':
                                     thread_start2(clan_balance, peer_id, from_id)
+                                elif slova[0] + ' ' + slova[1] == 'клан повысить':
+                                    thread_start4(clan_up_down, peer_id, from_id, slova[2], True)
+                                elif slova[0] + ' ' + slova[1] == 'клан понизить':
+                                    thread_start4(clan_up_down, peer_id, from_id, slova[2], False)
                                 elif slova[0] + ' ' + slova[1] == 'клан инфо':
                                     thread_start2(clan_info, peer_id, from_id)
                                 elif len(slova) > 3:
@@ -1427,7 +1503,9 @@ try:
                                                           '&#127975;Клан баланс\n'
                                                           '&#128200;Клан баланс топ\n'
                                                           '&#128182;Клан казна пополнить "сумма"\n'
-                                                          '&#128183;Клан казна вывести "сумма"')
+                                                          '&#128183;Клан казна вывести "сумма"\n'
+                                                          '&#9654;Клан повысить "кого"\n'
+                                                          '&#9664;Клан понизить "кого"')
 
                                 if text == "братик привет":
                                     send_msg_new(peer_id, "&#128075; Приветик")
