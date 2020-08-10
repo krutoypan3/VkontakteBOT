@@ -386,7 +386,7 @@ try:
     def clan_rem_balance(my_peer, my_from, money):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
-            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) >= 4:
+            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0][0]) >= 4:
                 clan_bals = sql_fetch_clan_info(con, 'clan_money', clan_name)[0]
                 if chislo_li_eto(money):
                     if int(clan_bals) >= int(money):
@@ -460,8 +460,7 @@ try:
                     mess += '⭐'
                 else:
                     mess += '-'
-                mess += str(i) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
-                        str(people[i][2]) + ' монет\n'
+                mess += str(i) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
             send_msg_new(my_peer, mess)
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
@@ -507,8 +506,8 @@ try:
                 break
         if clan_name != 'NULL' and clan_name is not None:
             if sql_fetch_from_money(con, 'clan_name', our_from)[0][0] == clan_name:
-                if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) > \
-                        int(sql_fetch_from_money(con, 'clan_rank', str(our_from))[0]) >= 2:
+                if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0][0]) > \
+                        int(sql_fetch_from_money(con, 'clan_rank', str(our_from))[0][0]) >= 2:
                     sql_update_from_money_text(con, 'clan_name', 'NULL', our_from)
                     sql_update_from_money_int(con, 'clan_rank', '0', our_from)
                     send_msg_new(my_peer, people_info(our_from) + ' исключен из клана!')
@@ -524,7 +523,7 @@ try:
     def clan_disvorse(my_peer, my_from):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
-            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) == 5:
+            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0][0]) == 5:
                 clan_members = sql_fetch_from_money_clan(con, 'from_id', clan_name)
                 sql_delite_clan_info(con, clan_name)
                 for i in clan_members:
@@ -545,6 +544,7 @@ try:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не можете покинуть клан, так как являетесь главой')
             else:
                 sql_update_from_money_text(con, 'clan_name', 'NULL', my_from)
+                sql_update_from_money_int(con, 'clan_rank', '0', my_from)
                 send_msg_new(my_peer, people_info(my_from) + ', вы покинули клан ' + clan_name)
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
@@ -561,7 +561,8 @@ try:
         if our_from != '':
             clan_name_our = sql_fetch_from_money(con, 'clan_name', our_from)[0][0]
             if clan_name_my != 'NULL' and clan_name_my != 'None':
-                if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) >= 2:
+                a = (sql_fetch_from_money(con, 'clan_rank', str(my_from))[0][0])
+                if int(a) >= 2:
                     if my_from != our_from:
                         if clan_name_our == 'NULL' or clan_name_our is None:
                             timing = time.time()
@@ -612,16 +613,16 @@ try:
                 break
         if clan_name != 'NULL' and clan_name is not None:
             if sql_fetch_from_money(con, 'clan_name', our_from)[0][0] == clan_name:
-                my_rank = int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0])
-                our_rank = int(sql_fetch_from_money(con, 'clan_rank', str(our_from))[0])
+                my_rank = int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0][0])
+                our_rank = int(sql_fetch_from_money(con, 'clan_rank', str(our_from))[0][0])
                 if my_rank > our_rank:
                     if my_rank >= 3:
                         if up_or_down:
-                            sql_update_from_money_text(con, 'clan_rank', str(our_rank + 1), our_from)
+                            sql_update_from_money_int(con, 'clan_rank', str(our_rank + 1), our_from)
                             send_msg_new(my_peer, people_info(my_from) + ' повысил ранг ' + people_info(our_from) + '!')
                         else:
                             if our_rank > 0:
-                                sql_update_from_money_text(con, 'clan_rank', str(our_rank - 1), our_from)
+                                sql_update_from_money_int(con, 'clan_rank', str(our_rank - 1), our_from)
                                 send_msg_new(my_peer,
                                              people_info(my_from) + ' понизил ранг ' + people_info(our_from) + '!')
                             else:
