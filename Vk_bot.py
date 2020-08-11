@@ -425,7 +425,7 @@ try:
     def clan_balance(my_peer, my_from):
         clan_name = sql_fetch_from_money(con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
-            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0]) >= 1:
+            if int(sql_fetch_from_money(con, 'clan_rank', str(my_from))[0][0]) >= 1:
                 money = sql_fetch_clan_info(con, 'clan_money', clan_name)[0]
                 send_msg_new(my_peer, 'В казне вашего клана ' + str(money) + ' монет')
             else:
