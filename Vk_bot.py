@@ -1631,10 +1631,10 @@ try:
                                     elif slova[0] == "перевести":
                                         thread_start4(money_send, peer_id, from_id,
                                                       slova[1], slova[2])
-                                elif len(slova) > 5:
+                                if len(slova) > 5:
                                     if slova[0] + ' ' + slova[1] + ' ' + slova[2] == 'случайное число от' and\
                                             slova[4] == 'до':
-                                        thread_start3(random_ot_do_int_chislo, peer_id, slova[3], slova[4])
+                                        thread_start3(random_ot_do_int_chislo, peer_id, slova[3], slova[5])
                                 elif text == "развод":
                                     thread_start2(marry_disvorse, peer_id, from_id)
                                 # Отладка -----------------------------------------------------------------------------
