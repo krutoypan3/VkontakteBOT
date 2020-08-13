@@ -726,11 +726,11 @@ try:
         people = sorted(people, key=lambda peoples: (-peoples[2]))
         for i in range(len(people)):
             if int(people[i][2]) > 0 and 30 >= i > 0:
-                if i == 0:
+                if i == 1:
                     mess += '&#128142;'
-                elif i == 1:
-                    mess += '&#128176;'
                 elif i == 2:
+                    mess += '&#128176;'
+                elif i == 3:
                     mess += '&#128179;'
                 else:
                     mess += '&#128182;'
