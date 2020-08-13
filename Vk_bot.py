@@ -1575,6 +1575,10 @@ try:
                                     idphoto = (photo_arts['items'][randid]['id'])
                                     provzapret_ft(peer_id, 'арт', str(idphoto))
                                     main_keyboard_arts(peer_id)
+                                elif text == "nain":
+                                    idphoto = 457242784
+                                    provzapret_ft(peer_id, 'nain', str(idphoto))
+                                    main_keyboard_arts(peer_id)
                                 elif text == "юри+":
                                     randid = (random.randint(0, photo_ur18['count'] - 1))
                                     idphoto = (photo_ur18['items'][randid]['id'])
