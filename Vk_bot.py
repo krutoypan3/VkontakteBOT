@@ -766,9 +766,9 @@ try:
     def add_balans_every_day(my_peer, my_from):
         balans_time = int(sql_fetch_from_money(con, 'm_time', my_from)[0][0])
         if balans_time < (time.time() - 8 * 60 * 60):
-            add_balans(my_from, 1000)
-            send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
             sql_update_from_money_int(con, 'm_time', str(time.time()), str(my_from))
+            send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
+            add_balans(my_from, 1000)
         else:
             balans_hour = ''
             balans_minut = ''
@@ -1432,6 +1432,10 @@ try:
                             thread_start2(add_balans, from_id, '2')
                             # Логика ответов
                             # Игры ------------------------------------------------------------------------------------
+                            if len(slova) > 5:
+                                if slova[0] + ' ' + slova[1] + ' ' + slova[2] == 'случайное число от' and \
+                                        slova[4] == 'до':
+                                    thread_start3(random_ot_do_int_chislo, peer_id, slova[3], slova[5])
                             if len(slova) > 2:
                                 if slova[0] == 'DB' and slova[1] == 'insert':
                                     anime_name = ''
@@ -1636,10 +1640,6 @@ try:
                                     elif slova[0] == "перевести":
                                         thread_start4(money_send, peer_id, from_id,
                                                       slova[1], slova[2])
-                                if len(slova) > 5:
-                                    if slova[0] + ' ' + slova[1] + ' ' + slova[2] == 'случайное число от' and\
-                                            slova[4] == 'до':
-                                        thread_start3(random_ot_do_int_chislo, peer_id, slova[3], slova[5])
                                 elif text == "развод":
                                     thread_start2(marry_disvorse, peer_id, from_id)
                                 # Отладка -----------------------------------------------------------------------------
