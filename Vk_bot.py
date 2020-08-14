@@ -369,7 +369,7 @@ try:
                 a += str(i)
             elif str(i) == '-':
                 a += str('-')
-            elif str(i) == '.' or str(i) == ',':
+            elif str(i) == '.':
                 if not odna_tochka:
                     a += str('.')
                     odna_tochka = 1
