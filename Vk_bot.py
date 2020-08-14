@@ -1,4 +1,5 @@
 import json
+import os
 import socket
 import threading
 import psycopg2
@@ -10,6 +11,7 @@ import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
+from boto.s3.connection import S3Connection
 
 
 # Функция обработки ошибок
@@ -24,10 +26,10 @@ def error(ErrorF):
 
 # Первичный запуск программы и внесение изменений для старта программы
 try:
-    API_GROUP_KEY = '956c94c497adaa135a29605943d6ab551d74a6071757da8e4aa516a2fd4c980e96cfbe101b06a9d57e2b6'
-    API_USER_KEY = '34469a24e88620d4ee0961cc31e2c1c96d5cb01edd3ee50ed1f08fac299571630f4f602564c89419cbc58'
-    API_SERVICE_KEY = 'c14c6918c14c6918c14c691807c13e8ffacc14cc14c69189e4cb11298fa3a5dff633603'
-    client_secret = '3GBA2mEv669lqnF8WZyA'
+    API_GROUP_KEY = S3Connection(os.environ['API_GROUP_KEY'])
+    API_USER_KEY = S3Connection(os.environ['API_USER_KEY'])
+    API_SERVICE_KEY = S3Connection(os.environ['API_SERVICE_KEY'])
+    client_secret = S3Connection(os.environ['client_secret'])
     print("Бот запускается...")
     group_id = '196288744'  # Указываем id сообщества
     oshibka = 0  # обнуление счетчика ошибок | не трогать
