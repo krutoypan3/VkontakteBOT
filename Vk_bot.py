@@ -1412,7 +1412,13 @@ try:
                                     '4&#8419;Математическая викторина\n'
                                     '5&#8419;Казино')
 
-
+    def send_content(my_peer, what_content, command, ft_or_vd):
+        randid = (random.randint(0, what_content['count'] - 1))
+        idphoto = (what_content['items'][randid]['id'])
+        if ft_or_vd:
+            provzapret_ft(my_peer, command, str(idphoto))
+        else:
+            provzapret_vd(my_peer, command, str(idphoto))
 
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
@@ -1446,7 +1452,6 @@ try:
                                                str(slova[-2]), str(slova[-1])
                                     sql_insert_anime_base(con, entities)
                                     send_msg_new(peer_id, "Операция выполнена")
-
                             if len(slova) > 1:
                                 if slova[0] == 'DB' and slova[1] == 'help':
                                     send_msg_new(peer_id, "Для вставки новой строки в таблицу напишите:"
@@ -1575,58 +1580,29 @@ try:
                                 # Ответы со вложениями ----------------------------------------------------------------
 
                                 elif text == "арт":
-                                    randid = (random.randint(0, photo_arts['count'] - 1))
-                                    idphoto = (photo_arts['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'арт', str(idphoto))
-                                    main_keyboard_arts(peer_id)
+                                    send_content(peer_id, photo_arts, 'арт', True)
                                 elif text == "nain":
                                     idphoto = 457242784
                                     provzapret_ft(peer_id, 'nain', str(idphoto))
                                     main_keyboard_arts(peer_id)
                                 elif text == "юри+":
-                                    randid = (random.randint(0, photo_ur18['count'] - 1))
-                                    idphoto = (photo_ur18['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'юри+', str(idphoto))
-                                    main_keyboard_hent(peer_id)
+                                    thread_start4(send_content, peer_id, photo_ur18, 'юри+', True)
                                 elif text == "стикер":
-                                    randid = (random.randint(0, photo_stik['count'] - 1))
-                                    idphoto = (photo_stik['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'стикер', str(idphoto))
+                                    thread_start4(send_content, peer_id, photo_stik, 'стикер', True)
                                 elif text == "coub":
-                                    randid = (random.randint(0, video_coub['count'] - 1))
-                                    idvideo = (video_coub['items'][randid]['id'])
-                                    provzapret_vd(peer_id, 'coubtest', str(idvideo))
-                                    main_keyboard_video(peer_id)
+                                    thread_start4(send_content, peer_id, video_coub, 'coub', False)
                                 elif text == "хентай":
-                                    randid = (random.randint(0, photo_hent['count'] - 1))
-                                    idphoto = (photo_hent['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'хентай', str(idphoto))
-                                    main_keyboard_hent(peer_id)
+                                    thread_start4(send_content, peer_id, photo_hent, 'хентай', True)
                                 elif text == "бдсм":
-                                    randid = (random.randint(0, photo_bdsm['count'] - 1))
-                                    idphoto = (photo_bdsm['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'бдсм', str(idphoto))
-                                    main_keyboard_hent(peer_id)
+                                    thread_start4(send_content, peer_id, photo_bdsm, 'бдсм', True)
                                 elif text == "ахегао":
-                                    randid = (random.randint(0, photo_aheg['count'] - 1))
-                                    idphoto = (photo_aheg['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'ахегао', str(idphoto))
-                                    main_keyboard_hent(peer_id)
+                                    thread_start4(send_content, peer_id, photo_aheg, 'ахегао', True)
                                 elif text == "лоли":
-                                    randid = (random.randint(0, photo_loli['count'] - 1))
-                                    idphoto = (photo_loli['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'лоли', str(idphoto))
-                                    main_keyboard_arts(peer_id)
+                                    thread_start4(send_content, peer_id, photo_loli, 'лоли', True)
                                 elif text == "неко":
-                                    randid = (random.randint(0, photo_neko['count'] - 1))
-                                    idphoto = (photo_neko['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'неко', str(idphoto))
-                                    main_keyboard_arts(peer_id)
+                                    thread_start4(send_content, peer_id, photo_neko, 'неко', True)
                                 elif text == "манга арт":
-                                    randid = (random.randint(0, photo_mart['count'] - 1))
-                                    idphoto = (photo_mart['items'][randid]['id'])
-                                    provzapret_ft(peer_id, 'неко', str(idphoto))
-                                    main_keyboard_hent(peer_id)
+                                    thread_start4(send_content, peer_id, photo_mart, 'манга арт', True)
                                 elif len(slova) > 1:
                                     if slova[0] == 'запрет':
                                         adm_prov_and_zapret(peer_id, from_id, slova[1])
