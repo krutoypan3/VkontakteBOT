@@ -25,11 +25,11 @@ if __name__ == '__main__':
     try:
         # Первичный запуск
         print("Бот работает...")
-        games = {1: func_module.game_ugadai_chislo,
-                 2: func_module.game_kto_kruche,
-                 3: func_module.game_brosok_kubika,
-                 4: func_module.game_mat_victorina,
-                 5: func_module.game_casino}
+        games = {'1': func_module.game_ugadai_chislo,
+                 '2': func_module.game_kto_kruche,
+                 '3': func_module.game_brosok_kubika,
+                 '4': func_module.game_mat_victorina,
+                 '5': func_module.game_casino}
         clan = {'создать': func_module.clan_create,
                 'распад': func_module.clan_disvorse,
                 'кик': func_module.clan_kick,
