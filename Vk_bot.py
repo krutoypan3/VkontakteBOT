@@ -89,7 +89,7 @@ if __name__ == '__main__':
                                     if slova[0] == 'игра':
                                         if slova[1] in games:
                                             if not func_module.prov_zap_game(peer_id):
-                                                func_module.thread_start(games[int(slova[1])], peer_id, from_id)
+                                                func_module.thread_start(games[slova[1]], peer_id, from_id)
                                             else:
                                                 func_module.send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                                     if slova[0] == 'клан':
