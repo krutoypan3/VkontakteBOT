@@ -720,14 +720,13 @@ try:
 
     # Личная диалог или беседа
     def lich_or_beseda(my_peer):
-        response = vk.messages.getConversationMembers(peer_id=my_peer)
         try:
+            response = vk.messages.getConversationMembers(peer_id=my_peer)
             if response['count'] <= 2:
                 return 1  # Личка
             else:
                 return 0  # Беседа
         except vk_api.exceptions.ApiError:
-            send_msg_new(my_peer, 'Произошла нереальная ошибка, напишите моему разрабу vk.com/aom13')
             return 0  # Беседа, но нет прав у бота
 
 
