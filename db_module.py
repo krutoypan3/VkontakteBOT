@@ -157,7 +157,7 @@ try:
         cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
         rows = cursorObj2.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            from functions_bot import vk
+            from func_module import vk
             entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), \
                        str(vk.users.get(user_ids=from_id)[0]['last_name']), '0'
             sql_insert_from_money(conc, entities)
@@ -199,7 +199,7 @@ try:
         message = 'Аниме в жанре ' + janr + ':\n'
         for i in rows:
             message += i[0] + '\n'
-        from functions_bot import send_msg_new
+        from func_module import send_msg_new
         send_msg_new(peer_id, message)
 
 

@@ -93,14 +93,17 @@ try:
                     if len(slovo) > 1:
                         if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
                                 (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
-                            thread_start3(db_module.sql_fetch_anime_base, db_module.con, slovo[1], peer_id)
+                            thread_start(db_module.sql_fetch_anime_base, db_module.con, slovo[1], peer_id)
                     elif len(slovo) == 1:
-                        thread_start3(db_module.sql_fetch_anime_base, db_module.con, slovo[0], peer_id)
+                        thread_start(db_module.sql_fetch_anime_base, db_module.con, slovo[0], peer_id)
                     break
 
 
     # Создание клана
-    def clan_create(my_peer, my_from, clan_name):
+    def clan_create(*args):
+        my_peer = args[0]
+        my_from = args[1]
+        clan_name = args[2]
         if len(clan_name) >= 3:
             cln_name = str(db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0])
             if (cln_name == 'NULL') or (cln_name is None) or (cln_name == 'None'):
@@ -146,47 +149,57 @@ try:
 
 
     # Снятие денег с баланса клана rank 4+
-    def clan_rem_balance(my_peer, my_from, money):
-        clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        if clan_name != 'NULL' and clan_name is not None:
-            if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 4:
-                clan_bals = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
-                if chislo_li_eto(money):
-                    if int(clan_bals) >= int(money):
-                        clan_add_balance(my_peer, my_from, int(-int(money)))
-                        send_msg_new(my_peer, people_info(my_from) + ' вывел из казны клана ' + money + ' монет')
+    def clan_rem_balance(*args):
+        if len(args[2]) > 3:
+            my_peer = args[0]
+            my_from = args[1]
+            money = args[2][3]
+            clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
+            if clan_name != 'NULL' and clan_name is not None:
+                if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 4:
+                    clan_bals = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
+                    if chislo_li_eto(money):
+                        if int(clan_bals) >= int(money):
+                            clan_add_balance(my_peer, my_from, int(-int(money)))
+                            send_msg_new(my_peer, people_info(my_from) + ' вывел из казны клана ' + money + ' монет')
+                        else:
+                            send_msg_new(my_peer, people_info(my_from) + ', в казне недостаточно монет!')
                     else:
-                        send_msg_new(my_peer, people_info(my_from) + ', в казне недостаточно монет!')
+                        send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
                 else:
-                    send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                                 'выполнения данной команды!')
             else:
-                send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
-                                                             'выполнения данной команды!')
-        else:
-            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+                send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
     # Пополнение баланса клана
-    def clan_add_balance(my_peer, my_from, money):
-        clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        if clan_name != 'NULL' and clan_name is not None:
-            if chislo_li_eto(money):
-                if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= int(money):
-                    add_balans(my_from, int(-int(money)))
-                    money_clan = int(db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]) + int(money)
-                    db_module.sql_update_clan_info(db_module.con, 'clan_money', money_clan, clan_name)
-                    if int(money) > 0:
-                        send_msg_new(my_peer, 'Казна клана ' + clan_name + ' пополнена на ' + str(money) + ' монет')
+    def clan_add_balance(*args):
+        if len(args[2]) > 3:
+            my_peer = args[0]
+            my_from = args[1]
+            money = args[2][3]
+            clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
+            if clan_name != 'NULL' and clan_name is not None:
+                if chislo_li_eto(money):
+                    if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= int(money):
+                        add_balans(my_from, int(-int(money)))
+                        money_clan = int(db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]) + int(money)
+                        db_module.sql_update_clan_info(db_module.con, 'clan_money', money_clan, clan_name)
+                        if int(money) > 0:
+                            send_msg_new(my_peer, 'Казна клана ' + clan_name + ' пополнена на ' + str(money) + ' монет')
+                    else:
+                        send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
                 else:
-                    send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
+                    send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
             else:
-                send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
-        else:
-            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+                send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
     # Баланс клана rank 1+
-    def clan_balance(my_peer, my_from):
+    def clan_balance(*args):
+        my_peer = args[0]
+        my_from = args[1]
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 1:
@@ -199,7 +212,9 @@ try:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
-    def clan_info(my_peer, my_from):
+    def clan_info(*args):
+        my_peer = args[0]
+        my_from = args[1]
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             send_msg_new(my_peer, people_info(my_from) + ', вы состоите в клане ' + clan_name)
@@ -231,7 +246,8 @@ try:
 
 
     # Баланс клана топ
-    def clan_balance_top(my_peer):
+    def clan_balance_top(*args):
+        my_peer = args[0]
         idall = db_module.sql_fetch_clan_all(db_module.con, 'clan_name')
         monall = db_module.sql_fetch_clan_all(db_module.con, 'clan_money')
         mess = ''
@@ -261,7 +277,10 @@ try:
 
 
     # rank 2+
-    def clan_kick(my_peer, my_from, id2):
+    def clan_kick(*args):
+        my_peer = args[0]
+        my_from = args[1]
+        id2 = args[2][2]
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         our_from = ''
         for i in id2:
@@ -286,7 +305,9 @@ try:
 
 
     # rank 5
-    def clan_disvorse(my_peer, my_from):
+    def clan_disvorse(*args):
+        my_peer = args[0]
+        my_from = args[1]
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) == 5:
@@ -302,7 +323,9 @@ try:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
-    def clan_leave(my_peer, my_from):
+    def clan_leave(*args):
+        my_peer = args[0]
+        my_from = args[1]
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             clan_adm = db_module.sql_fetch_clan_info(db_module.con, 'clan_admin', clan_name)
@@ -317,7 +340,10 @@ try:
 
 
     # rank 2+
-    def clan_invite(my_peer, my_from, id2):
+    def clan_invite(*args):
+        my_peer = args[0]
+        my_from = args[1]
+        id2 = args[2][2]
         clan_name_my = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         our_from = ''
         for i in id2:
@@ -371,7 +397,15 @@ try:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
-    def clan_up_down(my_peer, my_from, id2, up_or_down):
+    def clan_up_down(*args):
+        my_peer = args[0]
+        my_from = args[1]
+        id2 = args[2][2]
+        up_or_down = args[2][1]
+        if up_or_down == 'повысить':
+            up_or_down = True
+        else:
+            up_or_down = False
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         our_from = ''
         for i in id2:
@@ -741,58 +775,19 @@ try:
                              keyboard=keyboard.get_keyboard(), message='Выбрана команда хентай, выберите команду:')
 
 
-    # Запуск потока без аргрументов
-    def thread_start0(Func):
-        global kolpot
-        x = threading.Thread(target=Func)
-        threads.append(x)
-        kolpot += 1
-        eventhr.append(kolpot)
-        x.start()
-
-
     # Запуск потока с одним аргрументом
-    def thread_start1(Func, Arg):
+    def thread_start(Func, *args):
         global kolpot
-        x = threading.Thread(target=Func, args=(Arg,))
+        x = threading.Thread(target=Func, args=args)
         threads.append(x)
         kolpot += 1
         eventhr.append(kolpot)
         x.start()
-
-
-    # Запуск потока с двумя аргрументами
-    def thread_start2(Func, Arg, Arg2):
-        global kolpot
-        x = threading.Thread(target=Func, args=(Arg, Arg2))
-        threads.append(x)
-        kolpot += 1
-        eventhr.append(kolpot)
-        x.start()
-
-
-    # Запуск потока с двумя аргрументами
-    def thread_start3(Func, Arg, Arg2, Arg3):
-        global kolpot
-        x = threading.Thread(target=Func, args=(Arg, Arg2, Arg3))
-        threads.append(x)
-        kolpot += 1
-        eventhr.append(kolpot)
-        x.start()
-
-
-    # Запуск потока с двумя аргрументами
-    def thread_start4(Func, Arg, Arg2, Arg3, Arg4):
-        global kolpot
-        x = threading.Thread(target=Func, args=(Arg, Arg2, Arg3, Arg4))
-        threads.append(x)
-        kolpot += 1
-        eventhr.append(kolpot)
-        x.start()
-
 
     # Игра угадай число
-    def game_ugadai_chislo(my_peer, my_from):
+    def game_ugadai_chislo(*args):
+        my_peer = args[0]
+        my_from = args[1]
         zapret_zap_game(my_peer)
         chel = '&#127918;' + people_info(my_from) + ', '
         send_msg_new(my_peer, chel + 'игра началась для тебя:\n' + ' угадай число от 1 до 3')
@@ -918,25 +913,25 @@ try:
 
 
     # Игра кто круче
-    def game_kto_kruche(my_peer_game2):
-        zapret_zap_game(my_peer_game2)
-        send_msg_new(my_peer_game2, '&#127918;Запущена игра "Кто круче?". Чтобы принять участие, '
+    def game_kto_kruche(my_peer, my_from):
+        zapret_zap_game(my_peer)
+        send_msg_new(my_peer, '&#127918;Запущена игра "Кто круче?". Чтобы принять участие, '
                                     'напишите "участвую". '
                                     '\nМинимальное количество участников для запуска: 2')
-        stavka = stavka_igra(my_peer_game2)
-        uchastniki = nabor_igrokov(my_peer_game2, stavka)
+        stavka = stavka_igra(my_peer)
+        uchastniki = nabor_igrokov(my_peer, stavka)
         if len(uchastniki) < 2:
-            send_msg_new(my_peer_game2, '&#127918;Слишком мало участников, игра отменена')
+            send_msg_new(my_peer, '&#127918;Слишком мало участников, игра отменена')
             for i in uchastniki:
                 add_balans(str(i), str(stavka))
-            zapret_zap_game(my_peer_game2)
+            zapret_zap_game(my_peer)
         else:
-            send_msg_new(my_peer_game2, '&#127918;Участники укомплектованы, игра начинается')
+            send_msg_new(my_peer, '&#127918;Участники укомплектованы, игра начинается')
             priz = random.randint(0, len(uchastniki) - 1)
             chel = '&#127918;' + people_info(str(uchastniki[priz])) + ', '
-            send_msg_new(my_peer_game2, chel + 'ты круче')
+            send_msg_new(my_peer, chel + 'ты круче')
             money_win(uchastniki[priz], stavka, uchastniki)
-            zapret_zap_game(my_peer_game2)
+            zapret_zap_game(my_peer)
 
 
     def game_casino(my_peer, my_from):
@@ -1032,26 +1027,26 @@ try:
 
 
     # Игра бросок кубика
-    def game_brosok_kubika(my_peer_game3):
-        zapret_zap_game(my_peer_game3)
-        send_msg_new(my_peer_game3,
+    def game_brosok_kubika(my_peer, my_from):
+        zapret_zap_game(my_peer)
+        send_msg_new(my_peer,
                      '&#127918;Запущена игра "Бросок кубика". Чтобы принять участие, напишите '
                      '"участвую". \nМинимальное количество участников для запуска: 2')
-        stavka = stavka_igra(my_peer_game3)
-        uchastniki = nabor_igrokov(my_peer_game3, stavka)
+        stavka = stavka_igra(my_peer)
+        uchastniki = nabor_igrokov(my_peer, stavka)
         if len(uchastniki) < 2:
-            send_msg_new(my_peer_game3, '&#127918;Слишком мало участников, игра отменена')
+            send_msg_new(my_peer, '&#127918;Слишком мало участников, игра отменена')
             for i in uchastniki:
                 add_balans(str(i), str(stavka))
-            zapret_zap_game(my_peer_game3)
+            zapret_zap_game(my_peer)
         else:
             chet = []
             for i in uchastniki:
-                send_msg_new(my_peer_game3, '&#9745;Кубики бросает ' + people_info(str(i)) + '...')
+                send_msg_new(my_peer, '&#9745;Кубики бросает ' + people_info(str(i)) + '...')
                 time.sleep(2)
                 kubiki = random.randint(2, 12)
                 chet.append(kubiki)
-                send_msg_new(my_peer_game3, '&#9989;на кубиках ' + str(kubiki))
+                send_msg_new(my_peer, '&#9989;на кубиках ' + str(kubiki))
                 time.sleep(1)
             minchet = 1
             pobeditel = 0
@@ -1065,14 +1060,14 @@ try:
                     minchet = chet[i]
                     pobeditel = uchastniki[i]
             if nich == 1:
-                send_msg_new(my_peer_game3, '&#127918;Ничья!')
+                send_msg_new(my_peer, '&#127918;Ничья!')
                 for i in uchastniki:
                     add_balans(str(i), str(stavka))
-                zapret_zap_game(my_peer_game3)
+                zapret_zap_game(my_peer)
             else:
-                send_msg_new(my_peer_game3, '&#127918;' + people_info(pobeditel) + '&#127881; ' + 'победил!&#127882;')
+                send_msg_new(my_peer, '&#127918;' + people_info(pobeditel) + '&#127881; ' + 'победил!&#127882;')
                 money_win(pobeditel, stavka, uchastniki)
-                zapret_zap_game(my_peer_game3)
+                zapret_zap_game(my_peer)
 
 
     def game_mat_victorina(my_peer, my_from):
