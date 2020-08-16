@@ -150,8 +150,6 @@ if __name__ == '__main__':
                                         func_module.send_msg_new(peer_id, "&#128546; Прощай")
                                     elif text == "время":
                                         func_module.send_msg_new(peer_id, str(time.ctime()))
-                                    elif text == "времятест":
-                                        func_module.send_msg_new(peer_id, str(time.time()))
                                     elif text == "команды" or text == "братик":
                                         func_module.send_msg_new(peer_id,
                                                                  '⚙️ Полный список команд доступен по ссылке ' +

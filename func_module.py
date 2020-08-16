@@ -126,7 +126,7 @@ try:
                                   'Стоимость создания клана - 15000 монет')
 
 
-    def chislo_li_eto(chto):
+    def chislo_li_eto(chto):  # Определяет, является ли данный аргумент числом или нет
         a = ''
         odna_tochka = 0
         for i in str(chto):
@@ -184,7 +184,8 @@ try:
                 if chislo_li_eto(money):
                     if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= int(money):
                         add_balans(my_from, int(-int(money)))
-                        money_clan = int(db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]) + int(money)
+                        money_clan = int(db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]) + \
+                                     int(money)
                         db_module.sql_update_clan_info(db_module.con, 'clan_money', money_clan, clan_name)
                         if int(money) > 0:
                             send_msg_new(my_peer, 'Казна клана ' + clan_name + ' пополнена на ' + str(money) + ' монет')
@@ -238,7 +239,7 @@ try:
                 elif int(people[i][2]) == 1:
                     mess += '⭐'
                 else:
-                    mess += '-'
+                    mess += 'Холоп-'
                 mess += str(i) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
             send_msg_new(my_peer, mess)
         else:
@@ -377,8 +378,10 @@ try:
                                         slova_m = eventhr[kolpot].obj.text.split()
                                         if len(slova_m) == 2:
                                             if slova_m[1] == "да":
-                                                db_module.sql_update_from_money_text(db_module.con, 'clan_name', clan_name_my, our_from)
-                                                db_module.sql_update_from_money_int(db_module.con, 'clan_rank', '1', our_from)
+                                                db_module.sql_update_from_money_text(db_module.con, 'clan_name',
+                                                                                     clan_name_my, our_from)
+                                                db_module.sql_update_from_money_int(db_module.con, 'clan_rank', '1',
+                                                                                    our_from)
                                                 send_msg_new(my_peer, people_info(our_from) + ', вы вступили в клан ' +
                                                              clan_name_my)
                                                 break
@@ -424,7 +427,8 @@ try:
                             send_msg_new(my_peer, people_info(my_from) + ' повысил ранг ' + people_info(our_from) + '!')
                         else:
                             if our_rank > 0:
-                                db_module.sql_update_from_money_int(db_module.con, 'clan_rank', str(our_rank - 1), our_from)
+                                db_module.sql_update_from_money_int(db_module.con, 'clan_rank', str(our_rank - 1),
+                                                                    our_from)
                                 send_msg_new(my_peer,
                                              people_info(my_from) + ' понизил ранг ' + people_info(our_from) + '!')
                             else:
@@ -498,8 +502,10 @@ try:
                             slova_m = eventhr[kolpot].obj.text.split()
                             if len(slova_m) == 2:
                                 if slova_m[1] == "💝да":
-                                    db_module.sql_update_from(db_module.con, 'marry_id', str(our_from), str(my_peer), str(my_from))
-                                    db_module.sql_update_from(db_module.con, 'marry_id', str(my_from), str(my_peer), str(our_from))
+                                    db_module.sql_update_from(db_module.con, 'marry_id', str(our_from), str(my_peer),
+                                                              str(my_from))
+                                    db_module.sql_update_from(db_module.con, 'marry_id', str(my_from), str(my_peer),
+                                                              str(our_from))
                                     send_msg_new(my_peer, 'Брак успешно заключен!')
                                     break
                                 elif slova_m[1] == "💔нет":
@@ -549,7 +555,8 @@ try:
                 if i == '|':
                     break
             if our_from != '':
-                if int(str(db_module.sql_fetch_from_money(db_module.con, 'money', str(my_from))[0][0])) >= int(money) > 0:
+                if int(str(db_module.sql_fetch_from_money(db_module.con, 'money',
+                                                          str(my_from))[0][0])) >= int(money) > 0:
                     add_balans(str(my_from), '-' + str(money))
                     add_balans(str(our_from), str(money))
                     send_msg_new(my_peer, people_info(my_from) + ' перевел ' +
@@ -883,8 +890,8 @@ try:
                                 if event_nabor_game.object.from_id in uchastniki:
                                     send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
                                 else:
-                                    if int(str(db_module.sql_fetch_from_money(db_module.con, 'money',
-                                                                    str(event_nabor_game.object.from_id))[0][0])) >= \
+                                    if int(str(db_module.sql_fetch_from_money(
+                                            db_module.con, 'money', str(event_nabor_game.object.from_id))[0][0])) >= \
                                             int(stavka):
                                         uchastniki.append(event_nabor_game.object.from_id)
                                         send_msg_new(my_peer_game,
@@ -960,7 +967,8 @@ try:
                             if chislo_li_eto(slovo[1]):
                                 if float(slovo[1]) > 0:
                                     dengi_game = float(slovo[1])
-                                    if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= dengi_game:
+                                    if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= \
+                                            dengi_game:
                                         break
                                     else:
                                         send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!\n'
