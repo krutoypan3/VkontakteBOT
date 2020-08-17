@@ -108,9 +108,9 @@ try:
             cln_name = str(db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0])
             if (cln_name == 'NULL') or (cln_name is None) or (cln_name == 'None'):
                 if db_module.sql_fetch_clan_info(db_module.con, 'clan_name', clan_name[2]) == 'NULL':
-                    if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= 15000:
+                    if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= 5000:
                         db_module.sql_update_from_money_text(db_module.con, 'clan_name', clan_name[2], str(my_from))
-                        add_balans(my_from, '-15000')
+                        add_balans(my_from, '-5000')
                         entities = str(clan_name[2]), '0', str(my_from)
                         db_module.sql_insert_clan_info(db_module.con, entities)
                         db_module.sql_update_clan_info(db_module.con, 'clan_admin', my_from, clan_name[2])
@@ -123,7 +123,7 @@ try:
                 send_msg_new(my_peer, people_info(my_from) + ', вы уже состоите в клане!')
         else:
             send_msg_new(my_peer, 'Для создания клана напишите "Клан создать "название_клана""\n'
-                                  'Стоимость создания клана - 15000 монет')
+                                  'Стоимость создания клана - 5000 монет')
 
 
     def chislo_li_eto(chto):  # Определяет, является ли данный аргумент числом или нет
@@ -240,7 +240,7 @@ try:
                     mess += '⭐'
                 else:
                     mess += 'Холоп-'
-                mess += str(i) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
+                mess += str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
             send_msg_new(my_peer, mess)
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
