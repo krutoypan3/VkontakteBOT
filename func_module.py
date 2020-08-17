@@ -89,7 +89,7 @@ try:
         for event_stavka in longpoll.listen():
             if time.time() - timing < 60.0:
                 if event_stavka.type == VkBotEventType.MESSAGE_NEW:
-                    slovo = event_stavka.obj.text.split()
+                    slovo = event_stavka.message.text.split()
                     if len(slovo) > 1:
                         if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
                                 (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
@@ -844,7 +844,7 @@ try:
         for event_stavka in longpoll.listen():
             if time.time() - timing < 60.0:
                 if event_stavka.type == VkBotEventType.MESSAGE_NEW:
-                    slovo = event_stavka.obj.text.split()
+                    slovo = event_stavka.message.text.split()
                     if len(slovo) > 1:
                         if '0' <= slovo[1] <= '9':
                             send_msg_new(my_peer, 'Ставка: ' + str(slovo[1]))
@@ -871,40 +871,40 @@ try:
             if time.time() - timing < 60.0:
                 if event_nabor_game.type == VkBotEventType.MESSAGE_NEW:
                     try:
-                        if event_nabor_game.obj.text == ('[' + 'club' + str(group_id) + '|' +
+                        if event_nabor_game.message.text == ('[' + 'club' + str(group_id) + '|' +
                                                          group_name + ']' + " начать") \
-                                or (event_nabor_game.obj.text == '[' + 'club' + str(group_id) + '|' +
+                                or (event_nabor_game.message.text == '[' + 'club' + str(group_id) + '|' +
                                     group_sob + ']' + " начать"):
                             timing -= timing - 60
-                        elif (event_nabor_game.obj.text == "участвую"
-                              or event_nabor_game.obj.text == "Участвую"
-                              or event_nabor_game.obj.text == '[' + 'club' + str(group_id) + '|' +
+                        elif (event_nabor_game.message.text == "участвую"
+                              or event_nabor_game.message.text == "Участвую"
+                              or event_nabor_game.message.text == '[' + 'club' + str(group_id) + '|' +
                               group_name + ']' + " участвую"
-                              or event_nabor_game.obj.text == '[' + 'club' + str(group_id) + '|' +
+                              or event_nabor_game.message.text == '[' + 'club' + str(group_id) + '|' +
                               group_sob + ']' + " участвую"
-                              or event_nabor_game.obj.text == "учавствую"
-                              or event_nabor_game.obj.text == "Учавствую") \
-                                and event_nabor_game.object.peer_id == my_peer_game:
-                            if event_nabor_game.object.from_id > 0:
-                                if event_nabor_game.object.from_id in uchastniki:
+                              or event_nabor_game.message.text == "учавствую"
+                              or event_nabor_game.message.text == "Учавствую") \
+                                and event_nabor_game.message.peer_id == my_peer_game:
+                            if event_nabor_game.message.from_id > 0:
+                                if event_nabor_game.message.from_id in uchastniki:
                                     send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
                                 else:
                                     if int(str(db_module.sql_fetch_from_money(
-                                            db_module.con, 'money', str(event_nabor_game.object.from_id))[0][0])) >= \
+                                            db_module.con, 'money', str(event_nabor_game.message.from_id))[0][0])) >= \
                                             int(stavka):
-                                        uchastniki.append(event_nabor_game.object.from_id)
+                                        uchastniki.append(event_nabor_game.message.from_id)
                                         send_msg_new(my_peer_game,
-                                                     '&#127918;' + people_info(event_nabor_game.object.from_id)
+                                                     '&#127918;' + people_info(event_nabor_game.message.from_id)
                                                      + ', заявка на участие принята. Участников: ' +
                                                      str(len(uchastniki)))
                                     else:
-                                        send_msg_new(my_peer_game, people_info(event_nabor_game.object.from_id) +
+                                        send_msg_new(my_peer_game, people_info(event_nabor_game.message.from_id) +
                                                      ', у вас недостаточно средств на счете! Получите '
                                                      'бро-коины написав "бро награда"')
                             else:
                                 send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
                     except AttributeError:
-                        send_msg_new(my_peer_game, '&#127918;' + people_info(event_nabor_game.object.from_id)
+                        send_msg_new(my_peer_game, '&#127918;' + people_info(event_nabor_game.message.from_id)
                                      + 'Ты уже в списке участников')
                         continue
             if time.time() - timing > 60.0:
@@ -960,8 +960,8 @@ try:
         for event_casino_game in longpoll.listen():
             if time.time() - timing < 15.0:
                 if event_casino_game.type == VkBotEventType.MESSAGE_NEW:
-                    if event_casino_game.object.from_id == my_from:
-                        slovo = event_casino_game.obj.text.split()
+                    if event_casino_game.message.from_id == my_from:
+                        slovo = event_casino_game.message.text.split()
                         if len(slovo) > 1:
                             if chislo_li_eto(slovo[1]):
                                 if float(slovo[1]) > 0:
@@ -999,8 +999,8 @@ try:
             for event_casino_game in longpoll.listen():
                 if time.time() - timing < 15.0:
                     if event_casino_game.type == VkBotEventType.MESSAGE_NEW:
-                        if event_casino_game.object.from_id == my_from:
-                            slovo = event_casino_game.obj.text.split()
+                        if event_casino_game.message.from_id == my_from:
+                            slovo = event_casino_game.message.text.split()
                             if len(slovo) > 1:
                                 if chislo_li_eto(slovo[1]):
                                     if float(slovo[1]) > 0:
@@ -1098,8 +1098,8 @@ try:
                 for event_victorina_game in longpoll.listen():
                     if time.time() - timing < 15.0:
                         if event_victorina_game.type == VkBotEventType.MESSAGE_NEW:
-                            if event_victorina_game.object.from_id == my_from:
-                                if event_victorina_game.obj.text == str(uravnenie):
+                            if event_victorina_game.message.from_id == my_from:
+                                if event_victorina_game.message.text == str(uravnenie):
                                     send_msg_new(my_peer, 'Верно!')
                                 else:
                                     send_msg_new(my_peer, 'Увы, но нет, вы проиграли!')
@@ -1129,19 +1129,19 @@ try:
                         for event_victorina_game in longpoll.listen():
                             if time.time() - timing < 60.0:
                                 if event_victorina_game.type == VkBotEventType.MESSAGE_NEW:
-                                    if event_victorina_game.object.from_id == my_from:
-                                        if event_victorina_game.obj.text == ('[' + 'club' + str(group_id) + '|' +
+                                    if event_victorina_game.message.from_id == my_from:
+                                        if event_victorina_game.message.text == ('[' + 'club' + str(group_id) + '|' +
                                                                              group_name + ']' + " забрать деньги") \
-                                                or (event_victorina_game.obj.text == '[' + 'club' + str(group_id) + '|'
+                                                or (event_victorina_game.message.text == '[' + 'club' + str(group_id) + '|'
                                                     + group_sob + ']' + " забрать деньги"):
                                             add_balans(my_from, dengi)
                                             stop = 1
                                             send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
                                             break
-                                        elif event_victorina_game.obj.text == ('[' + 'club' + str(group_id) + '|' +
+                                        elif event_victorina_game.message.text == ('[' + 'club' + str(group_id) + '|' +
                                                                                group_name + ']' + " продолжить") \
                                                 or (
-                                                event_victorina_game.obj.text == '[' + 'club' + str(group_id) + '|' +
+                                                event_victorina_game.message.text == '[' + 'club' + str(group_id) + '|' +
                                                 group_sob + ']' + " продолжить"):
                                             dengi *= 2
                                             time.sleep(1)
