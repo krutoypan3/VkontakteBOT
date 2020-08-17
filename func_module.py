@@ -373,9 +373,9 @@ try:
                                     send_msg_new(my_peer, 'Срок действия приглашения истек...')
                                     break
                                 if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
-                                    if str(eventhr[kolpot].object.peer_id) == str(my_peer) and str(
-                                            eventhr[kolpot].object.from_id) == str(our_from):
-                                        slova_m = eventhr[kolpot].obj.text.split()
+                                    if str(eventhr[kolpot].message.peer_id) == str(my_peer) and str(
+                                            eventhr[kolpot].message.from_id) == str(our_from):
+                                        slova_m = eventhr[kolpot].message.text.split()
                                         if len(slova_m) == 2:
                                             if slova_m[1] == "да":
                                                 db_module.sql_update_from_money_text(db_module.con, 'clan_name',
@@ -497,9 +497,9 @@ try:
                         send_msg_new(my_peer, 'Время заключения брака истекло...')
                         break
                     if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
-                        if str(eventhr[kolpot].object.peer_id) == str(my_peer) and str(
-                                eventhr[kolpot].object.from_id) == str(our_from):
-                            slova_m = eventhr[kolpot].obj.text.split()
+                        if str(eventhr[kolpot].message.peer_id) == str(my_peer) and str(
+                                eventhr[kolpot].message.from_id) == str(our_from):
+                            slova_m = eventhr[kolpot].message.text.split()
                             if len(slova_m) == 2:
                                 if slova_m[1] == "💝да":
                                     db_module.sql_update_from(db_module.con, 'marry_id', str(our_from), str(my_peer),
@@ -812,9 +812,9 @@ try:
                 zapret_zap_game(my_peer)
                 break
             if eventhr[kolpot].type == VkBotEventType.MESSAGE_NEW:
-                if eventhr[kolpot].object.peer_id == my_peer \
-                        and eventhr[kolpot].object.from_id == my_from:
-                    slova_g1 = eventhr[kolpot].obj.text.split()
+                if eventhr[kolpot].message.peer_id == my_peer \
+                        and eventhr[kolpot].message.from_id == my_from:
+                    slova_g1 = eventhr[kolpot].message.text.split()
                     if len(slova_g1) >= 2:
                         if slova_g1[1] == "1" or slova_g1[1] == "2" or slova_g1[1] == "3":
                             if str(game_chislo) == str(slova_g1[1]):

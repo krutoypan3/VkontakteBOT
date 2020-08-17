@@ -57,9 +57,9 @@ if __name__ == '__main__':
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
-                        if event.object.from_id > 0:
+                        if event.message.from_id > 0:
                             def messege_chek(peer_id, from_id, text):
-                                slova = event.obj.text.lower().split()  # Разделение сообщения на слова
+                                slova = event.message.text.lower().split()  # Разделение сообщения на слова
                                 func_module.thread_start(func_module.add_balans, from_id, '2')
                                 # Логика ответов
                                 # Игры --------------------------------------------------------------------------------
@@ -239,8 +239,8 @@ if __name__ == '__main__':
                                     else:
                                         func_module.main_keyboard_1(peer_id)
 
-                            func_module.thread_start(messege_chek, event.object.peer_id, event.object.from_id,
-                                                     event.obj.text.lower())
+                            func_module.thread_start(messege_chek, event.message.peer_id, event.message.from_id,
+                                                     event.message.text.lower())
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
                 error(" - ошибка подключения к вк")
