@@ -93,13 +93,15 @@ if __name__ == '__main__':
                                             else:
                                                 func_module.send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                                     if slova[0] == 'клан':
-                                        if slova[2] in clan2:
-                                            if len(slova) > 2:
-                                                if slova[0] + ' ' + slova[1] == 'клан баланс':
-                                                    func_module.thread_start(clan2[slova[2]], peer_id,
-                                                                             from_id, slova)
-                                        elif slova[1] in clan:
+                                        if slova[1] in clan:
                                             func_module.thread_start(clan[slova[1]], peer_id, from_id, slova)
+                                        if len(slova) > 2:
+                                            if slova[2] in clan2:
+                                                if len(slova) > 2:
+                                                    if slova[0] + ' ' + slova[1] == 'клан баланс':
+                                                        func_module.thread_start(clan2[slova[2]], peer_id,
+                                                                                 from_id, slova)
+
                                     # good /\
                                 # Текстовые ответы --------------------------------------------------------------------
                                 if len(slova) > 0:
