@@ -30,15 +30,15 @@ if __name__ == '__main__':
                  '3': func_module.game_brosok_kubika,
                  '4': func_module.game_mat_victorina,
                  '5': func_module.game_casino}
-        clan = {'создать': func_module.clan_create,
+        clan = {'создать': func_module.clan_create,     # GOOD
                 'распад': func_module.clan_disvorse,
-                'кик': func_module.clan_kick,
+                'кик': func_module.clan_kick,           # #
                 'покинуть': func_module.clan_leave,
-                'пригласить': func_module.clan_invite,
-                'баланс': func_module.clan_balance,
-                'повысить': func_module.clan_up_down,
-                'понизить': func_module.clan_up_down,
-                'инфо': func_module.clan_info}
+                'пригласить': func_module.clan_invite,  # #
+                'баланс': func_module.clan_balance,     # #
+                'повысить': func_module.clan_up_down,   # #
+                'понизить': func_module.clan_up_down,   # #
+                'инфо': func_module.clan_info}          # #
         clan2 = {'топ': func_module.clan_balance_top,
                  'пополнить': func_module.clan_add_balance,
                  'вывести': func_module.clan_rem_balance}
@@ -58,53 +58,63 @@ if __name__ == '__main__':
                 for event in longpoll.listen():  # Постоянный листинг сообщений
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
-                            def messege_chek(peer_id, from_id, text):
-                                slova = event.message.text.lower().split()  # Разделение сообщения на слова
-                                func_module.thread_start(func_module.add_balans, from_id, '2')
+                            def messege_chek(event_func):
+
+                                # Занесение в переменные значений с события
+                                from_id = event_func.message.from_id  # Кто написал
+                                peer_id = event_func.message.peer_id  # Где написал
+                                text = event_func.message.text.lower()  # Что написал
+                                words = text.split()  # Разделение сообщения на слова
+                                if 'reply_message' in event_func.message:  # Кому то писал?
+                                    our_from = event_func.object.message["reply_message"]["from_id"]   # Кому написал
+                                else:
+                                    our_from = ''
+                                func_module.thread_start(func_module.add_balans, from_id, '2')  # Добавляем 2 монетки
+
                                 # Логика ответов
                                 # Игры --------------------------------------------------------------------------------
-                                if len(slova) > 5:
-                                    if slova[0] + ' ' + slova[1] + ' ' + slova[2] == 'случайное число от' and \
-                                            slova[4] == 'до':
+                                if len(words) > 5:
+                                    if words[0] + ' ' + words[1] + ' ' + words[2] == 'случайное число от' and \
+                                            words[4] == 'до':
                                         func_module.thread_start(func_module.random_ot_do_int_chislo, peer_id,
-                                                                 slova[3], slova[5])
-                                if len(slova) > 2:
-                                    if slova[0] == 'DB' and slova[1] == 'insert':
+                                                                 words[3], words[5])
+                                if len(words) > 2:
+                                    if words[0] == 'DB' and words[1] == 'insert':
                                         anime_name = ''
-                                        for i in range(len(slova) - 4):
+                                        for i in range(len(words) - 4):
                                             if i > 1:
-                                                anime_name += slova[i] + ' '
-                                        entities = str(anime_name), str(slova[-4]), str(slova[-3]), \
-                                                   str(slova[-2]), str(slova[-1])
+                                                anime_name += words[i] + ' '
+                                        entities = str(anime_name), str(words[-4]), str(words[-3]), \
+                                                   str(words[-2]), str(words[-1])
                                         sql_insert_anime_base(con, entities)
                                         func_module.send_msg_new(peer_id, "Операция выполнена")
-                                if len(slova) > 1:
-                                    if slova[0] == 'DB' and slova[1] == 'help':
+                                if len(words) > 1:
+                                    if words[0] == 'DB' and words[1] == 'help':
                                         func_module.send_msg_new(peer_id,
                                                                  "Для вставки новой строки в таблицу напишите:"
                                                                  "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
                                                                  "'кол-во серий'\n\nНапример:\nDB insert Этот "
                                                                  "замечательный мир Комедия Исекай Приключения 24")
                                     # good \/
-                                    if slova[0] == 'игра':
-                                        if slova[1] in games:
+                                    if words[0] == 'игра':
+                                        if words[1] in games:
                                             if not func_module.prov_zap_game(peer_id):
-                                                func_module.thread_start(games[slova[1]], peer_id, from_id)
+                                                func_module.thread_start(games[words[1]], peer_id, from_id)
                                             else:
                                                 func_module.send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
-                                    if slova[0] == 'клан':
-                                        if slova[1] in clan:
-                                            func_module.thread_start(clan[slova[1]], peer_id, from_id, slova)
-                                        if len(slova) > 2:
-                                            if slova[2] in clan2:
-                                                if len(slova) > 2:
-                                                    if slova[0] + ' ' + slova[1] == 'клан баланс':
-                                                        func_module.thread_start(clan2[slova[2]], peer_id,
-                                                                                 from_id, slova)
+                                    if words[0] == 'клан':
+                                        if words[1] in clan:
+                                            func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from)
+                                        if len(words) > 2:
+                                            if words[2] in clan2:
+                                                if len(words) > 2:
+                                                    if words[0] + ' ' + words[1] == 'клан баланс':
+                                                        func_module.thread_start(clan2[words[2]], peer_id,
+                                                                                 from_id, words)
 
                                     # good /\
                                 # Текстовые ответы --------------------------------------------------------------------
-                                if len(slova) > 0:
+                                if len(words) > 0:
                                     if text == "клан" or text == "кланы" or text == "клан помощь" or \
                                             text == "кланы помощь":
                                         func_module.send_msg_new(peer_id, 'Клановые команды:\n'
@@ -190,20 +200,21 @@ if __name__ == '__main__':
                                         idphoto = 457242784
                                         func_module.provzapret_ft(peer_id, 'nain', str(idphoto))
                                         func_module.main_keyboard_arts(peer_id)
-                                    elif len(slova) > 1:
-                                        if slova[0] == 'запрет':
-                                            func_module.adm_prov_and_zapret(peer_id, from_id, slova[1])
-                                        elif slova[1] == 'участвую':
+                                    elif len(words) > 1:
+                                        if words[0] == 'запрет':
+                                            func_module.adm_prov_and_zapret(peer_id, from_id, words[1])
+                                        elif words[1] == 'участвую':
                                             if not func_module.prov_zap_game(peer_id):
                                                 func_module.send_msg_new(peer_id, 'Игра уже закончилась')
-                                        elif slova[0] + ' ' + slova[1] == 'брак статус':
-                                            func_module.thread_start(func_module.marry_status, peer_id, from_id)
-                                        elif slova[0] == "брак":
-                                            func_module.thread_start(func_module.marry_create, peer_id, from_id,
-                                                                     slova[1])
-                                        elif slova[0] == "перевести":
-                                            func_module.thread_start(func_module.money_send, peer_id, from_id,
-                                                                     slova[1], slova[2])
+                                        elif words[0] + ' ' + words[1] == 'брак статус':                            #
+                                            func_module.thread_start(func_module.marry_status, peer_id, from_id,
+                                                                     words, our_from)
+                                    elif words[0] == "брак":                                                        #
+                                        func_module.thread_start(func_module.marry_create, peer_id, from_id,
+                                                                 words, our_from)
+                                    elif words[0] == "перевести":                                                   #
+                                        func_module.thread_start(func_module.money_send, peer_id, from_id,
+                                                                 words, our_from)
                                     elif text == "развод":
                                         func_module.thread_start(func_module.marry_disvorse, peer_id, from_id)
                                     # Отладка -------------------------------------------------------------------------
@@ -239,8 +250,7 @@ if __name__ == '__main__':
                                     else:
                                         func_module.main_keyboard_1(peer_id)
 
-                            func_module.thread_start(messege_chek, event.message.peer_id, event.message.from_id,
-                                                     event.message.text.lower())
+                            func_module.thread_start(messege_chek, event)
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
                 error(" - ошибка подключения к вк")

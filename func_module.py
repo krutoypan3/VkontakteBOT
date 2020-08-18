@@ -65,10 +65,11 @@ zapros_ft_vd()
 try:
     # Инфа о человеке
     def people_info(people_id):
-        people = vk.users.get(user_ids=people_id)
-        people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
-        return people
-
+        if people_id > 0:
+            people = vk.users.get(user_ids=people_id)
+            people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
+            return people
+        return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
 
     # Посоветуй аниме
     def anime_sovet(peer_id):
@@ -160,7 +161,7 @@ try:
                     clan_bals = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
                     if chislo_li_eto(money):
                         if int(clan_bals) >= int(money):
-                            clan_add_balance(my_peer, my_from, int(-int(money)))
+                            clan_add_balance(my_peer, my_from, ['', '', '', int(-int(money))])
                             send_msg_new(my_peer, people_info(my_from) + ' вывел из казны клана ' + money + ' монет')
                         else:
                             send_msg_new(my_peer, people_info(my_from) + ', в казне недостаточно монет!')
@@ -200,12 +201,15 @@ try:
     # Баланс клана rank 1+
     def clan_balance(*args):
         my_peer = args[0]
-        my_from = args[1]
+        if len(args[2]) == 2:
+            my_from = args[3]
+        else:
+            my_from = args[1]
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 1:
                 money = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
-                send_msg_new(my_peer, 'В казне вашего клана ' + str(money) + ' монет')
+                send_msg_new(my_peer, 'В казне клана ' + str(clan_name) + ' ' + str(money) + ' монет')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
                                                              'выполнения данной команды!')
@@ -215,35 +219,48 @@ try:
 
     def clan_info(*args):
         my_peer = args[0]
-        my_from = args[1]
-        clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        if clan_name != 'NULL' and clan_name is not None:
-            send_msg_new(my_peer, people_info(my_from) + ', вы состоите в клане ' + clan_name)
-            first_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'first_name', str(clan_name)))
-            last_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'last_name', str(clan_name)))
-            rank_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'clan_rank', str(clan_name)))
-            mess = ''
-            people = []
-            for i in range(len(rank_all)):
-                people.append([first_all[i][0], last_all[i][0], rank_all[i][0]])
-            people = sorted(people, key=lambda peoples: (-peoples[2]))
-            for i in range(len(people)):
-                if int(people[i][2]) == 5:
-                    mess += '⭐⭐⭐⭐⭐'
-                elif int(people[i][2]) == 4:
-                    mess += '⭐⭐⭐⭐'
-                elif int(people[i][2]) == 3:
-                    mess += '⭐⭐⭐'
-                elif int(people[i][2]) == 2:
-                    mess += '⭐⭐'
-                elif int(people[i][2]) == 1:
-                    mess += '⭐'
-                else:
-                    mess += 'Холоп-'
-                mess += str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
-            send_msg_new(my_peer, mess)
+        if len(args[2]) == 2:       # Если длина сообщения 2 слова \клан инфо\
+            if args[3] == '':       # Если имя упомянутого пустое (не упоминали)
+                my_from = args[1]   # Присвоить имя отправителя
+            else:
+                my_from = args[3]   # Присвоить имя упомянутого
         else:
-            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+            id2 = args[2][2]        # Присвоить имя кого-то
+            my_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    my_from += i
+                if i == '|':
+                    break
+        if my_from != '' and int(my_from) > 0:
+            clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
+            if clan_name != 'NULL' and clan_name is not None:
+                send_msg_new(my_peer, people_info(my_from) + ' состоит в клане ' + clan_name)
+                first_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'first_name', str(clan_name)))
+                last_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'last_name', str(clan_name)))
+                rank_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'clan_rank', str(clan_name)))
+                mess = ''
+                people = []
+                for i in range(len(rank_all)):
+                    people.append([first_all[i][0], last_all[i][0], rank_all[i][0]])
+                people = sorted(people, key=lambda peoples: (-peoples[2]))
+                for i in range(len(people)):
+                    if int(people[i][2]) == 5:
+                        mess += '⭐⭐⭐⭐⭐'
+                    elif int(people[i][2]) == 4:
+                        mess += '⭐⭐⭐⭐'
+                    elif int(people[i][2]) == 3:
+                        mess += '⭐⭐⭐'
+                    elif int(people[i][2]) == 2:
+                        mess += '⭐⭐'
+                    elif int(people[i][2]) == 1:
+                        mess += '⭐'
+                    else:
+                        mess += 'Холоп-'
+                    mess += str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
+                send_msg_new(my_peer, mess)
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ' не состоит в клане!')
 
 
     # Баланс клана топ
@@ -281,14 +298,17 @@ try:
     def clan_kick(*args):
         my_peer = args[0]
         my_from = args[1]
-        id2 = args[2][2]
+        if len(args[2]) == 2:
+            our_from = args[3]
+        else:
+            id2 = args[2][2]
+            our_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    our_from += i
+                if i == '|':
+                    break
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        our_from = ''
-        for i in id2:
-            if '0' <= i <= '9':
-                our_from += i
-            if i == '|':
-                break
         if clan_name != 'NULL' and clan_name is not None:
             if db_module.sql_fetch_from_money(db_module.con, 'clan_name', our_from)[0][0] == clan_name:
                 if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) > \
@@ -344,15 +364,18 @@ try:
     def clan_invite(*args):
         my_peer = args[0]
         my_from = args[1]
-        id2 = args[2][2]
+        if len(args[2]) == 2:
+            our_from = args[3]
+        else:
+            id2 = args[2][2]
+            our_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    our_from += i
+                if i == '|':
+                    break
         clan_name_my = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        our_from = ''
-        for i in id2:
-            if '0' <= i <= '9':
-                our_from += i
-            if i == '|':
-                break
-        if our_from != '':
+        if our_from != '' and int(our_from) > 0:
             clan_name_our = db_module.sql_fetch_from_money(db_module.con, 'clan_name', our_from)[0][0]
             if clan_name_my != 'NULL' and clan_name_my != 'None':
                 a = (db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0])
@@ -403,19 +426,22 @@ try:
     def clan_up_down(*args):
         my_peer = args[0]
         my_from = args[1]
-        id2 = args[2][2]
+        if len(args[2]) == 2:
+            our_from = args[3]
+        else:
+            id2 = args[2][2]
+            our_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    our_from += i
+                if i == '|':
+                    break
         up_or_down = args[2][1]
         if up_or_down == 'повысить':
             up_or_down = True
         else:
             up_or_down = False
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        our_from = ''
-        for i in id2:
-            if '0' <= i <= '9':
-                our_from += i
-            if i == '|':
-                break
         if clan_name != 'NULL' and clan_name is not None:
             if db_module.sql_fetch_from_money(db_module.con, 'clan_name', our_from)[0][0] == clan_name:
                 my_rank = int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0])
@@ -449,12 +475,27 @@ try:
 
 
     # Статус брака
-    def marry_status(my_peer, my_from):
-        marry_id = str(db_module.sql_fetch_from(db_module.con, 'marry_id', my_peer, my_from)[0][0])
-        if marry_id == 'None' or marry_id == '0':
-            send_msg_new(my_peer, 'Вы не состоите в браке')
+    def marry_status(*args):
+        my_peer = args[0]
+        if len(args[2]) == 2:  # Если длина сообщения 2 слова \клан инфо\
+            if args[3] == '':  # Если имя упомянутого пустое (не упоминали)
+                my_from = args[1]  # Присвоить имя отправителя
+            else:
+                my_from = args[3]  # Присвоить имя упомянутого
         else:
-            send_msg_new(my_peer, 'Вы состоите в браке с ' + people_info(marry_id))
+            id2 = args[2][2]  # Присвоить имя кого-то
+            my_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    my_from += i
+                if i == '|':
+                    break
+        if my_from != '' and int(my_from) > 0:
+            marry_id = str(db_module.sql_fetch_from(db_module.con, 'marry_id', my_peer, my_from)[0][0])
+            if marry_id == 'None' or marry_id == '0':
+                send_msg_new(my_peer, people_info(my_from) + ' не состоит в браке')
+            else:
+                send_msg_new(my_peer, people_info(my_from) + ' состоит в браке с ' + people_info(marry_id))
 
 
     # Развод
@@ -469,14 +510,20 @@ try:
 
 
     # Создание брака
-    def marry_create(my_peer, my_from, id2):
-        our_from = ''
-        for i in id2:
-            if '0' <= i <= '9':
-                our_from += i
-            if i == '|':
-                break
-        if str(my_from) == str(our_from):
+    def marry_create(*args):
+        my_peer = args[0]
+        my_from = args[1]
+        if len(args[2]) == 1:
+            our_from = args[3]
+        else:
+            id2 = args[2][1]
+            our_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    our_from += i
+                if i == '|':
+                    break
+        if str(my_from) == str(our_from) or our_from < 0:
             send_msg_new(my_peer, 'Ты чо? Дебил? Одиночество? Да? Иди лучше подрочи...')
         else:
             marry_id = str(db_module.sql_fetch_from(db_module.con, 'marry_id', my_peer, my_from)[0][0])
@@ -546,15 +593,23 @@ try:
 
 
     # Отправка денег от одного участника к другому
-    def money_send(my_peer, my_from, our, money):
+    def money_send(*args):
         try:
-            our_from = ''
-            for i in our:
-                if '0' <= i <= '9':
-                    our_from += i
-                if i == '|':
-                    break
-            if our_from != '':
+            my_peer = args[0]
+            my_from = args[1]
+            if len(args[2]) == 2:
+                our_from = args[3]
+                money = args[2][1]
+            else:
+                id2 = args[2][1]
+                money = args[2][2]
+                our_from = ''
+                for i in id2:
+                    if '0' <= i <= '9':
+                        our_from += i
+                    if i == '|':
+                        break
+            if our_from != '' and our_from > 0:
                 if int(str(db_module.sql_fetch_from_money(db_module.con, 'money',
                                                           str(my_from))[0][0])) >= int(money) > 0:
                     add_balans(str(my_from), '-' + str(money))
@@ -566,7 +621,7 @@ try:
             else:
                 send_msg_new(my_peer, 'Мне кажется, или ты что-то напутал?!')
         except ValueError:
-            send_msg_new(my_peer, 'Мне кажется, или ты что-то напутал?!')
+            send_msg_new(args[0], 'Мне кажется, или ты что-то напутал?!')
 
 
     # Зачисление ежедневного вознаграждения
