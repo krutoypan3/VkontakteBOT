@@ -65,7 +65,7 @@ zapros_ft_vd()
 try:
     # Инфа о человеке
     def people_info(people_id):
-        if people_id > 0:
+        if int(people_id) > 0:
             people = vk.users.get(user_ids=people_id)
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
