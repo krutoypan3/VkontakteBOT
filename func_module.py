@@ -17,7 +17,6 @@ API_SERVICE_KEY = 'c14c6918c14c6918c14c691807c13e8ffacc14cc14c69189e4cb11298fa3a
 client_secret = '3GBA2mEv669lqnF8WZyA'
 print("Бот запускается...")
 group_id = '196288744'  # Указываем id сообщества
-oshibka = 0  # обнуление счетчика ошибок | не трогать
 threads = list()
 eventhr = []
 kolpot = -1
@@ -39,9 +38,8 @@ vk_session_SERVISE.server_auth()
 vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
-
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-        photo_ur18
+    photo_ur18
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
@@ -70,6 +68,7 @@ try:
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
+
 
     # Посоветуй аниме
     def anime_sovet(peer_id):
@@ -201,10 +200,19 @@ try:
     # Баланс клана rank 1+
     def clan_balance(*args):
         my_peer = args[0]
-        if len(args[2]) == 2:
-            my_from = args[3]
+        if len(args[2]) == 2:  # Если длина сообщения 2 слова \клан инфо\
+            if args[3] == '':  # Если имя упомянутого пустое (не упоминали)
+                my_from = args[1]  # Присвоить имя отправителя
+            else:
+                my_from = args[3]  # Присвоить имя упомянутого
         else:
-            my_from = args[1]
+            id2 = args[2][2]  # Присвоить имя кого-то
+            my_from = ''
+            for i in id2:
+                if '0' <= i <= '9':
+                    my_from += i
+                if i == '|':
+                    break
         clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
         if clan_name != 'NULL' and clan_name is not None:
             if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 1:
@@ -219,13 +227,13 @@ try:
 
     def clan_info(*args):
         my_peer = args[0]
-        if len(args[2]) == 2:       # Если длина сообщения 2 слова \клан инфо\
-            if args[3] == '':       # Если имя упомянутого пустое (не упоминали)
-                my_from = args[1]   # Присвоить имя отправителя
+        if len(args[2]) == 2:  # Если длина сообщения 2 слова \клан инфо\
+            if args[3] == '':  # Если имя упомянутого пустое (не упоминали)
+                my_from = args[1]  # Присвоить имя отправителя
             else:
-                my_from = args[3]   # Присвоить имя упомянутого
+                my_from = args[3]  # Присвоить имя упомянутого
         else:
-            id2 = args[2][2]        # Присвоить имя кого-то
+            id2 = args[2][2]  # Присвоить имя кого-то
             my_from = ''
             for i in id2:
                 if '0' <= i <= '9':
@@ -693,7 +701,7 @@ try:
 
 
     # Проверка команды на наличие в списке запрещенных команд
-    def provzapret_ft(my_peer, chto, idphoto):
+    def provzapret_ft(my_peer, chto, id_photo):
         zap_command = open('zap_command.txt', 'r')
         asq = 0
         for line in zap_command:
@@ -703,11 +711,11 @@ try:
                 break
         zap_command.close()
         if asq == 0:
-            send_ft(my_peer, idphoto)
+            send_ft(my_peer, id_photo)
 
 
     # Проверка команды на наличие в списке запрещенных команд
-    def provzapret_vd(my_peer, chto, idvideo):
+    def provzapret_vd(my_peer, chto, id_video):
         zap_command = open('zap_command.txt', 'r')
         asq = 0
         for line in zap_command:
@@ -717,7 +725,7 @@ try:
                 break
         zap_command.close()
         if asq == 0:
-            send_vd(my_peer, idvideo)
+            send_vd(my_peer, id_video)
 
 
     # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
@@ -845,6 +853,7 @@ try:
         eventhr.append(kolpot)
         x.start()
 
+
     # Игра угадай число
     def game_ugadai_chislo(*args):
         my_peer = args[0]
@@ -922,47 +931,33 @@ try:
         keyboard.add_button('начать', color=VkKeyboardColor.NEGATIVE)
         vk.messages.send(peer_id=my_peer_game, random_id=get_random_id(),
                          keyboard=keyboard.get_keyboard(), message='Набор участников:')
-        for event_nabor_game in longpoll.listen():
+        for eventhr_nabor_game in longpoll.listen():
             if time.time() - timing < 60.0:
+                event_nabor_game = eventhr_nabor_game
                 if event_nabor_game.type == VkBotEventType.MESSAGE_NEW:
-                    try:
-                        if event_nabor_game.message.text == ('[' + 'club' + str(group_id) + '|' +
-                                                         group_name + ']' + " начать") \
-                                or (event_nabor_game.message.text == '[' + 'club' + str(group_id) + '|' +
-                                    group_sob + ']' + " начать"):
-                            timing -= timing - 60
-                        elif (event_nabor_game.message.text == "участвую"
-                              or event_nabor_game.message.text == "Участвую"
-                              or event_nabor_game.message.text == '[' + 'club' + str(group_id) + '|' +
-                              group_name + ']' + " участвую"
-                              or event_nabor_game.message.text == '[' + 'club' + str(group_id) + '|' +
-                              group_sob + ']' + " участвую"
-                              or event_nabor_game.message.text == "учавствую"
-                              or event_nabor_game.message.text == "Учавствую") \
-                                and event_nabor_game.message.peer_id == my_peer_game:
-                            if event_nabor_game.message.from_id > 0:
-                                if event_nabor_game.message.from_id in uchastniki:
-                                    send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
-                                else:
-                                    if int(str(db_module.sql_fetch_from_money(
-                                            db_module.con, 'money', str(event_nabor_game.message.from_id))[0][0])) >= \
-                                            int(stavka):
-                                        uchastniki.append(event_nabor_game.message.from_id)
-                                        send_msg_new(my_peer_game,
-                                                     '&#127918;' + people_info(event_nabor_game.message.from_id)
-                                                     + ', заявка на участие принята. Участников: ' +
-                                                     str(len(uchastniki)))
-                                    else:
-                                        send_msg_new(my_peer_game, people_info(event_nabor_game.message.from_id) +
-                                                     ', у вас недостаточно средств на счете! Получите '
-                                                     'бро-коины написав "бро награда"')
+                    words = event_nabor_game.message.text.lower().split()
+                    if "начать" in words:
+                        timing -= timing - 60
+                    elif ("участвую" in words) and (event_nabor_game.message.peer_id == my_peer_game):
+                        if event_nabor_game.message.from_id > 0:
+                            if event_nabor_game.message.from_id in uchastniki:
+                                send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
                             else:
-                                send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
-                    except AttributeError:
-                        send_msg_new(my_peer_game, '&#127918;' + people_info(event_nabor_game.message.from_id)
-                                     + 'Ты уже в списке участников')
-                        continue
-            if time.time() - timing > 60.0:
+                                if int(str(db_module.sql_fetch_from_money(
+                                        db_module.con, 'money', str(event_nabor_game.message.from_id))[0][0])) >= \
+                                        int(stavka):
+                                    uchastniki.append(event_nabor_game.message.from_id)
+                                    send_msg_new(my_peer_game,
+                                                 '&#127918;' + people_info(event_nabor_game.message.from_id)
+                                                 + ', заявка на участие принята. Участников: ' +
+                                                 str(len(uchastniki)))
+                                else:
+                                    send_msg_new(my_peer_game, people_info(event_nabor_game.message.from_id) +
+                                                 ', у вас недостаточно средств на счете! Получите '
+                                                 'бро-коины написав "бро награда"')
+                        else:
+                            send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
+            elif time.time() - timing > 60.0:
                 keyboard = VkKeyboard(one_time=True)
                 keyboard.add_button('Не забудьте подписаться на бота', color=VkKeyboardColor.POSITIVE)
                 vk.messages.send(peer_id=my_peer_game, random_id=get_random_id(),
@@ -977,8 +972,8 @@ try:
     def game_kto_kruche(my_peer, my_from):
         zapret_zap_game(my_peer)
         send_msg_new(my_peer, '&#127918;Запущена игра "Кто круче?". Чтобы принять участие, '
-                                    'напишите "участвую". '
-                                    '\nМинимальное количество участников для запуска: 2')
+                              'напишите "участвую". '
+                              '\nМинимальное количество участников для запуска: 2')
         stavka = stavka_igra(my_peer)
         uchastniki = nabor_igrokov(my_peer, stavka)
         if len(uchastniki) < 2:
@@ -1186,18 +1181,19 @@ try:
                                 if event_victorina_game.type == VkBotEventType.MESSAGE_NEW:
                                     if event_victorina_game.message.from_id == my_from:
                                         if event_victorina_game.message.text == ('[' + 'club' + str(group_id) + '|' +
-                                                                             group_name + ']' + " забрать деньги") \
-                                                or (event_victorina_game.message.text == '[' + 'club' + str(group_id) + '|'
-                                                    + group_sob + ']' + " забрать деньги"):
+                                                                                 group_name + ']' + " забрать деньги") \
+                                                or (
+                                                event_victorina_game.message.text == '[' + 'club' + str(group_id) + '|'
+                                                + group_sob + ']' + " забрать деньги"):
                                             add_balans(my_from, dengi)
                                             stop = 1
                                             send_msg_new(my_peer, 'Вы выйграли ' + str(dengi) + ' монет')
                                             break
                                         elif event_victorina_game.message.text == ('[' + 'club' + str(group_id) + '|' +
-                                                                               group_name + ']' + " продолжить") \
+                                                                                   group_name + ']' + " продолжить") \
                                                 or (
-                                                event_victorina_game.message.text == '[' + 'club' + str(group_id) + '|' +
-                                                group_sob + ']' + " продолжить"):
+                                                event_victorina_game.message.text == '[' + 'club' + str(group_id) + '|'
+                                                + group_sob + ']' + " продолжить"):
                                             dengi *= 2
                                             time.sleep(1)
                                             if i == 3:

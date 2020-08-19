@@ -1,4 +1,3 @@
-import json
 import socket
 import time
 import requests
@@ -24,21 +23,22 @@ if __name__ == '__main__':
     # Основной цикл программы
     try:
         # Первичный запуск
+        oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
         games = {'1': func_module.game_ugadai_chislo,
                  '2': func_module.game_kto_kruche,
                  '3': func_module.game_brosok_kubika,
                  '4': func_module.game_mat_victorina,
                  '5': func_module.game_casino}
-        clan = {'создать': func_module.clan_create,     # GOOD
+        clan = {'создать': func_module.clan_create,  # GOOD
                 'распад': func_module.clan_disvorse,
-                'кик': func_module.clan_kick,           # #
+                'кик': func_module.clan_kick,  # #
                 'покинуть': func_module.clan_leave,
                 'пригласить': func_module.clan_invite,  # #
-                'баланс': func_module.clan_balance,     # #
-                'повысить': func_module.clan_up_down,   # #
-                'понизить': func_module.clan_up_down,   # #
-                'инфо': func_module.clan_info}          # #
+                'баланс': func_module.clan_balance,  # #
+                'повысить': func_module.clan_up_down,  # #
+                'понизить': func_module.clan_up_down,  # #
+                'инфо': func_module.clan_info}  # #
         clan2 = {'топ': func_module.clan_balance_top,
                  'пополнить': func_module.clan_add_balance,
                  'вывести': func_module.clan_rem_balance}
@@ -52,13 +52,16 @@ if __name__ == '__main__':
                       'неко': func_module.photo_neko,
                       'манга арт': func_module.photo_mart}
         content_vd = {'coub': func_module.video_coub}
-
+        keyboard = {'главная': func_module.main_keyboard_1,
+                    'арты': func_module.main_keyboard_arts,
+                    '18+': func_module.main_keyboard_hent,
+                    'видео': func_module.main_keyboard_video}
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
-                            def messege_chek(event_func):
+                            def message_chek(event_func):
 
                                 # Занесение в переменные значений с события
                                 from_id = event_func.message.from_id  # Кто написал
@@ -66,7 +69,7 @@ if __name__ == '__main__':
                                 text = event_func.message.text.lower()  # Что написал
                                 words = text.split()  # Разделение сообщения на слова
                                 if 'reply_message' in event_func.message:  # Кому то писал?
-                                    our_from = event_func.object.message["reply_message"]["from_id"]   # Кому написал
+                                    our_from = event_func.object.message["reply_message"]["from_id"]  # Кому написал
                                 else:
                                     our_from = ''
                                 func_module.thread_start(func_module.add_balans, from_id, '2')  # Добавляем 2 монетки
@@ -197,8 +200,8 @@ if __name__ == '__main__':
                                                                  text, False)
 
                                     elif text == "nain":
-                                        idphoto = 457242784
-                                        func_module.provzapret_ft(peer_id, 'nain', str(idphoto))
+                                        id_photo = 457242784
+                                        func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
                                         func_module.main_keyboard_arts(peer_id)
                                     elif len(words) > 1:
                                         if words[0] == 'запрет':
@@ -206,51 +209,38 @@ if __name__ == '__main__':
                                         elif words[1] == 'участвую':
                                             if not func_module.prov_zap_game(peer_id):
                                                 func_module.send_msg_new(peer_id, 'Игра уже закончилась')
-                                        elif words[0] + ' ' + words[1] == 'брак статус':                            #
+                                        elif words[0] + ' ' + words[1] == 'брак статус':  #
                                             func_module.thread_start(func_module.marry_status, peer_id, from_id,
                                                                      words, our_from)
-                                    elif words[0] == "брак":                                                        #
+                                    elif words[0] == "брак":  #
                                         func_module.thread_start(func_module.marry_create, peer_id, from_id,
                                                                  words, our_from)
-                                    elif words[0] == "перевести":                                                   #
+                                    elif words[0] == "перевести":  #
                                         func_module.thread_start(func_module.money_send, peer_id, from_id,
                                                                  words, our_from)
                                     elif text == "развод":
                                         func_module.thread_start(func_module.marry_disvorse, peer_id, from_id)
                                     # Отладка -------------------------------------------------------------------------
-                                    elif text == 'dump':
-                                        with open('dump.json', 'w') as dump:
-                                            func_module.send_msg_new(peer_id, peer_id)
-                                            auth = requests.get('https://oauth.vk.com/authorize',
-                                                                params={
-                                                                    'client_id': '7522555',
-                                                                    'redirect_uri': 'https://oauth.vk.com/blank.html',
-                                                                    'response_type': 'token'
-
-                                                                }
-                                                                )
-                                            print(auth.text)
-                                            json.dump(auth.text, dump)
-                                            func_module.send_msg_new(peer_id, 'dumped')
-                                    elif text == "начать" or text == "главная":
-                                        if func_module.lich_or_beseda:
-                                            func_module.main_keyboard_1(peer_id)
-                                    elif text == "арты":
-                                        if func_module.lich_or_beseda:
-                                            func_module.main_keyboard_arts(peer_id)
-                                    elif text == "18+":
-                                        if func_module.lich_or_beseda:
-                                            func_module.main_keyboard_hent(peer_id)
-                                    elif text == "видео":
-                                        if func_module.lich_or_beseda:
-                                            func_module.main_keyboard_video(peer_id)
-                                    elif text == "аниме(в разработке)" or text == "amv(в разработке)":
-                                        func_module.send_msg_new(peer_id, "Написано же в разработке))")
-                                        func_module.main_keyboard_1(peer_id)
+                                    # elif text == 'dump':
+                                    #    with open('dump.json', 'w') as dump:
+                                    #        func_module.send_msg_new(peer_id, peer_id)
+                                    #        auth = requests.get('https://oauth.vk.com/authorize',
+                                    #                            params={
+                                    #                                'client_id': '7522555',
+                                    #                                'redirect_uri': 'https://oauth.vk.com/blank.html',
+                                    #                                'response_type': 'token'
+                                    #
+                                    #                           }
+                                    #                           )
+                                    #       print(auth.text)
+                                    #       json.dump(auth.text, dump)
+                                    #       func_module.send_msg_new(peer_id, 'dumped')
+                                    if text in keyboard:
+                                        func_module.thread_start(keyboard[text], peer_id)
                                     else:
-                                        func_module.main_keyboard_1(peer_id)
+                                        func_module.thread_start(func_module.main_keyboard_1, peer_id)
 
-                            func_module.thread_start(messege_chek, event)
+                            func_module.thread_start(message_chek, event)
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
                 error(" - ошибка подключения к вк")
