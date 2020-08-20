@@ -110,6 +110,7 @@ try:
                 if db_module.sql_fetch_clan_info(db_module.con, 'clan_name', clan_name[2]) == 'NULL':
                     if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= 5000:
                         db_module.sql_update_from_money_text(db_module.con, 'clan_name', clan_name[2], str(my_from))
+                        db_module.sql_update_from_money_text(db_module.con, 'clan_rank', '5', str(my_from))
                         add_balans(my_from, '-5000')
                         entities = str(clan_name[2]), '0', str(my_from)
                         db_module.sql_insert_clan_info(db_module.con, entities)
@@ -153,7 +154,7 @@ try:
         if len(args[2]) > 3:
             my_peer = args[0]
             my_from = args[1]
-            money = args[2][3]
+            money = args[2][2]
             clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
             if clan_name != 'NULL' and clan_name is not None:
                 if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 4:
@@ -178,7 +179,7 @@ try:
         if len(args[2]) > 3:
             my_peer = args[0]
             my_from = args[1]
-            money = args[2][3]
+            money = args[2][2]
             clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
             if clan_name != 'NULL' and clan_name is not None:
                 if chislo_li_eto(money):
