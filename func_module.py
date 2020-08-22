@@ -620,7 +620,7 @@ try:
                     if i == '|':
                         break
             if our_from != '':
-                if our_from > 0:
+                if int(our_from) > 0:
                     if int(str(db_module.sql_fetch_from_money(db_module.con, 'money',
                                                               str(my_from))[0][0])) >= int(money) > 0:
                         add_balans(str(my_from), '-' + str(money))
