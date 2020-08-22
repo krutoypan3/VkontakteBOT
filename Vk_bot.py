@@ -86,7 +86,7 @@ if __name__ == '__main__':
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
-                    if str(event.obj["action"]["type"]) == 'chat_invite_user':
+                    '''if str(event.obj["action"]["type"]) == 'chat_invite_user':
                         if str(event.obj["action"]["member_id"]) == '-196288744':
                             func_module.send_msg_new(event.message.peer_id, 'Ку-ку, я бот Братик. Буду рад помочь вам'
                                                                             ' разнообразить ваш чат! Для просмотра '
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                         else:
                             usid_new = str(event.obj["action"]["member_id"])
                             func_module.send_msg_new(event.message.peer_id, func_module.people_info(usid_new) +
-                                                     ', привет, семпай!')
+                                                     ', привет, семпай!')'''
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
                             def message_chek(event_func):
