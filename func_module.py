@@ -110,7 +110,7 @@ try:
                 if db_module.sql_fetch_clan_info(db_module.con, 'clan_name', clan_name[2]) == 'NULL':
                     if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= 5000:
                         db_module.sql_update_from_money_text(db_module.con, 'clan_name', clan_name[2], str(my_from))
-                        db_module.sql_update_from_money_text(db_module.con, 'clan_rank', '5', str(my_from))
+                        db_module.sql_update_from_money_int(db_module.con, 'clan_rank', '5', str(my_from))
                         add_balans(my_from, '-5000')
                         entities = str(clan_name[2]), '0', str(my_from)
                         db_module.sql_insert_clan_info(db_module.con, entities)
