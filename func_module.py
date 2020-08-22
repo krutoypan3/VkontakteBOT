@@ -637,8 +637,11 @@ try:
     def add_balans_every_day(my_peer, my_from):
         balans_time = int(db_module.sql_fetch_from_money(db_module.con, 'm_time', my_from)[0][0])
         if balans_time < (time.time() - 8 * 60 * 60):
+            idphoto = str(random.randint(457242790, 457242801))
+            vk.messages.send(peer_id=my_peer, random_id=0,
+                             attachment='photo-' + group_id + '_' + idphoto,
+                             message='Вам было зачисленно 1000 бро-коинов!\nПриходи снова через 8 часов🤗')
             db_module.sql_update_from_money_int(db_module.con, 'm_time', str(time.time()), str(my_from))
-            send_msg_new(my_peer, 'Вам было зачисленно 1000 бро-коинов!')
             add_balans(my_from, 1000)
         else:
             balans_hour = ''
