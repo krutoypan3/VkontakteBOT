@@ -151,7 +151,7 @@ try:
 
     # Снятие денег с баланса клана rank 4+
     def clan_rem_balance(*args):
-        if len(args[2]) > 3:
+        if len(args[2]) > 2:
             my_peer = args[0]
             my_from = args[1]
             money = args[2][2]
@@ -161,7 +161,7 @@ try:
                     clan_bals = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
                     if chislo_li_eto(money):
                         if int(clan_bals) >= int(money):
-                            clan_add_balance(my_peer, my_from, ['', '', '', int(-int(money))])
+                            clan_add_balance(my_peer, my_from, ['', '', int(-int(money))])
                             send_msg_new(my_peer, people_info(my_from) + ' вывел из казны клана ' + money + ' монет')
                         else:
                             send_msg_new(my_peer, people_info(my_from) + ', в казне недостаточно монет!')
@@ -176,7 +176,7 @@ try:
 
     # Пополнение баланса клана
     def clan_add_balance(*args):
-        if len(args[2]) > 3:
+        if len(args[2]) > 2:
             my_peer = args[0]
             my_from = args[1]
             money = args[2][2]
