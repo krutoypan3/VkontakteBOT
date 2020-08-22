@@ -78,13 +78,23 @@ if __name__ == '__main__':
                                 '2000 бро-коинов\n Ваш баланс будет пополнет в течении суток\nВ комментарии обязательно'
                                 ' укажите ссылку на вашу страницу\nhttps://yasobe.ru/na/br_koins',
                        'пока': "&#128546; Прощай",
-                       'команды': '⚙️ Полный список команд '
-                                  'доступен по ссылке ' + 'vk.com/@bratikbot-commands',
+                       'команды': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
+                       'братик': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
+                       'братик команды': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
                        'инфо': "Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: vk.com/aom13"}
 
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
+                    if str(event.obj["action"]["type"]) == 'chat_invite_user':
+                        if str(event.obj["action"]["member_id"]) == '-196288744':
+                            func_module.send_msg_new(event.message.peer_id, 'Ку-ку, я бот Братик. Буду рад помочь вам'
+                                                                            ' разнообразить ваш чат! Для просмотра '
+                                                                            'списка команд напишите: команды')
+                        else:
+                            usid_new = str(event.obj["action"]["member_id"])
+                            func_module.send_msg_new(event.message.peer_id, func_module.people_info(usid_new) +
+                                                     ', привет, семпай!')
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
                             def message_chek(event_func):
