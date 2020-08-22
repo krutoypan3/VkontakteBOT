@@ -103,7 +103,7 @@ try:
     def clan_create(*args):
         my_peer = args[0]
         my_from = args[1]
-        clan_name = args[2]
+        clan_name = args[4].message.text.split()
         if len(clan_name) >= 3:
             cln_name = str(db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0])
             if (cln_name == 'NULL') or (cln_name is None) or (cln_name == 'None'):
@@ -214,16 +214,17 @@ try:
                     my_from += i
                 if i == '|':
                     break
-        clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
-        if clan_name != 'NULL' and clan_name is not None:
-            if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 1:
-                money = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
-                send_msg_new(my_peer, 'В казне клана ' + str(clan_name) + ' ' + str(money) + ' монет')
+        if my_from != '':
+            clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
+            if clan_name != 'NULL' and clan_name is not None:
+                if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 1:
+                    money = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
+                    send_msg_new(my_peer, 'В казне клана ' + str(clan_name) + ' ' + str(money) + ' монет')
+                else:
+                    send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
+                                                                 'выполнения данной команды!')
             else:
-                send_msg_new(my_peer, people_info(my_from) + ', вы не обладаете достаточными привелегиями для '
-                                                             'выполнения данной команды!')
-        else:
-            send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+                send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
 
     def clan_info(*args):
@@ -618,15 +619,16 @@ try:
                         our_from += i
                     if i == '|':
                         break
-            if our_from != '' and our_from > 0:
-                if int(str(db_module.sql_fetch_from_money(db_module.con, 'money',
-                                                          str(my_from))[0][0])) >= int(money) > 0:
-                    add_balans(str(my_from), '-' + str(money))
-                    add_balans(str(our_from), str(money))
-                    send_msg_new(my_peer, people_info(my_from) + ' перевел ' +
-                                 people_info(our_from) + ' ' + str(money) + ' монет')
-                else:
-                    send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
+            if our_from != '':
+                if our_from > 0:
+                    if int(str(db_module.sql_fetch_from_money(db_module.con, 'money',
+                                                              str(my_from))[0][0])) >= int(money) > 0:
+                        add_balans(str(my_from), '-' + str(money))
+                        add_balans(str(our_from), str(money))
+                        send_msg_new(my_peer, people_info(my_from) + ' перевел ' +
+                                     people_info(our_from) + ' ' + str(money) + ' монет')
+                    else:
+                        send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
             else:
                 send_msg_new(my_peer, 'Мне кажется, или ты что-то напутал?!')
         except ValueError:

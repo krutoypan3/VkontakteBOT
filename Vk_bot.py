@@ -139,7 +139,8 @@ if __name__ == '__main__':
                                                 func_module.send_msg_new(peer_id, '&#128377;Другая игра уже запущена!')
                                     if words[0] == 'клан':
                                         if words[1] in clan:
-                                            func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from)
+                                            func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from,
+                                                                     event_func)
 
                                     # good /\
                                 # Текстовые ответы --------------------------------------------------------------------
