@@ -153,16 +153,23 @@ try:
 
     # Получение параметров из таблицы from_money
     def sql_fetch_from_money(conc, what_return, from_id):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
-        rows = cursorObj2.fetchall()
-        if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            from func_module import vk
-            entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), \
-                       str(vk.users.get(user_ids=from_id)[0]['last_name']), '0'
-            sql_insert_from_money(conc, entities)
-            rows = sql_fetch_from_money(conc, what_return, from_id)
-        return rows
+        try:
+            cursorObj2 = conc.cursor()
+            cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
+            rows = cursorObj2.fetchall()
+            if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
+                from func_module import vk
+                entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), \
+                           str(vk.users.get(user_ids=from_id)[0]['last_name']), '0'
+                sql_insert_from_money(conc, entities)
+                rows = sql_fetch_from_money(conc, what_return, from_id)
+            return rows
+        except 'psycopg2.errors.InFailedSqlTransaction':
+            cursorObj2 = conc.cursor()
+            cursorObj2.execute("ROLLBACK")
+            conc.commit()
+            print('что хотели вернуть - ', + what_return + ' \nкого - ' + from_id)
+            return 'NULL'
 
 
     # Получение параметров из таблицы from_money
