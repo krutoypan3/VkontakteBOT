@@ -193,7 +193,7 @@ if __name__ == '__main__':
                                         elif words[0] + ' ' + words[1] == 'брак статус':  #
                                             func_module.thread_start(func_module.marry_status, peer_id, from_id,
                                                                      words, our_from)
-                                    elif words[0] == "брак":  #
+                                    if words[0] == "брак":  #
                                         func_module.thread_start(func_module.marry_create, peer_id, from_id,
                                                                  words, our_from)
                                     elif words[0] == "перевести":  #
