@@ -345,7 +345,7 @@ try:
                 db_module.sql_delite_clan_info(db_module.con, clan_name)
                 for i in clan_members:
                     db_module.sql_update_from_money_text(db_module.con, 'clan_name', 'NULL', i[0])
-                    db_module.sql_update_from_money_int(db_module.con, 'clan_name', '0', i[0])
+                    db_module.sql_update_from_money_int(db_module.con, 'clan_rank', '0', i[0])
                 send_msg_new(my_peer, 'Клан ' + clan_name + ' распался')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не являетесь администратором клана!')
