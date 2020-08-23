@@ -71,7 +71,8 @@ try:
 
 
     # Посоветуй аниме
-    def anime_sovet(peer_id):
+    def anime_sovet(*args):
+        peer_id = args[0]
         time.sleep(1)
         timing = time.time()
         keyboard = VkKeyboard(one_time=True)
@@ -509,7 +510,9 @@ try:
 
 
     # Развод
-    def marry_disvorse(my_peer, my_from):
+    def marry_disvorse(*args):
+        my_peer = args[0]
+        my_from = args[1]
         marry_id = str(db_module.sql_fetch_from(db_module.con, 'marry_id', my_peer, my_from)[0][0])
         if str(marry_id) == 'None' or str(marry_id) == '0':
             send_msg_new(my_peer, 'Вы не состоите в браке!')
@@ -572,13 +575,16 @@ try:
                 send_msg_new(my_peer, 'Один из вас уже находится в браке!')
 
 
-    def balans_status(my_peer, my_from):
+    def balans_status(*args):
+        my_peer = args[0]
+        my_from = args[1]
         balans = str(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0])
         send_msg_new(my_peer, people_info(my_from) + ', ваш баланс : ' + str(balans) + ' бро-коинов')
 
 
     # Баланс топ
-    def balans_top(my_peer):
+    def balans_top(*args):
+        my_peer = args[0]
         first_all = (db_module.sql_fetch_from_all(db_module.con, 'first_name', str(my_peer)))
         last_all = (db_module.sql_fetch_from_all(db_module.con, 'last_name', str(my_peer)))
         monall = (db_module.sql_fetch_from_all(db_module.con, 'money', my_peer))
@@ -636,7 +642,9 @@ try:
 
 
     # Зачисление ежедневного вознаграждения
-    def add_balans_every_day(my_peer, my_from):
+    def add_balans_every_day(*args):
+        my_peer = args[0]
+        my_from = args[1]
         balans_time = int(db_module.sql_fetch_from_money(db_module.con, 'm_time', my_from)[0][0])
         if balans_time < (time.time() - 8 * 60 * 60):
             idphoto = str(random.randint(457242790, 457242801))
@@ -740,14 +748,15 @@ try:
 
 
     # Показ онлайна беседы
-    def who_online(my_peer):
+    def who_online(*args):
+        my_peer = args[0]
         try:
             responseonl = vk.messages.getConversationMembers(peer_id=my_peer)
             liss = 'Пользователи онлайн: \n\n'
             for n in responseonl["profiles"]:
                 if n.get('online'):  # ['vk.com/id'+id|first_name last name]
                     liss += ('💚' + str(n.get('first_name')) + ' ' + str(n.get('last_name')) + '\n')
-            return liss
+            send_msg_new(my_peer, liss)
         except vk_api.exceptions.ApiError:
             send_msg_new(my_peer, 'Для выполнения данной команды боту необходимы права администратора')
 
@@ -1233,7 +1242,8 @@ try:
 
 
     # Клавиатура со списком игр
-    def klava_game(my_peer):
+    def klava_game(*args):
+        my_peer = args[0]
         send_msg_new(my_peer, '&#8505;Для запуска напишите: игра "номер" Например: игра 1\n'
                               '&#8505;Список игр:\n'
                               '1&#8419;Угадай число\n'

@@ -56,10 +56,19 @@ if __name__ == '__main__':
                     'арты': func_module.main_keyboard_arts,
                     '18+': func_module.main_keyboard_hent,
                     'видео': func_module.main_keyboard_video}
-        text_answer = {'db help': "Для вставки новой строки в таблицу напишите:"
-                                  "\nDB insert 'Название' 'жанр1' 'жанр2' 'жанр3' "
-                                  "'кол-во серий'\n\nНапример:\nDB insert Этот "
-                                  "замечательный мир Комедия Исекай Приключения 24",
+        func_answer = {'бро награда': func_module.add_balans_every_day,
+                       'бро баланс': func_module.balans_status,
+                       'бро баланс топ': func_module.balans_top,
+                       'брак': func_module.marry_create,
+                       'перевести': func_module.money_send,
+                       'развод': func_module.marry_disvorse,
+                       'брак статус': func_module.marry_status,
+                       'посоветуй аниме': func_module.anime_sovet,
+                       'игры': func_module.klava_game,
+                       'кто онлайн': func_module.who_online}
+        text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
+                                  "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
+                                  "Исекай Приключения 24",
                        'клан': 'Клановые команды:\n\n'
                                '⭐⭐⭐⭐⭐\n&#9209;Клан распад\n'
                                '⭐⭐⭐⭐\n&#128183;Клан вывести "сумма"\n '
@@ -78,27 +87,19 @@ if __name__ == '__main__':
                                 '2000 бро-коинов\n Ваш баланс будет пополнет в течении суток\nВ комментарии обязательно'
                                 ' укажите ссылку на вашу страницу\nhttps://yasobe.ru/na/br_koins',
                        'пока': "&#128546; Прощай",
+                       'bb': "&#128546; Прощай",
+                       'до завтра': "&#128546; Прощай",
                        'команды': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
                        'братик': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
                        'братик команды': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
-                       'инфо': "Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: vk.com/aom13"}
-
+                       'инфо': "Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: vk.com/aom13",
+                       'время': str(time.ctime())}
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
-                    '''if str(event.obj["action"]["type"]) == 'chat_invite_user':
-                        if str(event.obj["action"]["member_id"]) == '-196288744':
-                            func_module.send_msg_new(event.message.peer_id, 'Ку-ку, я бот Братик. Буду рад помочь вам'
-                                                                            ' разнообразить ваш чат! Для просмотра '
-                                                                            'списка команд напишите: команды')
-                        else:
-                            usid_new = str(event.obj["action"]["member_id"])
-                            func_module.send_msg_new(event.message.peer_id, func_module.people_info(usid_new) +
-                                                     ', привет, семпай!')'''
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
                             def message_chek(event_func):
-
                                 # Занесение в переменные значений с события
                                 from_id = event_func.message.from_id  # Кто написал
                                 peer_id = event_func.message.peer_id  # Где написал
@@ -128,9 +129,6 @@ if __name__ == '__main__':
                                         sql_insert_anime_base(con, entities)
                                         func_module.send_msg_new(peer_id, "Операция выполнена")
                                 if len(words) > 1:
-
-
-                                    # good \/
                                     if words[0] == 'игра':
                                         if words[1] in games:
                                             if not func_module.prov_zap_game(peer_id):
@@ -141,72 +139,38 @@ if __name__ == '__main__':
                                         if words[1] in clan:
                                             func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from,
                                                                      event_func)
-
-                                    # good /\
-                                # Текстовые ответы --------------------------------------------------------------------
-                                if len(words) > 0:
-                                    if text in text_answer:
-                                        func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
-                                    if text == "Admin-reboot":
-                                        func_module.send_msg_new(peer_id,
-                                                                 "Бот уходит на перезагрузку и будет доступен "
-                                                                 "через 10-15 секунд")
-                                        func_module.zapros_ft_vd()
-                                    elif text == "посоветуй аниме":
-                                        func_module.thread_start(func_module.anime_sovet, peer_id)
-                                    elif text == "время":
-                                        func_module.send_msg_new(peer_id, str(time.ctime()))
-                                    elif text == "игры":
-                                        func_module.klava_game(peer_id)
-                                    elif text == "бро награда" or \
-                                            text == "бро шекель":
-                                        func_module.thread_start(func_module.add_balans_every_day, peer_id,
-                                                                 from_id)  # DB
-                                    elif text == "бро баланс":
-                                        func_module.thread_start(func_module.balans_status, peer_id, from_id)
-                                    elif text == "бро баланс топ":
-                                        func_module.thread_start(func_module.balans_top, peer_id)  # DB
-                                    elif text == "онлайн" or text == "кто тут":
-                                        func_module.send_msg_new(peer_id, func_module.who_online(peer_id))
-                                    elif text == "я админ":
-                                        if func_module.adm_prov(peer_id, from_id):
-                                            func_module.send_msg_new(peer_id, 'Да, ты админ')
-                                        else:
-                                            func_module.send_msg_new(peer_id, 'Увы но нет')
-                                    # Ответы со вложениями ------------------------------------------------------------
-                                    elif text in content_ft:
-                                        func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
-                                                                 text, True)
-                                    elif text in content_vd:
-                                        func_module.thread_start(func_module.send_content, peer_id, content_vd[text],
-                                                                 text, False)
-
-                                    elif text == "nain":
-                                        id_photo = 457242784
-                                        func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
-                                        func_module.main_keyboard_arts(peer_id)
-                                    elif len(words) > 1:
-                                        if words[0] == 'запрет':
-                                            func_module.adm_prov_and_zapret(peer_id, from_id, words[1])
-                                        elif words[1] == 'участвую':
-                                            if not func_module.prov_zap_game(peer_id):
-                                                func_module.send_msg_new(peer_id, 'Игра уже закончилась')
-                                        elif words[0] + ' ' + words[1] == 'брак статус':  #
-                                            func_module.thread_start(func_module.marry_status, peer_id, from_id,
-                                                                     words, our_from)
-                                    if words[0] == "брак":  #
-                                        func_module.thread_start(func_module.marry_create, peer_id, from_id,
-                                                                 words, our_from)
-                                    elif words[0] == "перевести":  #
-                                        func_module.thread_start(func_module.money_send, peer_id, from_id,
-                                                                 words, our_from)
-                                    elif text == "развод":
-                                        func_module.thread_start(func_module.marry_disvorse, peer_id, from_id)
-                                    if text in keyboard:
-                                        func_module.thread_start(keyboard[text], peer_id)
+                                if text in text_answer:
+                                    func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
+                                if text in func_answer:
+                                    func_module.thread_start(func_answer[text], peer_id, from_id, words, our_from,
+                                                             event_func)
+                                elif text in content_ft:
+                                    func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
+                                                             text, True)
+                                elif text in content_vd:
+                                    func_module.thread_start(func_module.send_content, peer_id, content_vd[text],
+                                                             text, False)
+                                if text == "Admin-reboot":
+                                    func_module.send_msg_new(peer_id,
+                                                             "Бот уходит на перезагрузку и будет доступен "
+                                                             "через 10-15 секунд")
+                                    func_module.zapros_ft_vd()
+                                elif text == "я админ":
+                                    if func_module.adm_prov(peer_id, from_id):
+                                        func_module.send_msg_new(peer_id, 'Да, ты админ')
                                     else:
-                                        func_module.thread_start(func_module.main_keyboard_1, peer_id)
-
+                                        func_module.send_msg_new(peer_id, 'Увы но нет')
+                                elif text == "nain":
+                                    id_photo = 457242784
+                                    func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
+                                    func_module.main_keyboard_arts(peer_id)
+                                elif len(words) > 1:
+                                    if words[0] == 'запрет':
+                                        func_module.adm_prov_and_zapret(peer_id, from_id, words[1])
+                                if text in keyboard:
+                                    func_module.thread_start(keyboard[text], peer_id)
+                                else:
+                                    func_module.thread_start(func_module.main_keyboard_1, peer_id)
                             func_module.thread_start(message_chek, event)
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
