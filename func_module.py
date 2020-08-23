@@ -1158,7 +1158,7 @@ try:
                 b = random.randint(1, int('1' + str(nuli)))
                 timing = time.time()
                 znak = '+'
-                send_msg_new(my_peer, 'Сколько будет ' + str(a) + znak + str(b) + ' ?')
+                send_msg_new(my_peer, 'Сколько будет :' + str(a) + znak + str(b) + ': ?')
                 uravnenie = a + b
                 for event_victorina_game in longpoll.listen():
                     if time.time() - timing < 15.0:

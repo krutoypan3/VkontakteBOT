@@ -110,7 +110,6 @@ if __name__ == '__main__':
                                 else:
                                     our_from = ''
                                 func_module.thread_start(func_module.add_balans, from_id, '2')  # Добавляем 2 монетки
-
                                 # Логика ответов
                                 # Игры --------------------------------------------------------------------------------
                                 if len(words) > 5:
