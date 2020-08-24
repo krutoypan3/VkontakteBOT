@@ -143,8 +143,8 @@ if __name__ == '__main__':
                                 if text in func_answer:
                                     func_module.thread_start(func_answer[text], peer_id, from_id, words, our_from,
                                                              event_func)
-                                if text[0] in func_answer_more_word:
-                                    func_module.thread_start(func_answer_more_word[text], peer_id, from_id, words,
+                                if words[0] in func_answer_more_word:
+                                    func_module.thread_start(func_answer_more_word[words[0]], peer_id, from_id, words,
                                                              our_from, event_func)
                                 elif text in content_ft:
                                     func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
