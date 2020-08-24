@@ -59,13 +59,13 @@ if __name__ == '__main__':
         func_answer = {'бро награда': func_module.add_balans_every_day,
                        'бро баланс': func_module.balans_status,
                        'бро баланс топ': func_module.balans_top,
-                       'брак': func_module.marry_create,
-                       'перевести': func_module.money_send,
                        'развод': func_module.marry_disvorse,
                        'брак статус': func_module.marry_status,
                        'посоветуй аниме': func_module.anime_sovet,
                        'игры': func_module.klava_game,
                        'кто онлайн': func_module.who_online}
+        func_answer_more_word = {'перевести': func_module.money_send,
+                                 'брак': func_module.marry_create}
         text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                                   "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
                                   "Исекай Приключения 24",
@@ -143,6 +143,9 @@ if __name__ == '__main__':
                                 if text in func_answer:
                                     func_module.thread_start(func_answer[text], peer_id, from_id, words, our_from,
                                                              event_func)
+                                if text[0] in func_answer_more_word:
+                                    func_module.thread_start(func_answer_more_word[text], peer_id, from_id, words,
+                                                             our_from, event_func)
                                 elif text in content_ft:
                                     func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
                                                              text, True)
