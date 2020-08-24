@@ -138,41 +138,42 @@ if __name__ == '__main__':
                                         if words[1] in clan:
                                             func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from,
                                                                      event_func)
-                                if text in text_answer:
-                                    func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
-                                if text in func_answer:
-                                    func_module.thread_start(func_answer[text], peer_id, from_id, words, our_from,
-                                                             event_func)
-                                if words[0] in func_answer_more_word:
-                                    func_module.thread_start(func_answer_more_word[words[0]], peer_id, from_id, words,
-                                                             our_from, event_func)
-                                elif text in content_ft:
-                                    func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
-                                                             text, True)
-                                elif text in content_vd:
-                                    func_module.thread_start(func_module.send_content, peer_id, content_vd[text],
-                                                             text, False)
-                                if text == "Admin-reboot":
-                                    func_module.send_msg_new(peer_id,
-                                                             "Бот уходит на перезагрузку и будет доступен "
-                                                             "через 10-15 секунд")
-                                    func_module.zapros_ft_vd()
-                                elif text == "я админ":
-                                    if func_module.adm_prov(peer_id, from_id):
-                                        func_module.send_msg_new(peer_id, 'Да, ты админ')
+                                if len(words) > 0:
+                                    if text in text_answer:
+                                        func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
+                                    if text in func_answer:
+                                        func_module.thread_start(func_answer[text], peer_id, from_id, words, our_from,
+                                                                 event_func)
+                                    if words[0] in func_answer_more_word:
+                                        func_module.thread_start(func_answer_more_word[words[0]], peer_id, from_id, words,
+                                                                 our_from, event_func)
+                                    elif text in content_ft:
+                                        func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
+                                                                 text, True)
+                                    elif text in content_vd:
+                                        func_module.thread_start(func_module.send_content, peer_id, content_vd[text],
+                                                                 text, False)
+                                    if text == "Admin-reboot":
+                                        func_module.send_msg_new(peer_id,
+                                                                 "Бот уходит на перезагрузку и будет доступен "
+                                                                 "через 10-15 секунд")
+                                        func_module.zapros_ft_vd()
+                                    elif text == "я админ":
+                                        if func_module.adm_prov(peer_id, from_id):
+                                            func_module.send_msg_new(peer_id, 'Да, ты админ')
+                                        else:
+                                            func_module.send_msg_new(peer_id, 'Увы но нет')
+                                    elif text == "nain":
+                                        id_photo = 457242784
+                                        func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
+                                        func_module.main_keyboard_arts(peer_id)
+                                    elif len(words) > 1:
+                                        if words[0] == 'запрет':
+                                            func_module.adm_prov_and_zapret(peer_id, from_id, words[1])
+                                    if text in keyboard:
+                                        func_module.thread_start(keyboard[text], peer_id)
                                     else:
-                                        func_module.send_msg_new(peer_id, 'Увы но нет')
-                                elif text == "nain":
-                                    id_photo = 457242784
-                                    func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
-                                    func_module.main_keyboard_arts(peer_id)
-                                elif len(words) > 1:
-                                    if words[0] == 'запрет':
-                                        func_module.adm_prov_and_zapret(peer_id, from_id, words[1])
-                                if text in keyboard:
-                                    func_module.thread_start(keyboard[text], peer_id)
-                                else:
-                                    func_module.thread_start(func_module.main_keyboard_1, peer_id)
+                                        func_module.thread_start(func_module.main_keyboard_1, peer_id)
                             func_module.thread_start(message_chek, event)
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
