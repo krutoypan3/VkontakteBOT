@@ -24,6 +24,11 @@ kolpot = -1
 group_sob = "@bratikbot"  # Указываем короткое имя бота (если нет то id)
 group_name = "Братик"  # Указываем название сообщества
 
+print(API_GROUP_KEY)
+print(API_USER_KEY)
+print(API_SERVICE_KEY)
+print(client_secret)
+
 # Авторизация под именем сообщества
 vk_session = vk_api.VkApi(token=API_GROUP_KEY)
 longpoll = VkBotLongPoll(vk_session, group_id)
