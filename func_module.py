@@ -16,6 +16,7 @@ API_GROUP_KEY = os.environ.get("API_GROUP_KEY")
 API_USER_KEY = os.environ.get("API_USER_KEY")
 API_SERVICE_KEY = os.environ.get("API_SERVICE_KEY")
 client_secret = os.environ.get("client_secret")
+vk_app_id = int(os.environ.get("vk_app_id"))
 print("Бот запускается...")
 group_id = '196288744'  # Указываем id сообщества
 threads = list()
@@ -34,7 +35,7 @@ vk_session_user = vk_api.VkApi(token=API_USER_KEY)
 vk_polzovat = vk_session_user.get_api()
 
 # Авторизация сервисным токеном
-vk_session_SERVISE = vk_api.VkApi(app_id=7530210, token=API_SERVICE_KEY, client_secret=client_secret)
+vk_session_SERVISE = vk_api.VkApi(app_id=vk_app_id, token=API_SERVICE_KEY, client_secret=client_secret)
 vk_session_SERVISE.server_auth()
 vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
