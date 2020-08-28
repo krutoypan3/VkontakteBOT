@@ -12,7 +12,7 @@ from vk_api.utils import get_random_id
 # Функция обработки ошибок
 import db_module
 
-API_GROUP_KEY = os.environ.get("API_KEY")
+API_GROUP_KEY = os.environ.get("API_GROUP_KEY")
 API_USER_KEY = os.environ.get("API_USER_KEY")
 API_SERVICE_KEY = os.environ.get("API_SERVICE_KEY")
 client_secret = os.environ.get("client_secret")
@@ -23,11 +23,6 @@ eventhr = []
 kolpot = -1
 group_sob = "@bratikbot"  # Указываем короткое имя бота (если нет то id)
 group_name = "Братик"  # Указываем название сообщества
-
-print(API_GROUP_KEY)
-print(API_USER_KEY)
-print(API_SERVICE_KEY)
-print(client_secret)
 
 # Авторизация под именем сообщества
 vk_session = vk_api.VkApi(token=API_GROUP_KEY)
