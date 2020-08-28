@@ -41,13 +41,13 @@ vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-    photo_ur18
+    photo_ur18, video_hent
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
 def zapros_ft_vd():
     global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
-        photo_bdsm, photo_ur18
+        photo_bdsm, photo_ur18, video_hent
     photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
     photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
     photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
@@ -57,7 +57,8 @@ def zapros_ft_vd():
     photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # к запуску
     photo_bdsm = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272201504, count=1000)  #
     photo_ur18 = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272411793, count=1000)  #
-    video_coub = vk_polzovat.video.get(owner_id='-' + group_id, count=200)  # album_id=1,
+    video_coub = vk_polzovat.video.get(owner_id='-' + group_id, album_id=1, count=200)  #
+    video_hent = vk_polzovat.video.get(owner_id='-' + group_id, album_id=3, count=200)  #
 
 
 zapros_ft_vd()
@@ -827,7 +828,7 @@ try:
         if lich_or_beseda(my_peer):
             keyboard = VkKeyboard(one_time=False)
             keyboard.add_button('coub', color=VkKeyboardColor.POSITIVE)
-            # keyboard.add_button('amv(в разработке)', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_button('хентай видео', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),

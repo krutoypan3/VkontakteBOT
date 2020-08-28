@@ -51,7 +51,8 @@ if __name__ == '__main__':
                       'лоли': func_module.photo_loli,
                       'неко': func_module.photo_neko,
                       'манга арт': func_module.photo_mart}
-        content_vd = {'coub': func_module.video_coub}
+        content_vd = {'coub': func_module.video_coub,
+                      'хентай видео': func_module.video_hent}
         keyboard = {'главная': func_module.main_keyboard_1,
                     'арты': func_module.main_keyboard_arts,
                     '18+': func_module.main_keyboard_hent,
