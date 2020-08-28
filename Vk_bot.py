@@ -173,7 +173,7 @@ if __name__ == '__main__':
                                             func_module.adm_prov_and_zapret(peer_id, from_id, words[1])
                                     if text in keyboard:
                                         func_module.thread_start(keyboard[text], peer_id)
-                                    elif text in content_ft:
+                                    elif (text in content_ft) or (text in content_vd):
                                         pass
                                     else:
                                         func_module.thread_start(func_module.main_keyboard_1, peer_id)
