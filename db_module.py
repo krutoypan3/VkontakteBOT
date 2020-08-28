@@ -4,18 +4,20 @@ import psycopg2
 import requests
 import urllib3
 
-try:
-    # Соединение с БД
-    def sql_connection():
-        conc1 = psycopg2.connect(
-            database="d67k7fgai9grnr",  # Название базы данных
-            user="xwifncxeppnpby",  # Имя пользователя
-            password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",  # Пароль пользователя
-            host="ec2-52-201-55-4.compute-1.amazonaws.com",  # Хост
-            port="5432"  # Порт
-        )
-        return conc1
 
+# Соединение с БД
+def sql_connection():
+    conc1 = psycopg2.connect(
+        database="d67k7fgai9grnr",  # Название базы данных
+        user="xwifncxeppnpby",  # Имя пользователя
+        password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",  # Пароль пользователя
+        host="ec2-52-201-55-4.compute-1.amazonaws.com",  # Хост
+        port="5432"  # Порт
+    )
+    return conc1
+
+
+try:
 
     # Создание таблицы в БД
     def sql_table(conc3):
@@ -108,29 +110,29 @@ try:
     # Получение параметров из таблицы clan_info
     def sql_fetch_clan_info(conc, what_return, clan_name):
         try:
-            cursorObj2 = conc.cursor()
-            cursorObj2.execute('SELECT ' + str(what_return) + ' FROM clan_info WHERE clan_name = CAST(' + "'" +
+            cursorObj1 = conc.cursor()
+            cursorObj1.execute('SELECT ' + str(what_return) + ' FROM clan_info WHERE clan_name = CAST(' + "'" +
                                str(clan_name) + "'" + ' AS varchar)')
-            rows = cursorObj2.fetchall()[0]
+            rows = cursorObj1.fetchall()[0]
             return rows
         except:
-            cursorObj2 = conc.cursor()
-            cursorObj2.execute("ROLLBACK")
+            cursorObj1 = conc.cursor()
+            cursorObj1.execute("ROLLBACK")
             conc.commit()
             return 'NULL'
 
 
     def sql_delite_clan_info(conc, clan_name):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('DELETE FROM clan_info WHERE clan_name = CAST(' + "'" + str(clan_name) +
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('DELETE FROM clan_info WHERE clan_name = CAST(' + "'" + str(clan_name) +
                            "'" + ' AS varchar)')
 
 
     # Получение параметров из таблицы peer_params
     def sql_fetch(conc, what_return, peer_id_val):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM peer_params WHERE peer_id = ' + str(peer_id_val))
-        rows = cursorObj2.fetchall()
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('SELECT ' + str(what_return) + ' FROM peer_params WHERE peer_id = ' + str(peer_id_val))
+        rows = cursorObj1.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
             entities = peer_id_val, '0', '1'
             sql_insert(conc, entities)
@@ -140,10 +142,10 @@ try:
 
     # Получение параметров из таблицы from_params
     def sql_fetch_from(conc, what_return, peer_id_val, from_id_val):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_params WHERE peer_id = ' + str(
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('SELECT ' + str(what_return) + ' FROM from_params WHERE peer_id = ' + str(
             peer_id_val) + ' AND from_id = ' + str(from_id_val))
-        rows = cursorObj2.fetchall()
+        rows = cursorObj1.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
             entities = str(peer_id_val), str(from_id_val), '0', '0', '0', '0'
             sql_insert_from(conc, entities)
@@ -154,9 +156,9 @@ try:
     # Получение параметров из таблицы from_money
     def sql_fetch_from_money(conc, what_return, from_id):
         try:
-            cursorObj2 = conc.cursor()
-            cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
-            rows = cursorObj2.fetchall()
+            cursorObj1 = conc.cursor()
+            cursorObj1.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
+            rows = cursorObj1.fetchall()
             if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
                 from func_module import vk
                 entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), \
@@ -165,8 +167,8 @@ try:
                 rows = sql_fetch_from_money(conc, what_return, from_id)
             return rows
         except 'psycopg2.errors.InFailedSqlTransaction':
-            cursorObj2 = conc.cursor()
-            cursorObj2.execute("ROLLBACK")
+            cursorObj1 = conc.cursor()
+            cursorObj1.execute("ROLLBACK")
             conc.commit()
             print('что хотели вернуть - ', + what_return + ' \nкого - ' + from_id)
             return 'NULL'
@@ -174,35 +176,35 @@ try:
 
     # Получение параметров из таблицы from_money
     def sql_fetch_from_money_clan(conc, what_return, clan_name):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE clan_name = CAST(' + "'" +
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE clan_name = CAST(' + "'" +
                            str(clan_name) + "'" + ' AS varchar)')
-        rows = cursorObj2.fetchall()
+        rows = cursorObj1.fetchall()
         return rows
 
 
     # Получение параметров из таблицы from_money
     def sql_fetch_from_all(conc, what_return, peer_id_val):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM from_money')  # WHERE peer_id = ' + str(peer_id_val)
-        rows = cursorObj2.fetchall()
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('SELECT ' + str(what_return) + ' FROM from_money')  # WHERE peer_id = ' + str(peer_id_val)
+        rows = cursorObj1.fetchall()
         return rows
 
 
     # Получение параметров из таблицы from_params
     def sql_fetch_clan_all(conc, what_return):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str(what_return) + ' FROM clan_info')
-        rows = cursorObj2.fetchall()
+        cursorOb1 = conc.cursor()
+        cursorOb1.execute('SELECT ' + str(what_return) + ' FROM clan_info')
+        rows = cursorOb1.fetchall()
         return rows
 
 
     # Получение параметров из таблицы anime_base
     def sql_fetch_anime_base(conc, janr, peer_id):
-        cursorObj2 = conc.cursor()
-        cursorObj2.execute('SELECT ' + str('name') + " FROM anime_base WHERE janr = '" + janr + "' OR janr2 = '"
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('SELECT ' + str('name') + " FROM anime_base WHERE janr = '" + janr + "' OR janr2 = '"
                            + janr + "' OR janr3 = '" + janr + "'")
-        rows = cursorObj2.fetchall()
+        rows = cursorObj1.fetchall()
         message = 'Аниме в жанре ' + janr + ':\n'
         for i in rows:
             message += i[0] + '\n'
@@ -225,3 +227,17 @@ try:
 except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
         urllib3.exceptions.NewConnectionError, socket.gaierror):
     print(" - ошибка подключения к вк")
+
+except 'psycopg2.errors.InFailedSqlTransaction':
+    con = sql_connection()
+    cursorObj2 = con.cursor()
+    cursorObj2.execute("ROLLBACK")
+    con.commit()
+    print('Почему это произошло?')
+
+except Exception:
+    con = sql_connection()
+    cursorObj2 = con.cursor()
+    cursorObj2.execute("ROLLBACK")
+    con.commit()
+    print('OMG what is it?')
