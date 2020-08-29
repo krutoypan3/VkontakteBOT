@@ -1,18 +1,28 @@
 # Работа с базой данных
+import os
 import socket
 import psycopg2
 import requests
 import urllib3
+from dotenv import load_dotenv
+load_dotenv()
+
+
+database_key = os.environ.get("database_key")
+user_key = os.environ.get("user_key")
+password_key = os.environ.get("password_key")
+host_key = os.environ.get("host_key")
+port_key = os.environ.get("port_key")
 
 
 # Соединение с БД
 def sql_connection():
     conc1 = psycopg2.connect(
-        database="d67k7fgai9grnr",  # Название базы данных
-        user="xwifncxeppnpby",  # Имя пользователя
-        password="27a756814e5b031d650bf4a747ed727e507e51c17bce57cb53c8f4f949fee2bd",  # Пароль пользователя
-        host="ec2-52-201-55-4.compute-1.amazonaws.com",  # Хост
-        port="5432"  # Порт
+        database=database_key,  # Название базы данных
+        user=user_key,  # Имя пользователя
+        password=password_key,  # Пароль пользователя
+        host=host_key,  # Хост
+        port=port_key  # Порт
     )
     return conc1
 

@@ -5,12 +5,14 @@ import random
 import time
 import urllib3
 import vk_api
+import db_module
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
+from dotenv import load_dotenv
 
+load_dotenv()
 # Функция обработки ошибок
-import db_module
 
 API_GROUP_KEY = os.environ.get("API_GROUP_KEY")
 API_USER_KEY = os.environ.get("API_USER_KEY")
