@@ -752,6 +752,13 @@ try:
     def send_msg_new(peerid, ms_g):
         vk.messages.send(peer_id=peerid, random_id=0, message=ms_g)
 
+    '''def video_save(*args):
+        album_id = {'+tt': '4',
+                    '+тт': '4',
+                    '+coub': '3'}
+        vk_polzovat.video.addToAlbum(target_id='-196288744', album_id=album_id[args[2][0]],
+                                     video_id=args[4].message['attachments'][0]['video']['id'], owner_id=args[1])'''
+
 
     # Показ онлайна беседы
     def who_online(*args):

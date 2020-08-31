@@ -146,6 +146,8 @@ if __name__ == '__main__':
                                             func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from,
                                                                      event_func)
                                 if len(words) > 0:
+                                    '''if text == '+tt':
+                                        func_module.video_save(peer_id, from_id, words, our_from, event_func)'''
                                     if text in text_answer:
                                         func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
                                     if text in func_answer:
@@ -170,6 +172,24 @@ if __name__ == '__main__':
                                             func_module.send_msg_new(peer_id, 'Да, ты админ')
                                         else:
                                             func_module.send_msg_new(peer_id, 'Увы но нет')
+                                    elif text == "админ хентай":
+                                        f = open('hent.txt', 'r', encoding="utf-8")
+                                        mess = ''
+                                        for line in f:
+                                            mess += line
+                                        func_module.send_msg_new(peer_id, mess)
+                                        f.close()
+                                        f = open('hent2.txt', 'r', encoding="utf-8")
+                                        mess = ''
+                                        for line in f:
+                                            mess += line
+                                        func_module.send_msg_new(peer_id, mess)
+                                        f.close()
+                                        f = open('hent3.txt', 'r', encoding="utf-8")
+                                        mess = ''
+                                        for line in f:
+                                            mess += line
+                                        func_module.send_msg_new(peer_id, mess)
                                     elif text == "nain":
                                         id_photo = 457242784
                                         func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
