@@ -747,6 +747,25 @@ try:
         if asq == 0:
             send_vd(my_peer, id_video)
 
+    def admin_hentai(my_peer):
+        f = open('hent.txt', 'r', encoding="utf-8")
+        mess = ''
+        for line in f:
+            mess += line
+        send_msg_new(my_peer, mess)
+        f.close()
+        f = open('hent2.txt', 'r', encoding="utf-8")
+        mess = ''
+        for line in f:
+            mess += line
+        send_msg_new(my_peer, mess)
+        f.close()
+        f = open('hent3.txt', 'r', encoding="utf-8")
+        mess = ''
+        for line in f:
+            mess += line
+        send_msg_new(my_peer, mess)
+
     def birzha(my_peer):
         money_people = db_module.sql_fetch_from_all(db_module.con, 'money', my_peer)
         money_clan = db_module.sql_fetch_clan_all(db_module.con, 'clan_money')
