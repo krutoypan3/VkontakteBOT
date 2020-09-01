@@ -904,6 +904,8 @@ try:
             keyboard.add_button('этти', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
+            keyboard.add_button('админ хентай', color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_line()
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                              keyboard=keyboard.get_keyboard(), message='Выбрана команда хентай, выберите команду:')
