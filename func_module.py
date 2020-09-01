@@ -10,7 +10,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
 from dotenv import load_dotenv
-
+import Dict
 load_dotenv()
 # Функция обработки ошибок
 
@@ -679,6 +679,10 @@ try:
         balans += int(zp_balans)
         db_module.sql_update_from_money_int(db_module.con, 'money', str(balans), str(my_from))
 
+    def bye_bye(*args):
+        first = Dict.func_bye_bye_first[random.randint(0, (len(Dict.func_bye_bye_first)) - 1)]
+        second = Dict.func_bye_bye_second[random.randint(0, (len(Dict.func_bye_bye_second)) - 1)]
+        send_msg_new(args[0], first + ', ' + second)
 
     # Проверка на запрет запуска другой игры в данной беседе
     def prov_zap_game(my_peer):
