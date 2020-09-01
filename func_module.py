@@ -600,7 +600,7 @@ try:
             people.append([first_all[i][0], last_all[i][0], monall[i][0]])
         people = sorted(people, key=lambda peoples: (-peoples[2]))
         for i in range(len(people)):
-            if int(people[i][2]) > 0 and 15 >= i > 0:
+            if int(people[i][2]) > 0 and 15 >= i:
                 if i == 1:
                     mess += '&#128142;'
                 elif i == 2:
