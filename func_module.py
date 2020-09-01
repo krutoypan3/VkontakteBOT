@@ -600,7 +600,7 @@ try:
             people.append([first_all[i][0], last_all[i][0], monall[i][0]])
         people = sorted(people, key=lambda peoples: (-peoples[2]))
         for i in range(len(people)):
-            if int(people[i][2]) > 0 and 15 >= i:
+            if int(people[i][2]) > 0 and 14 >= i:
                 if i == 1:
                     mess += '&#128142;'
                 elif i == 2:
@@ -609,7 +609,7 @@ try:
                     mess += '&#128179;'
                 else:
                     mess += '&#128182;'
-                mess += str(i) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
+                mess += str(i+1) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
                         str(people[i][2]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
