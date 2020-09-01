@@ -50,6 +50,10 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'пока': func_module.bye_bye,
                'bb': func_module.bye_bye,
                'до завтра': func_module.bye_bye,
+               'я пошел': func_module.bye_bye,
+               'я ушел': func_module.bye_bye,
+               'я пшел': func_module.bye_bye,
+               'до скорого': func_module.bye_bye
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
