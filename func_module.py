@@ -775,7 +775,7 @@ try:
             mon_peop += int(money_people[i][0])
         for i in range(len(money_clan)):
             mon_clan += int(money_clan[i][0])
-        send_msg_new(my_peer, 'Валюта в обороте:\n&#128182;Валюты в обороте у людей: ' + str(mon_peop) +
+        send_msg_new(my_peer, '&#128177;Валюта в обороте:&#128177;\n&#128182;Валюты в обороте у людей: ' + str(mon_peop) +
                      '\n&#128182;Валюты в обороте у кланов: ' + str(mon_clan) +
                      '\n\n&#128179;Курс покупки бро-коинов: 1 рубль = 2000 бро-коинов')
 
