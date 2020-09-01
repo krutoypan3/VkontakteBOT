@@ -747,6 +747,17 @@ try:
         if asq == 0:
             send_vd(my_peer, id_video)
 
+    def birzha(my_peer):
+        money_people = db_module.sql_fetch_from_all(db_module.con, 'money', my_peer)
+        money_clan = db_module.sql_fetch_clan_all(db_module.con, 'clan_money')
+        mon_peop = 0
+        mon_clan = 0
+        for i in range(len(money_people)):
+            mon_peop += int(money_people[i][0])
+        for i in range(len(money_clan)):
+            mon_clan += int(money_clan[i][0])
+        send_msg_new(my_peer, '&#128182;Валюты в обороте у людей: ' + str(mon_peop) +
+                     '\n&#128182;Валюты в обороте у кланов: ' + str(mon_clan))
 
     # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
     def send_msg_new(peerid, ms_g):

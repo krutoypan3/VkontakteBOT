@@ -201,7 +201,7 @@ try:
         return rows
 
 
-    # Получение параметров из таблицы from_params
+    # Получение параметров из таблицы clan_info
     def sql_fetch_clan_all(conc, what_return):
         cursorOb1 = conc.cursor()
         cursorOb1.execute('SELECT ' + str(what_return) + ' FROM clan_info')
