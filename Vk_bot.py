@@ -88,7 +88,7 @@ if __name__ == '__main__':
                                     elif text in content_vd:
                                         func_module.thread_start(func_module.send_content, peer_id, content_vd[text],
                                                                  text, False)
-                                    if text == "Admin-reboot":
+                                    if text == "admin-reboot":
                                         func_module.send_msg_new(peer_id,
                                                                  "Бот уходит на перезагрузку и будет доступен "
                                                                  "через 10-15 секунд")
