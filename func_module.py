@@ -710,24 +710,25 @@ try:
 
     # Запрет команды для определенной беседы -------------------------------------------- НУЖНА ОПТИМИЗАЦИЯ
     def zapret(my_peer, chto):
-        zap_command = (str(db_module.sql_fetch(db_module.con, 'zap_word', my_peer)[0][0])).split()
-        asq = 0
-        zap_command_new = ''
-        for word in zap_command:
-            if str(chto) == word:
-                send_msg_new(my_peer, "Команда снова разрешена")
-                for un_word in zap_command:
-                    if un_word != str(chto):
-                        zap_command_new += un_word + ' '
-                db_module.sql_update(db_module.con, 'zap_word', zap_command_new, my_peer)
-                asq = 1
-                break
-        if asq == 0:
+        if len(chto.split()) == 1:
+            zap_command = (str(db_module.sql_fetch(db_module.con, 'zap_word', my_peer)[0][0])).split()
+            asq = 0
+            zap_command_new = ''
             for word in zap_command:
-                zap_command_new += word + ' '
-            zap_command_new += str(chto) + ' '
-            db_module.sql_update(db_module.con, 'zap_word', zap_command_new, my_peer)
-            send_msg_new(my_peer, "Теперь команда будет недоступна для данной беседы")
+                if str(chto) == word:
+                    send_msg_new(my_peer, "Команда снова разрешена")
+                    for un_word in zap_command:
+                        if un_word != str(chto):
+                            zap_command_new += un_word + ' '
+                    db_module.sql_update(db_module.con, 'zap_word', zap_command_new, my_peer)
+                    asq = 1
+                    break
+            if asq == 0:
+                for word in zap_command:
+                    zap_command_new += word + ' '
+                zap_command_new += str(chto) + ' '
+                db_module.sql_update(db_module.con, 'zap_word', zap_command_new, my_peer)
+                send_msg_new(my_peer, "Теперь команда будет недоступна для данной беседы")
 
 
     # Проверка команды на наличие в списке запрещенных команд
