@@ -42,7 +42,7 @@ try:
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
     def sql_insert(conc2, entities):
         cursorObj3 = conc2.cursor()
-        cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata) VALUES(%s, %s, %s)', entities)
+        cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata, zap_word) VALUES(%s, %s, %s, %s)', entities)
         conc2.commit()
 
 
@@ -144,7 +144,7 @@ try:
         cursorObj1.execute('SELECT ' + str(what_return) + ' FROM peer_params WHERE peer_id = ' + str(peer_id_val))
         rows = cursorObj1.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            entities = peer_id_val, '0', '1'
+            entities = peer_id_val, '0', '1', ''
             sql_insert(conc, entities)
             rows = sql_fetch(conc, what_return, peer_id_val)
         return rows

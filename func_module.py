@@ -11,6 +11,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
 from dotenv import load_dotenv
 import Dict
+
 load_dotenv()
 # Функция обработки ошибок
 
@@ -43,13 +44,13 @@ vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-    photo_ur18, video_hent, video_tikt, photo_etti
+    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
 def zapros_ft_vd():
     global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
-        photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti
+        photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2
     photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
     photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
     photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
@@ -62,7 +63,9 @@ def zapros_ft_vd():
     video_coub = vk_polzovat.video.get(owner_id='-' + group_id, album_id=1, count=200)  #
     video_hent = vk_polzovat.video.get(owner_id='-' + group_id, album_id=3, count=200)  #
     video_tikt = vk_polzovat.video.get(owner_id='-' + group_id, album_id=4, count=200)  #
+    video_tikt2 = vk_polzovat.video.get(owner_id='-' + group_id, album_id=5, count=200)  #
     photo_etti = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273079952, count=1000)  #
+
 
 zapros_ft_vd()
 
@@ -593,14 +596,15 @@ try:
         my_peer = args[0]
         first_all = (db_module.sql_fetch_from_all(db_module.con, 'first_name', str(my_peer)))
         last_all = (db_module.sql_fetch_from_all(db_module.con, 'last_name', str(my_peer)))
-        monall = (db_module.sql_fetch_from_all(db_module.con, 'money', my_peer))
+        mon_all = (db_module.sql_fetch_from_all(db_module.con, 'money', my_peer))
         mess = ''
         people = []
-        for i in range(len(monall)):
-            people.append([first_all[i][0], last_all[i][0], monall[i][0]])
+        for i in range(len(mon_all)):
+            people.append([first_all[i][0], last_all[i][0], mon_all[i][0]])
         people = sorted(people, key=lambda peoples: (-peoples[2]))
+        col = 0
         for i in range(len(people)):
-            if int(people[i][2]) > 0 and 14 >= i:
+            if int(people[i][2]) > 0 and col <= 15:
                 if i == 0:
                     mess += '&#128142;'
                 elif i == 1:
@@ -609,7 +613,8 @@ try:
                     mess += '&#128179;'
                 else:
                     mess += '&#128182;'
-                mess += str(i+1) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
+                col += 1
+                mess += str(i + 1) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
                         str(people[i][2]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
@@ -679,10 +684,12 @@ try:
         balans += int(zp_balans)
         db_module.sql_update_from_money_int(db_module.con, 'money', str(balans), str(my_from))
 
+
     def bye_bye(*args):
         first = Dict.func_bye_bye_first[random.randint(0, (len(Dict.func_bye_bye_first)) - 1)]
         second = Dict.func_bye_bye_second[random.randint(0, (len(Dict.func_bye_bye_second)) - 1)]
         send_msg_new(args[0], first + ', ' + second)
+
 
     # Проверка на запрет запуска другой игры в данной беседе
     def prov_zap_game(my_peer):
@@ -751,6 +758,7 @@ try:
         if asq == 0:
             send_vd(my_peer, id_video)
 
+
     def admin_hentai(my_peer):
         f = open('hent.txt', 'r', encoding="utf-8")
         mess = ''
@@ -770,6 +778,8 @@ try:
             mess += line
         send_msg_new(my_peer, mess)
 
+    # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
+
     def birzha(my_peer):
         money_people = db_module.sql_fetch_from_all(db_module.con, 'money', my_peer)
         money_clan = db_module.sql_fetch_clan_all(db_module.con, 'clan_money')
@@ -779,13 +789,15 @@ try:
             mon_peop += int(money_people[i][0])
         for i in range(len(money_clan)):
             mon_clan += int(money_clan[i][0])
-        send_msg_new(my_peer, '&#128177;Валюта в обороте:&#128177;\n&#128182;Валюты в обороте у людей: ' + str(mon_peop) +
+        send_msg_new(my_peer,
+                     '&#128177;Валюта в обороте:&#128177;\n&#128182;Валюты в обороте у людей: ' + str(mon_peop) +
                      '\n&#128182;Валюты в обороте у кланов: ' + str(mon_clan) +
                      '\n\n&#128179;Курс покупки бро-коинов: 1 рубль = 2000 бро-коинов')
 
-    # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
+
     def send_msg_new(peerid, ms_g):
         vk.messages.send(peer_id=peerid, random_id=0, message=ms_g)
+
 
     '''def video_save(*args):
         album_id = {'+tt': '4',
