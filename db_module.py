@@ -77,8 +77,8 @@ try:
     # Обновление параметра в таблице peer_params
     def sql_update(con5, what_fetch, what_fetch_new, peer_id_val):
         cursorObj1 = con5.cursor()
-        cursorObj1.execute('UPDATE peer_params SET ' + str(what_fetch) + ' = ' + str(what_fetch_new) +
-                           ' where peer_id = ' + str(peer_id_val))
+        cursorObj1.execute('UPDATE peer_params SET ' + str(what_fetch) + ' = CAST(' + "'" + str(what_fetch_new) + "'"
+                           + ' AS varchar)' + ' where peer_id = ' + str(peer_id_val))
         con5.commit()
 
 
