@@ -710,7 +710,7 @@ try:
 
     # Запрет команды для определенной беседы -------------------------------------------- НУЖНА ОПТИМИЗАЦИЯ
     def zapret(my_peer, chto):
-        if len(chto.split()) == 1:
+        if (chto in Dict.content_ft) or (chto in Dict.content_vd):
             zap_command = (str(db_module.sql_fetch(db_module.con, 'zap_word', my_peer)[0][0])).split()
             asq = 0
             zap_command_new = ''
