@@ -711,7 +711,6 @@ try:
     # Запрет команды для определенной беседы -------------------------------------------- НУЖНА ОПТИМИЗАЦИЯ
     def zapret(my_peer, chto):
         zap_command = (str(db_module.sql_fetch(db_module.con, 'zap_word', my_peer)[0][0])).split()
-        print(zap_command)
         asq = 0
         zap_command_new = ''
         for word in zap_command:
