@@ -1,4 +1,4 @@
--e git+https://github.com/chebotarevmichael/vk_api
+git+git+https://github.com/chebotarevmichael/vk_api
 requests~=2.24.0
 urllib3~=1.25.9
 psycopg2~=2.8.5
