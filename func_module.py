@@ -996,6 +996,22 @@ try:
         add_balans(str(win_from), str(int(stavka) * len(uchastniki)))
 
 
+    def test_edit_message(my_peer):
+        f_toggle = False
+        send_msg_new(my_peer, 'ТЕСТО')
+        for event in longpoll.listen():
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                if str(event.message.peer_id) == str(my_peer):
+                    for i in range(10):
+                        time.sleep(2)
+                        vk.messages.edit(
+                            peer_id=int(event.message.peer_id),
+                            message='Рома' if f_toggle else 'гей',
+                            conversation_message_id=int(event.message.conversation_message_id) - 1)
+                        f_toggle = not f_toggle
+                    break
+
+
     def test_keyboard(my_peer):
         settings = dict(one_time=False, inline=True)
         keyboard_1 = VkKeyboard(**settings)
