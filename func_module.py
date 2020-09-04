@@ -595,17 +595,12 @@ try:
     # Баланс топ
     def balans_top(*args):
         my_peer = args[0]
-        first_all = (db_module.sql_fetch_from_all(db_module.con, 'first_name', str(my_peer)))
-        last_all = (db_module.sql_fetch_from_all(db_module.con, 'last_name', str(my_peer)))
-        mon_all = (db_module.sql_fetch_from_all(db_module.con, 'money', my_peer))
+        people = (db_module.sql_fetch_from_all(db_module.con, '*', str(my_peer)))
+        people = sorted(people, key=lambda peoples: (-peoples[1]))
         mess = ''
-        people = []
-        for i in range(len(mon_all)):
-            people.append([first_all[i][0], last_all[i][0], mon_all[i][0]])
-        people = sorted(people, key=lambda peoples: (-peoples[2]))
         col = 0
         for i in range(len(people)):
-            if int(people[i][2]) > 0 and col <= 15:
+            if col < 15:
                 if i == 0:
                     mess += '&#128142;'
                 elif i == 1:
@@ -615,8 +610,8 @@ try:
                 else:
                     mess += '&#128182;'
                 col += 1
-                mess += str(i + 1) + '. ' + str(people[i][0]) + ' ' + str(people[i][1]) + ' - ' + \
-                        str(people[i][2]) + ' монет\n'
+                mess += str(i + 1) + '. ' + str(people[i][4]) + ' ' + str(people[i][5]) + ' - ' + \
+                        str(people[i][1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
 
