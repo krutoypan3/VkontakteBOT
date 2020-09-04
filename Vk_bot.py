@@ -74,6 +74,8 @@ if __name__ == '__main__':
                                         func_module.video_save(peer_id, from_id, words, our_from, event_func)'''
                                     if text == 'биржа':
                                         func_module.thread_start(func_module.birzha, peer_id)
+                                    if text == 'test':
+                                        func_module.test_keyboard(peer_id)
                                     if text in text_answer:
                                         func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
                                     if text in func_answer:

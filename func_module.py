@@ -1,3 +1,4 @@
+import json
 import os
 import socket
 import threading
@@ -776,6 +777,7 @@ try:
             mess += line
         send_msg_new(my_peer, mess)
 
+
     # Отправка текстового сообщения -------------------------------------------------ВЫШЕ НУЖНА ОПТИМИЗАЦИЯ
 
     def birzha(my_peer):
@@ -999,47 +1001,119 @@ try:
         add_balans(str(win_from), str(int(stavka) * len(uchastniki)))
 
 
+    def test_keyboard(my_peer):
+        settings = dict(one_time=False, inline=True)
+        keyboard_1 = VkKeyboard(**settings)
+        # pop-up кнопка
+        keyboard_1.add_callback_button(label='Покажи pop-up сообщение', color=VkKeyboardColor.SECONDARY,
+                                       payload={"type": "show_snackbar", "text": "Это исчезающее сообщение"})
+        keyboard_1.add_line()
+        # кнопка переключения на 2ое меню
+        keyboard_1.add_callback_button(label='Добавить красного ', color=VkKeyboardColor.PRIMARY,
+                                       payload={"type": "my_own_100500_type_edit"})
+
+        # №2. Клавиатура с одной красной callback-кнопкой. Нажатие изменяет меню на предыдущее.
+        keyboard_2 = VkKeyboard(**settings)
+        # кнопка переключения назад, на 1ое меню.
+        keyboard_2.add_callback_button('Назад', color=VkKeyboardColor.NEGATIVE,
+                                       payload={"type": "my_own_100500_type_edit"})
+        f_toggle: bool = False
+        for event in longpoll.listen():
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                if event.obj.message['text'] != '':
+                    if event.from_user:
+                        if 'callback' not in event.obj.client_info['button_actions']:
+                            print(f'Клиент {event.obj.message["from_id"]} не поддерж. callback')
+                            send_msg_new(my_peer, f'Клиент {event.obj.message["from_id"]} не поддерж. callback')
+                        vk.messages.send(
+                            user_id=event.obj.message['from_id'],
+                            random_id=get_random_id(),
+                            peer_id=event.obj.message['peer_id'],
+                            keyboard=keyboard_1.get_keyboard(),
+                            message=event.obj.message['text'])
+            # обрабатываем клики по callback кнопкам
+            elif event.type == VkBotEventType.MESSAGE_EVENT:
+                if event.object.payload.get('type') == 'show_snackbar':
+                    vk.messages.sendMessageEventAnswer(
+                        event_id=event.object.event_id,
+                        user_id=event.object.user_id,
+                        peer_id=event.object.peer_id,
+                        event_data=json.dumps(event.object.payload))
+                elif event.object.payload.get('type') == 'my_own_100500_type_edit':
+                    vk.messages.edit(
+                        peer_id=event.obj.peer_id,
+                        message='ola',
+                        conversation_message_id=event.obj.conversation_message_id,
+                        keyboard=(keyboard_1 if f_toggle else keyboard_2).get_keyboard())
+                    f_toggle = not f_toggle
+
+
     # Набор игроков на игру
-    def nabor_igrokov(my_peer_game, stavka):
+    def nabor_igrokov(my_peer, stavka):
         uchastniki = []
         timing = time.time()
-        keyboard = VkKeyboard(one_time=False)
-        keyboard.add_button('участвую', color=VkKeyboardColor.POSITIVE)
-        keyboard.add_button('начать', color=VkKeyboardColor.NEGATIVE)
-        vk.messages.send(peer_id=my_peer_game, random_id=get_random_id(),
+        keyboard = VkKeyboard(one_time=False, inline=True)
+        keyboard.add_callback_button(label='участвую', color=VkKeyboardColor.POSITIVE,
+                                     payload={"type": "show_snackbar", "text": "Заявка на участие принята!"})
+        keyboard.add_callback_button(label='начать', color=VkKeyboardColor.POSITIVE,
+                                     payload={"type": "start_game"})
+        vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
                          keyboard=keyboard.get_keyboard(), message='Набор участников:')
-        for eventhr_nabor_game in longpoll.listen():
+        for event in longpoll.listen():
             if time.time() - timing < 60.0:
-                event_nabor_game = eventhr_nabor_game
-                if event_nabor_game.type == VkBotEventType.MESSAGE_NEW:
-                    words = event_nabor_game.message.text.lower().split()
-                    if "начать" in words:
-                        timing -= timing - 60
-                    elif ("участвую" in words) and (event_nabor_game.message.peer_id == my_peer_game):
-                        if event_nabor_game.message.from_id > 0:
-                            if event_nabor_game.message.from_id in uchastniki:
-                                send_msg_new(my_peer_game, '&#127918;Ты уже в списке участников')
-                            else:
+                if event.type == VkBotEventType.MESSAGE_NEW:
+                    words = event.message.text.lower().split()
+                    if "участвую" in words:
+                        if event.message.from_id > 0:
+                            if event.message.from_id not in uchastniki:
                                 if int(str(db_module.sql_fetch_from_money(
-                                        db_module.con, 'money', str(event_nabor_game.message.from_id))[0][0])) >= \
+                                        db_module.con, 'money', str(event.message.from_id))[0][0])) >= \
                                         int(stavka):
-                                    uchastniki.append(event_nabor_game.message.from_id)
-                                    send_msg_new(my_peer_game,
-                                                 '&#127918;' + people_info(event_nabor_game.message.from_id)
-                                                 + ', заявка на участие принята. Участников: ' +
-                                                 str(len(uchastniki)))
+                                    uchastniki.append(event.message.from_id)
+                                    send_msg_new(my_peer, '&#127918;Участник ' + str(len(uchastniki)) + ' - '
+                                                 + people_info(event.message.from_id))
                                 else:
-                                    send_msg_new(my_peer_game, people_info(event_nabor_game.message.from_id) +
+                                    send_msg_new(my_peer, people_info(event.message.from_id) +
                                                  ', у вас недостаточно средств на счете! Получите '
                                                  'бро-коины написав "бро награда"')
                         else:
-                            send_msg_new(my_peer_game, 'Боты не могут участвовать в игре!')
-            elif time.time() - timing > 60.0:
-                keyboard = VkKeyboard(one_time=True)
-                keyboard.add_button('Не забудьте подписаться на бота', color=VkKeyboardColor.POSITIVE)
-                vk.messages.send(peer_id=my_peer_game, random_id=get_random_id(),
-                                 keyboard=keyboard.get_keyboard(), message='&#127918;Участники укомплектованы, '
-                                                                           'игра начинается')
+                            send_msg_new(my_peer, 'Боты не могут участвовать в игре!')
+                    elif "начать" in words:
+                        timing -= timing - 60
+
+                elif event.type == VkBotEventType.MESSAGE_EVENT:
+                    if event.object.payload.get('type') == 'start_game':
+                        timing -= timing - 60
+                    if event.object.payload.get('type') == 'show_snackbar':
+                        if event.object.user_id > 0:
+                            if event.object.user_id in uchastniki:
+                                vk.messages.sendMessageEventAnswer(
+                                    event_id=event.object.event_id,
+                                    user_id=event.object.user_id,
+                                    peer_id=event.object.peer_id,
+                                    event_data=json.dumps({"type": "show_snackbar",
+                                                           "text": "Ты уже в списке участников!"}))
+                            if event.object.user_id not in uchastniki:
+                                vk.messages.sendMessageEventAnswer(
+                                    event_id=event.object.event_id,
+                                    user_id=event.object.user_id,
+                                    peer_id=event.object.peer_id,
+                                    event_data=json.dumps(event.object.payload))
+                                if int(str(db_module.sql_fetch_from_money(
+                                        db_module.con, 'money', str(event.object.user_id))[0][0])) >= \
+                                        int(stavka):
+                                    uchastniki.append(event.object.user_id)
+                                    send_msg_new(my_peer, '&#127918;Участник ' + str(len(uchastniki)) + ' - '
+                                                 + people_info(event.object.user_id))
+                                else:
+                                    send_msg_new(my_peer, people_info(event.object.user_id) +
+                                                 ', у вас недостаточно средств на счете! Получите '
+                                                 'бро-коины написав "бро награда"')
+                        else:
+                            send_msg_new(my_peer, 'Боты не могут участвовать в игре!')
+            if time.time() - timing > 60.0:
+                vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
+                                 message='&#127918;Участники укомплектованы, игра начинается')
                 for i in uchastniki:
                     add_balans(str(i), (str('-') + str(stavka)))
                 return uchastniki
