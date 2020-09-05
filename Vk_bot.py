@@ -84,8 +84,8 @@ if __name__ == '__main__':
                                         func_module.thread_start(func_answer[text], peer_id, from_id, words, our_from,
                                                                  event_func)
                                     if words[0] in func_answer_more_word:
-                                        func_module.thread_start(func_answer_more_word[words[0]], peer_id, from_id, words,
-                                                                 our_from, event_func)
+                                        func_module.thread_start(func_answer_more_word[words[0]], peer_id, from_id,
+                                                                 words, our_from, event_func)
                                     elif text in content_ft:
                                         func_module.thread_start(func_module.send_content, peer_id, content_ft[text],
                                                                  text, True)
@@ -104,10 +104,6 @@ if __name__ == '__main__':
                                             func_module.send_msg_new(peer_id, 'Увы но нет')
                                     elif text == "админ хентай":
                                         func_module.thread_start(func_module.admin_hentai, peer_id)
-                                    elif text == "nain":
-                                        id_photo = 457242784
-                                        func_module.provzapret_ft(peer_id, 'nain', str(id_photo))
-                                        func_module.main_keyboard_arts(peer_id)
                                     elif len(words) > 1:
                                         if words[0] == 'запрет':
                                             func_module.adm_prov_and_zapret(peer_id, from_id, words[1])

@@ -28,7 +28,8 @@ content_ft = {'арт': func_module.photo_arts,
               'неко': func_module.photo_neko,
               'манга арт': func_module.photo_mart,
               'этти': func_module.photo_etti,
-              'эччи': func_module.photo_etti}
+              'эччи': func_module.photo_etti,
+              'nain': func_module.photo_gitl}
 content_vd = {'coub': func_module.video_coub,
               'хентай видео': func_module.video_hent,
               'тикток': func_module.video_tikt,

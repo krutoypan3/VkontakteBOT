@@ -45,13 +45,13 @@ vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2
+    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
 def zapros_ft_vd():
     global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
-        photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2
+        photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl
     photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
     photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
     photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
@@ -66,6 +66,7 @@ def zapros_ft_vd():
     video_tikt = vk_polzovat.video.get(owner_id='-' + group_id, album_id=4, count=200)  #
     video_tikt2 = vk_polzovat.video.get(owner_id='-' + group_id, album_id=5, count=200)  #
     photo_etti = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273079952, count=1000)  #
+    photo_gitl = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273184565, count=1000)
 
 
 zapros_ft_vd()
@@ -256,7 +257,6 @@ try:
         if my_from != '' and int(my_from) > 0:
             clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
             if clan_name != 'NULL' and clan_name is not None:
-                send_msg_new(my_peer, people_info(my_from) + ' состоит в клане ' + clan_name)
                 first_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'first_name', str(clan_name)))
                 last_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'last_name', str(clan_name)))
                 rank_all = (db_module.sql_fetch_from_money_clan(db_module.con, 'clan_rank', str(clan_name)))
@@ -279,7 +279,7 @@ try:
                     else:
                         mess += 'Холоп-'
                     mess += str(people[i][0]) + ' ' + str(people[i][1]) + '\n'
-                send_msg_new(my_peer, mess)
+                send_msg_new(my_peer, people_info(my_from) + ' состоит в клане ' + clan_name + '\n\n' + mess)
             else:
                 send_msg_new(my_peer, people_info(my_from) + ' не состоит в клане!')
 
