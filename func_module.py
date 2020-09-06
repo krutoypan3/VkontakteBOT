@@ -299,7 +299,7 @@ try:
             for k in (monall[i]):
                 if '0' <= str(k) <= '9':
                     b += str(k)
-            clan.append([str(a), int(b)])
+            clan.append([str(a), str(b)])
         clan = sorted(clan, key=lambda peoples: (-peoples[1]))
         for i in range(len(clan)):
             if int(clan[i][1]) > 0 and i <= 30:
@@ -676,9 +676,9 @@ try:
 
     # Добавление n-ой суммы на баланс
     def add_balans(my_from, zp_balans):
-        balans = int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0])
-        balans += int(zp_balans)
-        db_module.sql_update_from_money_int(db_module.con, 'money', str(balans), str(my_from))
+        db_module.sql_update_from_money_int(
+            db_module.con, 'money', str(int(db_module.sql_fetch_from_money(
+                db_module.con, 'money', my_from)[0][0]) + int(zp_balans)), str(my_from))
 
 
     def bye_bye(*args):
