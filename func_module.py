@@ -299,7 +299,8 @@ try:
             for k in (monall[i]):
                 if '0' <= str(k) <= '9':
                     b += str(k)
-            clan.append([str(a), str(b)])
+            if chislo_li_eto(b):
+                clan.append([str(a), int(b)])
         clan = sorted(clan, key=lambda peoples: (-peoples[1]))
         for i in range(len(clan)):
             if int(clan[i][1]) > 0 and i <= 30:
