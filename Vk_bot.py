@@ -25,12 +25,19 @@ if __name__ == '__main__':
         # Первичный запуск
         oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
+        last_messages = []  # массив с id пользователей, который написали сообщение в течении последних 2-х секунд
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
                             def message_chek(event_func):
+
+                                if event.message.from_id in last_messages:  # Если id в списке то завершаем функцию
+                                    return True
+                                else:
+                                    last_messages.append(event_func.message.from_id)  # Если нет в списке - добавляем
+
                                 # Занесение в переменные значений с события
                                 from_id = event_func.message.from_id  # Кто написал
                                 peer_id = event_func.message.peer_id  # Где написал
@@ -113,7 +120,14 @@ if __name__ == '__main__':
                                         pass
                                     else:
                                         func_module.thread_start(func_module.main_keyboard_1, peer_id)
+                                time.sleep(2)
+                                try:
+                                    last_messages.remove(event_func.message.from_id)
+                                except AttributeError:
+                                    pass
+
                             func_module.thread_start(message_chek, event)
+
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
                 error(" - ошибка подключения к вк")

@@ -17,14 +17,14 @@ port_key = os.environ.get("port_key")
 
 # Соединение с БД
 def sql_connection():
-    conc1 = psycopg2.connect(
+    conc = psycopg2.connect(
         database=database_key,  # Название базы данных
         user=user_key,  # Имя пользователя
         password=password_key,  # Пароль пользователя
         host=host_key,  # Хост
         port=port_key  # Порт
     )
-    return conc1
+    return conc
 
 
 try:
@@ -42,7 +42,8 @@ try:
     # Вставка СТРОКИ в ТАБЛИЦУ peer_params в БД
     def sql_insert(conc2, entities):
         cursorObj3 = conc2.cursor()
-        cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata, zap_word) VALUES(%s, %s, %s, %s)', entities)
+        cursorObj3.execute('INSERT INTO peer_params(peer_id, zapusk_game, filter_mata, zap_word, last_msg) '
+                           'VALUES(%s, %s, %s, %s, %s)', entities)
         conc2.commit()
 
 
@@ -50,7 +51,7 @@ try:
     def sql_insert_from(conc2, entities):
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
-            'INSERT INTO from_params(peer_id, from_id, money, m_time, warn, marry_id) VALUES(%s, %s, %s, %s, %s, %s)',
+            'INSERT INTO from_params(peer_id, from_id, money, m_time, warn, marry_id, warn_time) VALUES(%s, %s, %s, %s, %s, %s, %s)',
             entities)
         conc2.commit()
 
@@ -81,6 +82,13 @@ try:
                            + ' AS varchar)' + ' where peer_id = ' + str(peer_id_val))
         con5.commit()
 
+    # Обновление параметра в таблице peer_params
+    def sql_update_int(con5, what_fetch, what_fetch_new, peer_id_val):
+        cursorObj1 = con5.cursor()
+        cursorObj1.execute(
+            'UPDATE peer_params SET ' + str(what_fetch) + " = " + str(what_fetch_new)
+            + ' where peer_id = ' + str(peer_id_val))
+        con5.commit()
 
     # Обновление параметра в таблице from_params
     def sql_update_from(con5, what_fetch, what_fetch_new, peer_id_val, from_id_val):
@@ -144,7 +152,7 @@ try:
         cursorObj1.execute('SELECT ' + str(what_return) + ' FROM peer_params WHERE peer_id = ' + str(peer_id_val))
         rows = cursorObj1.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            entities = peer_id_val, '0', '1', ''
+            entities = peer_id_val, '0', '1', '', '0'
             sql_insert(conc, entities)
             rows = sql_fetch(conc, what_return, peer_id_val)
         return rows
@@ -157,7 +165,7 @@ try:
             peer_id_val) + ' AND from_id = ' + str(from_id_val))
         rows = cursorObj1.fetchall()
         if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-            entities = str(peer_id_val), str(from_id_val), '0', '0', '0', '0'
+            entities = str(peer_id_val), str(from_id_val), '0', '0', '0', '0', '0'
             sql_insert_from(conc, entities)
             rows = sql_fetch_from(conc, what_return, peer_id_val, from_id_val)
         return rows

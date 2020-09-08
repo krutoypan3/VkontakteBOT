@@ -170,8 +170,8 @@ try:
             clan_name = db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0]
             if clan_name != 'NULL' and clan_name is not None:
                 if int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0]) >= 4:
-                    clan_bals = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
                     if chislo_li_eto(money):
+                        clan_bals = db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]
                         if int(clan_bals) >= int(money):
                             clan_add_balance(my_peer, my_from, ['', '', int(-int(money))])
                             send_msg_new(my_peer, people_info(my_from) + ' вывел из казны клана ' + money + ' монет')
@@ -196,10 +196,10 @@ try:
             if clan_name != 'NULL' and clan_name is not None:
                 if chislo_li_eto(money):
                     if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= int(money):
-                        add_balans(my_from, int(-int(money)))
                         money_clan = int(db_module.sql_fetch_clan_info(db_module.con, 'clan_money', clan_name)[0]) + \
                                      int(money)
                         db_module.sql_update_clan_info(db_module.con, 'clan_money', money_clan, clan_name)
+                        add_balans(my_from, int(-int(money)))
                         if int(money) > 0:
                             send_msg_new(my_peer, 'Казна клана ' + clan_name + ' пополнена на ' + str(money) + ' монет')
                     else:
@@ -1268,16 +1268,16 @@ try:
                 chet.append(kubiki)
                 send_msg_new(my_peer, '&#9989;на кубиках ' + str(kubiki))
                 time.sleep(1)
-            minchet = 1
+            min_chet = 1
             pobeditel = 0
             nich = 0
             for i in range(len(uchastniki)):
-                if chet[i] >= minchet:
-                    if chet[i] == minchet:
+                if chet[i] >= min_chet:
+                    if chet[i] == min_chet:
                         nich = 1
                     else:
                         nich = 0
-                    minchet = chet[i]
+                    min_chet = chet[i]
                     pobeditel = uchastniki[i]
             if nich == 1:
                 send_msg_new(my_peer, '&#127918;Ничья!')
