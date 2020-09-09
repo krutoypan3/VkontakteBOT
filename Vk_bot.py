@@ -2,14 +2,13 @@ import socket
 import requests
 import urllib3
 from vk_api.bot_longpoll import VkBotEventType
-
-# Функция обработки ошибок
 from Dict import *
 from db_module import con, sql_insert_anime_base
 import func_module
 from func_module import longpoll
 
 
+# Функция обработки ошибок
 def error(ErrorF):
     global oshibka
     oshibka += 1
@@ -84,7 +83,7 @@ if __name__ == '__main__':
                                     '''if text == 'test':
                                         func_module.test_keyboard(peer_id)'''
                                     if text == 'test':
-                                        func_module.test_edit_message(peer_id)
+                                        func_module.thread_start(func_module.test_edit_message, peer_id)
                                     if text in text_answer:
                                         func_module.thread_start(func_module.send_msg_new, peer_id, text_answer[text])
                                     if text in func_answer:
