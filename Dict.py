@@ -91,4 +91,9 @@ text_answer = {'db help': "Для вставки новой строки в та
                'братик': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
                'братик команды': '⚙️ Полный список команд доступен по ссылке ' + 'vk.com/@bratikbot-commands',
                'инфо': "Мой разработчик - Оганесян Артем.\nВсе вопросы по реализации к нему: vk.com/aom13",
-               'время': str(time.ctime())}
+               'время': str(time.ctime()),
+               'minecraft': 'Скачать сборку можно по этой ссылке: '
+                            'https://drive.google.com/file/d/1Dx0_5jxRXNlDS51uutL_vk1b0naRrqer/view?usp=sharing \n'
+                            'Инструкция по подключению: '
+                            'https://docs.google.com/document/d/1udSQnv_EJyJ3NSrNxbKWLQYLj7b2tidpfOjsePEcPkQ/edit?usp=sharing \n'
+                            '\nСервер работает только когда его включил @aom13(Артем)'}
