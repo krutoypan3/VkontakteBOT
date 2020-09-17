@@ -94,6 +94,8 @@ text_answer = {'db help': "Для вставки новой строки в та
                'время': str(time.ctime()),
                'minecraft': 'Скачать сборку можно по этой ссылке: '
                             'https://drive.google.com/file/d/1Dx0_5jxRXNlDS51uutL_vk1b0naRrqer/view?usp=sharing \n'
+                            'Обнова: https://drive.google.com/file/d/1TSH7xRL3RWoHrB8Z0sN62v5xOhui9Cai/view?usp=sharing\n'
+                            'Скачайте файл выше и закиньте в папку mods\n'
                             'Инструкция по подключению: '
                             'https://docs.google.com/document/d/1udSQnv_EJyJ3NSrNxbKWLQYLj7b2tidpfOjsePEcPkQ/edit?usp=sharing \n'
                             '\nСервер работает только когда его включил @aom13(Артем)'}
