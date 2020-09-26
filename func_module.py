@@ -45,13 +45,13 @@ vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl
+    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
 def zapros_ft_vd():
     global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
-        photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl
+        photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
     photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
     photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
     photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
@@ -65,6 +65,7 @@ def zapros_ft_vd():
     video_hent = vk_polzovat.video.get(owner_id='-' + group_id, album_id=3, count=200)  #
     video_tikt = vk_polzovat.video.get(owner_id='-' + group_id, album_id=4, count=200)  #
     video_tikt2 = vk_polzovat.video.get(owner_id='-' + group_id, album_id=5, count=200)  #
+    oboiv_tele = vk_polzovat.video.get(owner_id='-' + group_id, album_id=6, count=200)  #
     photo_etti = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273079952, count=1000)  #
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273184565, count=1000)
 
@@ -882,6 +883,9 @@ try:
             keyboard = VkKeyboard(one_time=False)
             keyboard.add_button('Coub', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('TikTok', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_line()
+            keyboard.add_button('обои телефон', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_line()
             keyboard.add_button('хентай видео', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)

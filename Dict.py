@@ -35,7 +35,8 @@ content_vd = {'coub': func_module.video_coub,
               'тикток': func_module.video_tikt,
               'tiktok': func_module.video_tikt,
               'тт': func_module.video_tikt,
-              'tt': func_module.video_tikt}
+              'tt': func_module.video_tikt,
+              'обои телефон': func_module.oboiv_tele}
 keyboard = {'главная': func_module.main_keyboard_1,
             'арты': func_module.main_keyboard_arts,
             '18+': func_module.main_keyboard_hent,
