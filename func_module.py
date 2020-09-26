@@ -134,8 +134,8 @@ try:
             Temp_fel = data['main']['feels_like']
             Wind_speed = data['wind']['speed']
             Wind_deg = data['wind']['deg']
-            sunrise = time.ctime(data['sys']['sunrise'] + 10800).split()[3]  # Восход
-            sunset = time.ctime(data['sys']['sunset'] + 10800).split()[3]  # Закат
+            sunrise = time.ctime(data['sys']['sunrise']).split()[3]  # Восход
+            sunset = time.ctime(data['sys']['sunset']).split()[3]  # Закат
             if 0 <= Wind_deg <= 22:
                 Wind_deg = 'северный'
             elif 23 <= Wind_deg <= 66:
