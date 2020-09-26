@@ -4,6 +4,7 @@ import socket
 import threading
 import random
 import time
+import datetime
 import requests
 import urllib3
 import vk_api
@@ -82,6 +83,17 @@ try:
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
 
+    # Курс евро и доллара
+    def curs_value(*args):
+        peer_id = args[0]
+        link = "https://www.cbr-xml-daily.ru/daily_json.js"
+        data = requests.get(link)
+        USD = data.json()['Valute']["USD"]["Previous"]
+        EUR = data.json()['Valute']["EUR"]["Previous"]
+        forex = 'Курс валюты на утро ' + str(datetime.datetime.now().date()) + '\n\n' + \
+                '&#128181; 1 USD = ' + str(USD) + ' Российских рублей\n' + \
+                '&#128182; 1 EUR = ' + str(EUR) + ' Российский рублей'
+        send_msg_new(peer_id, forex)
 
     # Ввод города для определения погоды
     def weather_city(event_func):
@@ -114,7 +126,6 @@ try:
             res = requests.get("http://api.openweathermap.org/data/2.5/weather",
                                params={'id': city_id, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
             data = res.json()
-            print(data)
             Osadki = data['weather'][0]['description']
             Temp = data['main']['temp']
             Temp_fel = data['main']['feels_like']
