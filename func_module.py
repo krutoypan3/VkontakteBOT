@@ -141,7 +141,8 @@ try:
                 Wind_deg = 'северный'
             send_msg_new(event_func.message.peer_id, '&#127961;Погода в ' + str(s_city) + '\n' +
                          '&#9925;Осадки: ' + str(Osadki) + '\n&#127777;Температура: ' + str(Temp) + '°C\n' +
-                         '&#128583;ощущается как: ' + str(Temp_fel) + '°C\n&#127788;ветер: ' + Wind_deg + str(Wind_speed) + ' м/с')
+                         '&#128583;ощущается как: ' + str(Temp_fel) + '°C\n&#127788;ветер: ' + Wind_deg + ' ' +
+                         str(Wind_speed) + ' м/с')
         except Exception as e:
             print("Exception (weather):", e)
             send_msg_new(event_func.message.peer_id, 'Извините, но я не знаю о таком месте...')
