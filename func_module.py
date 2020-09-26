@@ -4,7 +4,6 @@ import socket
 import threading
 import random
 import time
-
 import requests
 import urllib3
 import vk_api
@@ -142,11 +141,9 @@ try:
                 Wind_deg = 'северо-западный'
             elif 339 <= Wind_deg <= 360:
                 Wind_deg = 'северный'
-            send_msg_new(event_func.message.peer_id, 'Температура в ' + str(s_city) + '\n' +
-                         'Осадки: ' + str(Osadki) + '\nТемпература:\nминимальная: ' + str(Temp_min) + '°C\n'
-                                                                                                      'сейчас: ' + str(
-                Temp) + '°C\nмаксимальная: ' + str(Temp_max) + '°C\n' +
-                         'ощущается как: ' + str(Temp_fel) + '°C\nветер: ' + Wind_deg)
+            send_msg_new(event_func.message.peer_id, 'Погода в ' + str(s_city) + '\n' +
+                         'Осадки: ' + str(Osadki) + '\n&#127777;Температура: ' + str(Temp) + '°C\n' +
+                         '&#128583;ощущается как: ' + str(Temp_fel) + '°C\n&#127788;ветер: ' + Wind_deg)
         except Exception as e:
             print("Exception (weather):", e)
             send_msg_new(event_func.message.peer_id, 'Извините, но я не знаю о таком месте...')
