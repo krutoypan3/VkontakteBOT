@@ -1,19 +1,22 @@
+import datetime
 import json
 import os
+import random
 import socket
 import threading
-import random
 import time
-import datetime
+
 import requests
 import urllib3
 import vk_api
-import db_module
+from dotenv import load_dotenv
+from googletrans import Translator
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
-from dotenv import load_dotenv
+
 import Dict
+import db_module
 
 load_dotenv()
 # Функция обработки ошибок
@@ -30,6 +33,7 @@ eventhr = []
 kolpot = -1
 group_sob = "@bratikbot"  # Указываем короткое имя бота (если нет то id)
 group_name = "Братик"  # Указываем название сообщества
+translator = Translator()
 
 # Авторизация под именем сообщества
 vk_session = vk_api.VkApi(token=API_GROUP_KEY)
@@ -82,6 +86,54 @@ try:
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
+
+
+    def translate(text, lang):
+        try:
+            result = translator.translate(str(text), dest=lang).text
+            return result
+        except Exception as error:
+            print(error)
+
+
+    def covid(*args):
+        event = args[4]
+        words = event.message.text.lower().split()
+        if len(words) > 1:
+            if words[1] == 'америка':
+                country = 'USA'
+            else:
+                country = translate(words[1], 'en')
+        else:
+            country = 'Russia'
+        url = "https://covid-193.p.rapidapi.com/statistics"
+
+        headers = {
+            'x-rapidapi-host': "covid-193.p.rapidapi.com",
+            'x-rapidapi-key': "5a42fd676cmsh120861aa5715a2cp16f89ejsn6269c9e5abc8"
+        }
+
+        response = requests.request("GET", url, headers=headers)
+        data = response.json()['response']
+        a = False
+        for i in range(len(data)):
+            if data[i]['country'] == country:
+                send_msg_new(event.message.peer_id, '&#9763;' + translate(str(data[i]['country']), 'ru') +
+                             ' - информация по коронавирусу на ' +
+                             data[i]['day'] + '&#9763;' +
+                             '\n&#128106;Население страны: ' + str(data[i]['population']) +
+                             '\n\n&#128554;Заболевших сегодня: ' + str(data[i]['cases']['new']) +
+                             '\n&#128567;Болеющих данный момент: ' + str(data[i]['cases']['active']) +
+                             '\n&#128583;Выздоровело: ' + str(data[i]['cases']['recovered']) +
+                             '\n\n&#128565;Умерло: ' +
+                             '\n&#128534;-сегодня: ' + str(data[i]['deaths']['new']) +
+                             '\n&#128555;-всего: ' + str(data[i]['deaths']['total']) +
+                             '\n\n&#9762;Всего: ' + str(data[i]['cases']['total']) + '&#9762;' +
+                             '\n\nДля получения информации о конкретной стране, напишите "коронавирус (страна)"' +
+                             '\nАктуальные данные предоставлены сайтом https://rapidapi.com/')
+                a = True
+        if not a:
+            send_msg_new(event.message.peer_id, 'Извините, но информация о ситуации в данной стране мне неизвестна')
 
 
     # Курс евро и доллара

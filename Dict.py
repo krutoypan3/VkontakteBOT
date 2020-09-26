@@ -60,7 +60,10 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'курс': func_module.curs_value,
                'валюта': func_module.curs_value,
                'доллар': func_module.curs_value,
-               'евро': func_module.curs_value
+               'евро': func_module.curs_value,
+               'коронавирус': func_module.covid,
+               'ковид': func_module.covid,
+               'covid': func_module.covid
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
