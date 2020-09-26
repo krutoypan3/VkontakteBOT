@@ -4,6 +4,8 @@ import socket
 import threading
 import random
 import time
+
+import requests
 import urllib3
 import vk_api
 import db_module
@@ -80,6 +82,74 @@ try:
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
+
+
+    # Ввод города для определения погоды
+    def weather_city(event_func):
+        timer = time.time()
+        send_msg_new(event_func.message.peer_id, 'Введите название города:')
+        for event_weather in longpoll.listen():  # Постоянный листинг сообщений
+            if event_weather.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
+                if (timer + 60) > time.time():
+                    if event_weather.message.from_id == event_func.message.from_id:  # Проверка на бота
+                        return event_weather.message.text
+                else:
+                    break
+
+
+    # Погода
+    def weather(event_func):
+        s_city = weather_city(event_func)
+        appid = 'a8051039c6443539398bac146ab24206'
+        city_id = 0
+        try:
+            res = requests.get("http://api.openweathermap.org/data/2.5/find",
+                               params={'q': s_city, 'type': 'like', 'units': 'metric', 'APPID': appid})
+            data = res.json()
+            city_id = data['list'][0]['id']
+        except Exception as e:
+            print("Exception (find):", e)
+            pass
+        try:
+            res = requests.get("http://api.openweathermap.org/data/2.5/weather",
+                               params={'id': city_id, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
+            data = res.json()
+            print(data)
+            Osadki = data['weather'][0]['description']
+            Temp = data['main']['temp']
+            Temp_min = data['main']['temp_min']
+            Temp_max = data['main']['temp_max']
+            Temp_fel = data['main']['feels_like']
+            Wind_speed = data['wind']['speed']
+            Wind_deg = data['wind']['deg']
+            print(Wind_deg)
+            if 0 <= Wind_deg <= 22:
+                Wind_deg = 'северный'
+            elif 23 <= Wind_deg <= 66:
+                Wind_deg = 'северо-восточный'
+            elif 67 <= Wind_deg <= 112:
+                Wind_deg = 'восточный'
+            elif 113 <= Wind_deg <= 158:
+                Wind_deg = 'юго-восточный'
+            elif 159 <= Wind_deg <= 203:
+                Wind_deg = 'южный'
+            elif 204 <= Wind_deg <= 248:
+                Wind_deg = 'юго-западный'
+            elif 249 <= Wind_deg <= 293:
+                Wind_deg = 'западный'
+            elif 294 <= Wind_deg <= 338:
+                Wind_deg = 'северо-западный'
+            elif 339 <= Wind_deg <= 360:
+                Wind_deg = 'северный'
+            send_msg_new(event_func.message.peer_id, 'Температура в ' + str(s_city) + '\n' +
+                         'Осадки: ' + str(Osadki) + '\nТемпература:\nминимальная: ' + str(Temp_min) + '°C\n'
+                                                                                                      'сейчас: ' + str(
+                Temp) + '°C\nмаксимальная: ' + str(Temp_max) + '°C\n' +
+                         'ощущается как: ' + str(Temp_fel) + '°C\nветер: ' + Wind_deg)
+        except Exception as e:
+            print("Exception (weather):", e)
+            send_msg_new(event_func.message.peer_id, 'Извините, но я не знаю о таком месте...')
+            pass
 
 
     # Посоветуй аниме
