@@ -98,7 +98,8 @@ try:
 
 
     # Погода
-    def weather(event_func):
+    def weather(*args):
+        event_func = args[4]
         s_city = weather_city(event_func)
         appid = 'a8051039c6443539398bac146ab24206'
         city_id = 0
