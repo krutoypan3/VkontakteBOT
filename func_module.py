@@ -141,8 +141,8 @@ try:
                 Wind_deg = 'северо-западный'
             elif 339 <= Wind_deg <= 360:
                 Wind_deg = 'северный'
-            send_msg_new(event_func.message.peer_id, 'Погода в ' + str(s_city) + '\n' +
-                         'Осадки: ' + str(Osadki) + '\n&#127777;Температура: ' + str(Temp) + '°C\n' +
+            send_msg_new(event_func.message.peer_id, '&#127961;Погода в ' + str(s_city) + '\n' +
+                         '&#9925;Осадки: ' + str(Osadki) + '\n&#127777;Температура: ' + str(Temp) + '°C\n' +
                          '&#128583;ощущается как: ' + str(Temp_fel) + '°C\n&#127788;ветер: ' + Wind_deg)
         except Exception as e:
             print("Exception (weather):", e)
