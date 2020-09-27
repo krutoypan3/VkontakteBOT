@@ -61,9 +61,7 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'валюта': func_module.curs_value,
                'доллар': func_module.curs_value,
                'евро': func_module.curs_value,
-               'коронавирус': func_module.covid,
-               'ковид': func_module.covid,
-               'covid': func_module.covid
+               'коронавирус': func_module.covid
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
@@ -73,7 +71,10 @@ func_bye_bye_second = ['гнилой ананас', 'нелюдь', 'семпа�
 
 
 func_answer_more_word = {'перевести': func_module.money_send,
-                         'брак': func_module.marry_create}
+                         'брак': func_module.marry_create,
+                         'ковид': func_module.covid,
+                         'covid': func_module.covid
+                         }
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                           "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
                           "Исекай Приключения 24",
