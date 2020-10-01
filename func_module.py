@@ -58,22 +58,22 @@ global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, p
 def zapros_ft_vd():
     global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, \
         photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
-    photo_loli = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418270, count=1000)  # Тут находятся
-    photo_neko = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271449419, count=1000)  # альбомы группы
-    photo_arts = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418213, count=1000)  # и их id
-    photo_hent = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271418234, count=1000)  # по которым внизу
-    photo_aheg = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271421874, count=1000)  # будут отбираться
-    photo_stik = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271599613, count=1000)  # фото + 10 сек
-    photo_mart = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=271761499, count=1000)  # к запуску
-    photo_bdsm = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272201504, count=1000)  #
-    photo_ur18 = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=272411793, count=1000)  #
-    video_coub = vk_polzovat.video.get(owner_id='-' + group_id, album_id=1, count=200)  #
-    video_hent = vk_polzovat.video.get(owner_id='-' + group_id, album_id=3, count=200)  #
-    video_tikt = vk_polzovat.video.get(owner_id='-' + group_id, album_id=4, count=200)  #
-    video_tikt2 = vk_polzovat.video.get(owner_id='-' + group_id, album_id=5, count=200)  #
-    oboiv_tele = vk_polzovat.video.get(owner_id='-' + group_id, album_id=6, count=200)  #
-    photo_etti = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273079952, count=1000)  #
-    photo_gitl = vk_SERVISE.photos.get(owner_id='-' + group_id, album_id=273184565, count=1000)
+    photo_loli = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271418270, count=1000)  # Тут находятся
+    photo_neko = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271449419, count=1000)  # альбомы группы
+    photo_arts = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271418213, count=1000)  # и их id
+    photo_hent = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271418234, count=1000)  # по которым внизу
+    photo_aheg = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271421874, count=1000)  # будут отбираться
+    photo_stik = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271599613, count=1000)  # фото + 10 сек
+    photo_mart = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=271761499, count=1000)  # к запуску
+    photo_bdsm = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=272201504, count=1000)  #
+    photo_ur18 = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=272411793, count=1000)  #
+    video_coub = vk_polzovat.video.get(owner_id='-' + '196288744', album_id=1, count=200)  #
+    video_hent = vk_polzovat.video.get(owner_id='-' + '196288744', album_id=3, count=200)  #
+    video_tikt = vk_polzovat.video.get(owner_id='-' + '196288744', album_id=4, count=200)  #
+    video_tikt2 = vk_polzovat.video.get(owner_id='-' + '196288744', album_id=5, count=200)  #
+    oboiv_tele = vk_polzovat.video.get(owner_id='-' + '196288744', album_id=6, count=200)  #
+    photo_etti = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273079952, count=1000)  #
+    photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
 zapros_ft_vd()
