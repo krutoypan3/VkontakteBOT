@@ -44,6 +44,7 @@ keyboard = {'главная': func_module.main_keyboard_1,
 func_answer = {'бро награда': func_module.add_balans_every_day,
                'бро баланс': func_module.balans_status,
                'бро баланс топ': func_module.balans_top,
+               'ня': func_module.add_balans_every_day,
                'развод': func_module.marry_disvorse,
                'брак статус': func_module.marry_status,
                'посоветуй аниме': func_module.anime_sovet,
@@ -61,7 +62,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'курс': func_module.curs_value,
                'валюта': func_module.curs_value,
                'доллар': func_module.curs_value,
-               'евро': func_module.curs_value
+               'евро': func_module.curs_value,
+               'id': func_module.dialog_id
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',

@@ -96,6 +96,10 @@ try:
             print(error)
 
 
+    def dialog_id(*args):
+        event = args[4]
+        send_msg_new(event.message.peer_id, 'ID этой беседы относительно меня: ' + str(event.message.peer_id))
+
     def covid(*args):
         event = args[4]
         words = event.message.text.lower().split()
