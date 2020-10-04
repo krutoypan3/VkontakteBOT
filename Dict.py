@@ -58,7 +58,6 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'я ушел': func_module.bye_bye,
                'я пшел': func_module.bye_bye,
                'до скорого': func_module.bye_bye,
-               'погода': func_module.weather,
                'курс': func_module.curs_value,
                'валюта': func_module.curs_value,
                'доллар': func_module.curs_value,
@@ -76,6 +75,7 @@ func_answer_more_word = {'перевести': func_module.money_send,
                          'брак': func_module.marry_create,
                          'ковид': func_module.covid,
                          'коронавирус': func_module.covid,
+                         'погода': func_module.weather,
                          'covid': func_module.covid
                          }
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "

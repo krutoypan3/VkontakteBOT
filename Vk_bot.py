@@ -129,6 +129,8 @@ if __name__ == '__main__':
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
                 error(" - ошибка подключения к вк")
+            except Exception as ERROR:
+                error(str(ERROR))
 
             finally:
                 error('Неизвестная мне ошибка, но не критично, наверное')
