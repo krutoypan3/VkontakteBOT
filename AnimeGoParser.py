@@ -22,6 +22,7 @@ class AnimeGo:
             ani = url + str(i+1)
             print(ani)
             response = requests.request("GET", ani)
+            print(response)
             print(response.text)
             try:
                 soup = BeautifulSoup(response.text, "lxml")
