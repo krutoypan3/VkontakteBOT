@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 
 class AnimeGo:
-
+    print('Создан экземпляр класса AnimeGo')
     def __init__(self, Anime_type):
         if Anime_type == 'ongoing':
             self.url = 'https://animego.org/anime/filter/status-is-ongoing-or-released/apply?&page='
@@ -11,10 +11,12 @@ class AnimeGo:
         elif Anime_type == 'finish':
             self.url = 'https://animego.org/anime/filter/status-is-released/apply?&direction=desc&page='
             self.col = 100
+        print('Инициализация класса AnimeGo')
 
     def random_anime(self):
         Anime = []
         url = self.url
+        print('Инициализация функции AnimeGo.random_anime')
         for i in range(self.col):
             ani = url + str(i+1)
             response = requests.request("GET", ani)
@@ -65,8 +67,8 @@ class AnimeGo:
                                 Anime_dict = Anime_dict.replace("  ", " ")
 
                             Anime.append([Anime_name, Anime_pict, Anime_urls, Anime_dict, Anime_type, Anime_year, Anime_janr, Anime_rait])
-                        except IndexError:
-                            pass
+                        except IndexError as ERROR:
+                            print(ERROR)
             except UnicodeEncodeError as ERROR:
                 print(ERROR)
         return Anime
