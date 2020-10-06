@@ -23,6 +23,7 @@ class AnimeGo:
             response = requests.request("GET", ani)
             try:
                 soup = BeautifulSoup(response.text, "lxml")
+                print(soup)
                 anima = soup.find_all('div', {'id': 'anime-list-container'})  # Получаем все таблицы с вопросами
                 for animeshka in anima:
                     for g in range(len(animeshka.contents)):
