@@ -72,6 +72,7 @@ class AnimeGo:
                             print(ERROR)
             except UnicodeEncodeError as ERROR:
                 print(ERROR)
+        print(len(Anime))
         return Anime
 
 # rec = AnimeGo('finish')
