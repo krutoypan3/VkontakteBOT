@@ -25,10 +25,9 @@ class AnimeGo:
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36,', 'Origin': 'http://example.com', 'Referer': 'http://example.com/some_page'}
             response = requests.request("GET", ani, headers=headers)
             print(response)
-            print(response.text)
+            print(response.status_code)
             try:
                 soup = BeautifulSoup(response.text, "lxml")
-                print(soup)
                 anima = soup.find_all('div', {'id': 'anime-list-container'})  # Получаем все таблицы с вопросами
                 for animeshka in anima:
                     for g in range(len(animeshka.contents)):
