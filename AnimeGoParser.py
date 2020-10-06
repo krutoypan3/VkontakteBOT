@@ -20,6 +20,7 @@ class AnimeGo:
         print('Инициализация функции AnimeGo.random_anime')
         for i in range(self.col):
             ani = url + str(i+1)
+            print(ani)
             response = requests.request("GET", ani)
             print(response.text)
             try:
