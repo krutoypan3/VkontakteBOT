@@ -13,7 +13,7 @@ from googletrans import Translator
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
-# import AnimeGoParser
+import AnimeGoParser
 import Dict
 import db_module
 import KinoPoisk
@@ -76,10 +76,10 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
-# print('Импортируем список онгоингов...')
-# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
-# print('Импортируем список всех аниме...')
-# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+print('Импортируем список онгоингов...')
+AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+print('Импортируем список всех аниме...')
+AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
@@ -121,7 +121,7 @@ try:
 
 
 
-    '''def AnimeGo_Finish(*args):
+    def AnimeGo_Finish(*args):
         id_anime = random.randint(0, len(AnimeFinish) - 1)
         name = AnimeFinish[id_anime][0]
         pict = AnimeFinish[id_anime][1]
@@ -185,7 +185,7 @@ try:
         vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
                          message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nТип аниме: ' + anime_type +
                                  '\nГод показа: ' + anime_year +
-                                 '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)'''
+                                 '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
 
 
     def translate(text, lang):
