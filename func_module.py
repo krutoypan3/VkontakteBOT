@@ -94,6 +94,7 @@ try:
 
 
     def AnimeGo_Finish(*args):
+        print('Кол-во аниме в базе: ' + str(len(AnimeFinish)))
         id_anime = random.randint(0, len(AnimeFinish) - 1)
         name = AnimeFinish[id_anime][0]
         pict = AnimeFinish[id_anime][1]
