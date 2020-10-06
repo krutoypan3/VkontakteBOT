@@ -21,7 +21,9 @@ class AnimeGo:
         for i in range(self.col):
             ani = url + str(i+1)
             print(ani)
-            response = requests.request("GET", ani)
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36'}
+            response = requests.request("GET", ani, headers=headers)
             print(response)
             print(response.text)
             try:
