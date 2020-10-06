@@ -117,7 +117,7 @@ try:
         vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
                          message='Название: ' + film[0] + '\nРейтинг: ' + str(film[5]) + '\nДата премьеры: ' +
                                  str(film[2]) + '\nЖанры: ' + film_janr + '\n\n' + 'Описание:\n' + film[1] +
-                                 '\n\nСсылка на аниме: ' + film[7])
+                                 '\n\nСсылка на фильм: ' + film[7])
 
 
 
