@@ -75,12 +75,12 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
-print('Импортирует фото из альбомов...')
+print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 print('Импортируем список онгоингов...')
-AnimeOngoing = AnimeGoParser.AnimeGoOngoing
+AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
 print('Импортируем список всех аниме...')
-AnimeFinish = AnimeGoParser.AnimeGoFinish
+AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 
 
 try:
@@ -93,12 +93,20 @@ try:
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
 
 
-    def AnimeGo_Finished(*args):
-        id_anime = random.randint(0, len(AnimeOngoing.Anime) - 1)
-        pict = AnimeFinish.Anime[id_anime][1]
-        name = AnimeFinish.Anime[id_anime][0]
-        dics = AnimeFinish.Anime[id_anime][3]
-        url = AnimeFinish.Anime[id_anime][2]
+    def AnimeGo_Finish(*args):
+        id_anime = random.randint(0, len(AnimeFinish) - 1)
+        name = AnimeFinish[id_anime][0]
+        pict = AnimeFinish[id_anime][1]
+        url = AnimeFinish[id_anime][2]
+        dics = AnimeFinish[id_anime][3]
+        anime_type = AnimeFinish[id_anime][4]
+        anime_year = AnimeFinish[id_anime][5]
+        anime_janrs = AnimeFinish[id_anime][6]
+        anime_janr = ''
+        for i in anime_janrs:
+            anime_janr += i + ', '
+        anime_reit = AnimeFinish[id_anime][7]
+
         # Загрузка фото на комп
         p = requests.get(pict)
         out = open("ongoing.jpg", "wb")
@@ -114,15 +122,23 @@ try:
         attachment = f'photo{owner_id}_{photo_id}_{access_key}'
 
         vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
-                         message=name + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
+                         message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nТип аниме: ' + anime_type + '\nГод показа: ' + anime_year +
+                                 '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
 
 
     def AnimeGo_Ongoings(*args):
-        id_anime = random.randint(0, len(AnimeOngoing.Anime) - 1)
-        pict = AnimeOngoing.Anime[id_anime][1]
-        name = AnimeOngoing.Anime[id_anime][0]
-        dics = AnimeOngoing.Anime[id_anime][3]
-        url = AnimeOngoing.Anime[id_anime][2]
+        id_anime = random.randint(0, len(AnimeOngoing) - 1)
+        pict = AnimeOngoing[id_anime][1]
+        name = AnimeOngoing[id_anime][0]
+        dics = AnimeOngoing[id_anime][3]
+        url = AnimeOngoing[id_anime][2]
+        anime_type = AnimeOngoing[id_anime][4]
+        anime_year = AnimeOngoing[id_anime][5]
+        anime_janrs = AnimeOngoing[id_anime][6]
+        anime_janr = ''
+        for i in anime_janrs:
+            anime_janr += i + ', '
+        anime_reit = AnimeFinish[id_anime][7]
 
         # Загрузка фото на комп
         p = requests.get(pict)
@@ -139,7 +155,9 @@ try:
         attachment = f'photo{owner_id}_{photo_id}_{access_key}'
 
         vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
-                         message=name + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
+                         message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nТип аниме: ' + anime_type +
+                                 '\nГод показа: ' + anime_year +
+                                 '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
 
 
     def translate(text, lang):
@@ -271,36 +289,6 @@ try:
                 print("Exception (weather):", error)
                 send_msg_new(event_func.message.peer_id, 'Извините, но я не знаю о таком месте...')
                 pass
-
-
-    # Посоветуй аниме
-    def anime_sovet(*args):
-        peer_id = args[0]
-        time.sleep(1)
-        timing = time.time()
-        keyboard = VkKeyboard(one_time=True)
-        keyboard.add_button('Исекай', color=VkKeyboardColor.POSITIVE)
-        keyboard.add_button('Романтика', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_button('Приключения', color=VkKeyboardColor.POSITIVE)
-        keyboard.add_button('Гарем', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_line()  # Отступ строки
-        keyboard.add_button('Фэнтези', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_button('Этти', color=VkKeyboardColor.POSITIVE)
-        keyboard.add_button('Повседневность', color=VkKeyboardColor.PRIMARY)
-        keyboard.add_button('Детектив', color=VkKeyboardColor.POSITIVE)
-        vk.messages.send(peer_id=peer_id, random_id=get_random_id(),
-                         keyboard=keyboard.get_keyboard(), message='Выберите жанр:')
-        for event_stavka in longpoll.listen():
-            if time.time() - timing < 60.0:
-                if event_stavka.type == VkBotEventType.MESSAGE_NEW:
-                    slovo = event_stavka.message.text.split()
-                    if len(slovo) > 1:
-                        if (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_name + ']')) or \
-                                (slovo[0] == ('[' + 'club' + str(group_id) + '|' + group_sob + ']')):
-                            thread_start(db_module.sql_fetch_anime_base, db_module.con, slovo[1], peer_id)
-                    elif len(slovo) == 1:
-                        thread_start(db_module.sql_fetch_anime_base, db_module.con, slovo[0], peer_id)
-                    break
 
 
     # Создание клана
@@ -1065,8 +1053,10 @@ try:
             keyboard.add_button('18+', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()  # Отступ строки
             keyboard.add_button('видео', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
+            keyboard.add_button('посоветуй аниме', color=VkKeyboardColor.POSITIVE)
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
-                             keyboard=keyboard.get_keyboard(), message='Выберите команду:')
+                             keyboard=keyboard.get_keyboard(), message='Воть:')
 
 
     def main_keyboard_video(my_peer):

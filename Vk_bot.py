@@ -53,16 +53,6 @@ if __name__ == '__main__':
                                             words[4] == 'до':
                                         func_module.thread_start(func_module.random_ot_do_int_chislo, peer_id,
                                                                  words[3], words[5])
-                                if len(words) > 2:
-                                    if words[0] == 'DB' and words[1] == 'insert':
-                                        anime_name = ''
-                                        for i in range(len(words) - 4):
-                                            if i > 1:
-                                                anime_name += words[i] + ' '
-                                        entities = str(anime_name), str(words[-4]), str(words[-3]), \
-                                                   str(words[-2]), str(words[-1])
-                                        sql_insert_anime_base(con, entities)
-                                        func_module.send_msg_new(peer_id, "Операция выполнена")
                                 if len(words) > 1:
                                     if words[0] == 'игра':
                                         if words[1] in games:

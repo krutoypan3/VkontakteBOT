@@ -67,8 +67,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'выходит': func_module.AnimeGo_Ongoings,
                'что выходит': func_module.AnimeGo_Ongoings,
                'онг': func_module.AnimeGo_Ongoings,
-               'случайное аниме': func_module.AnimeGo_Finished,
-               'посоветуй аниме': func_module.AnimeGo_Finished
+               'случайное аниме': func_module.AnimeGo_Finish,
+               'посоветуй аниме': func_module.AnimeGo_Finish
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
