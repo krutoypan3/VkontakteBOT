@@ -1,5 +1,5 @@
 git+https://github.com/chebotarevmichael/vk_api
-requests~=2.24.0
+git+https://github.com/psf/requests
 python-dotenv~=0.14.0
 googletrans~=3.0.0
 urllib3~=1.25.10
