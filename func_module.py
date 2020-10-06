@@ -76,10 +76,10 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
-print('Импортируем список онгоингов...')
-AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
-print('Импортируем список всех аниме...')
-AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+# print('Импортируем список онгоингов...')
+# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+# print('Импортируем список всех аниме...')
+# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
@@ -96,7 +96,6 @@ try:
 
     def Film_popular(*args):
         film = KinoPoisk.get_random_popular()
-
         # Загрузка фото на комп
         p = requests.get(film[4])
         out = open("film.jpg", "wb")

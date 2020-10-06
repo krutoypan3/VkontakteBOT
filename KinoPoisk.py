@@ -28,7 +28,7 @@ def get_random_popular():
         film_janr.append(i['name'])
     film.append([film_title, film_overview, film_release_date, film_id, film_poster_path, film_vote_average, film_janr,
                  film_url])
-    return film
+    return film[0]
     # film[0] - название
     # film[1] - описание
     # film[2] - дата релиза
