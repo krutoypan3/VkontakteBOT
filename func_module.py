@@ -5,7 +5,6 @@ import random
 import socket
 import threading
 import time
-
 import requests
 import urllib3
 import vk_api
@@ -14,7 +13,7 @@ from googletrans import Translator
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
-
+import AnimeGoParser
 import Dict
 import db_module
 
@@ -76,7 +75,13 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
+print('Импортирует фото из альбомов...')
 zapros_ft_vd()
+print('Импортируем список онгоингов...')
+AnimeOngoing = AnimeGoParser.AnimeGoOngoing
+print('Импортируем список всех аниме...')
+AnimeFinish = AnimeGoParser.AnimeGoFinish
+
 
 try:
     # Инфа о человеке
@@ -86,6 +91,55 @@ try:
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
+
+
+    def AnimeGo_Finished(*args):
+        id_anime = random.randint(0, len(AnimeOngoing.Anime) - 1)
+        pict = AnimeFinish.Anime[id_anime][1]
+        name = AnimeFinish.Anime[id_anime][0]
+        dics = AnimeFinish.Anime[id_anime][3]
+        url = AnimeFinish.Anime[id_anime][2]
+        # Загрузка фото на комп
+        p = requests.get(pict)
+        out = open("ongoing.jpg", "wb")
+        out.write(p.content)
+        out.close()
+
+        # Отправка фото в ВК:
+        upload = vk_api.VkUpload(vk)
+        photo = upload.photo_messages('ongoing.jpg')
+        owner_id = photo[0]['owner_id']
+        photo_id = photo[0]['id']
+        access_key = photo[0]['access_key']
+        attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+
+        vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
+                         message=name + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
+
+
+    def AnimeGo_Ongoings(*args):
+        id_anime = random.randint(0, len(AnimeOngoing.Anime) - 1)
+        pict = AnimeOngoing.Anime[id_anime][1]
+        name = AnimeOngoing.Anime[id_anime][0]
+        dics = AnimeOngoing.Anime[id_anime][3]
+        url = AnimeOngoing.Anime[id_anime][2]
+
+        # Загрузка фото на комп
+        p = requests.get(pict)
+        out = open("ongoing.jpg", "wb")
+        out.write(p.content)
+        out.close()
+
+        # Отправка фото в ВК:
+        upload = vk_api.VkUpload(vk)
+        photo = upload.photo_messages('ongoing.jpg')
+        owner_id = photo[0]['owner_id']
+        photo_id = photo[0]['id']
+        access_key = photo[0]['access_key']
+        attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+
+        vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
+                         message=name + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
 
 
     def translate(text, lang):
@@ -99,6 +153,7 @@ try:
     def dialog_id(*args):
         event = args[4]
         send_msg_new(event.message.peer_id, 'ID этой беседы относительно меня: ' + str(event.message.peer_id))
+
 
     def covid(*args):
         event = args[4]
@@ -209,7 +264,8 @@ try:
                 send_msg_new(event_func.message.peer_id, '&#127961;Погода в ' + str(data['name']) + '\n' +
                              '&#9925;Осадки: ' + str(Osadki) + '\n&#127777;Температура: ' + str(Temp) + '°C\n' +
                              '&#128583;ощущается как: ' + str(Temp_fel) + '°C\n&#127788;ветер: ' + Wind_deg + ' ' +
-                             str(Wind_speed) + ' м/с' + '\n&#127749;рассвет: ' + str(sunrise) + '\n&#127748;закат: ' + str(
+                             str(Wind_speed) + ' м/с' + '\n&#127749;рассвет: ' + str(
+                    sunrise) + '\n&#127748;закат: ' + str(
                     sunset))
             except Exception as error:
                 print("Exception (weather):", error)

@@ -47,7 +47,6 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'ня': func_module.add_balans_every_day,
                'развод': func_module.marry_disvorse,
                'брак статус': func_module.marry_status,
-               'посоветуй аниме': func_module.anime_sovet,
                'игры': func_module.klava_game,
                'кто онлайн': func_module.who_online,
                'пока': func_module.bye_bye,
@@ -62,7 +61,14 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'валюта': func_module.curs_value,
                'доллар': func_module.curs_value,
                'евро': func_module.curs_value,
-               'id': func_module.dialog_id
+               'id': func_module.dialog_id,
+               'онгоинги': func_module.AnimeGo_Ongoings,
+               'онгоинг': func_module.AnimeGo_Ongoings,
+               'выходит': func_module.AnimeGo_Ongoings,
+               'что выходит': func_module.AnimeGo_Ongoings,
+               'онг': func_module.AnimeGo_Ongoings,
+               'случайное аниме': func_module.AnimeGo_Finished,
+               'посоветуй аниме': func_module.AnimeGo_Finished
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
