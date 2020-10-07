@@ -79,9 +79,9 @@ def zapros_ft_vd():
 
 
 print('Импортируем список онгоингов...')
-# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
 print('Импортируем список всех аниме...')
-# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
