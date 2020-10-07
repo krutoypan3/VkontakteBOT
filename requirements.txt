@@ -6,3 +6,4 @@ urllib3~=1.25.10
 psycopg2~=2.8.6
 beautifulsoup4~=4.9.3
 lxml
+cfscrape~=2.1.1
