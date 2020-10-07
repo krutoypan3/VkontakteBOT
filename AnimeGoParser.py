@@ -1,22 +1,5 @@
-import cfscrape
 import requests
 from bs4 import BeautifulSoup
-
-
-def get_session():
-    session = requests.Session()
-    session.headers = {
-        'Host': 'animego.org',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'ru,en-US;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache'}
-    return cfscrape.create_scraper(sess=session)
 
 
 class AnimeGo:
@@ -37,8 +20,10 @@ class AnimeGo:
         print('Инициализация функции AnimeGo.random_anime')
         for i in range(self.col):
             ani = url + str(i+1)
-            session = get_session()
-            response = session.get(ani)
+            print(ani)
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36,', 'Origin': 'http://example.com', 'Referer': 'http://example.com/some_page'}
+            response = requests.request("get", ani, headers=headers)
             print(response)
             print(response.status_code)
             try:
