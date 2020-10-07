@@ -94,6 +94,13 @@ try:
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
 
 
+    def test(*args):
+        url = "https://yummyanime.club/filter?status=1&season=0&selected_age=0&sort=1&action=1&page=1"
+        response = requests.request("GET", url)
+        print(response)
+        data = response.json()
+        print(data)
+
     def Film_popular(*args):
         film = KinoPoisk.get_random_popular()
         # Загрузка фото на комп
