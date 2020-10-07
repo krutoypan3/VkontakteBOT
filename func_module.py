@@ -5,6 +5,8 @@ import random
 import socket
 import threading
 import time
+
+import cfscrape as cfscrape
 import requests
 import urllib3
 import vk_api
@@ -94,25 +96,26 @@ try:
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
 
 
+    def get_session():
+        session = requests.Session()
+        session.headers = {
+            'Host': 'www.artstation.com',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'ru,en-US;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache'}
+        return cfscrape.create_scraper(sess=session)
+
     def test(*args):
         url = "https://yummyanime.club/filter?status=1&season=0&selected_age=0&sort=1&action=1&page=1"
-        headers = {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-            'accept-encoding': 'gzip, deflate, br',
-            'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-            'cache-control': 'no-cache',
-            'dnt': '1',
-            'pragma': 'no-cache',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'none',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'}
-
-        response = requests.request("GET", url, headers=headers)
+        session = get_session()
+        response = session.get(url).json()
         print(response)
-        data = response.json()
-        print(data)
 
     def Film_popular(*args):
         film = KinoPoisk.get_random_popular()
