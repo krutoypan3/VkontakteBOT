@@ -6,7 +6,7 @@ import socket
 import threading
 import time
 
-import cfscrape as cfscrape
+import cfscrape
 import requests
 import urllib3
 import vk_api
@@ -79,9 +79,9 @@ def zapros_ft_vd():
 
 
 print('Импортируем список онгоингов...')
-AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
 print('Импортируем список всех аниме...')
-AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
@@ -99,7 +99,7 @@ try:
     def get_session():
         session = requests.Session()
         session.headers = {
-            'Host': 'www.artstation.com',
+            'Host': 'yummyanime.club',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'ru,en-US;q=0.5',
@@ -114,7 +114,7 @@ try:
     def test(*args):
         url = "https://yummyanime.club/filter?status=1&season=0&selected_age=0&sort=1&action=1&page=1"
         session = get_session()
-        response = session.get(url).json()
+        response = session.get(url)
         print(response)
 
     def Film_popular(*args):
