@@ -78,10 +78,10 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
-print('Импортируем список онгоингов...')
-AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
-print('Импортируем список всех аниме...')
-AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+# print('Импортируем список онгоингов...')
+# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+# print('Импортируем список всех аниме...')
+# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
@@ -174,7 +174,7 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; _ym_d=1601167617; _ym_uid=1601167617925311531; _ga=GA1.2.481610226.1601167617; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMyNzQ4NTMzOmQ4OTM1OGFjNGUwYmViNTkxZWRiZTc3YWEyODdiODA0ZmY4YjMwYmE1NWRkOWYzYTBjOThiZDM1NzMwMmExMjA%3D; _gid=GA1.2.94698817.1602157256; _ym_isad=1; PHPSESSID=n67jep9d1etdrqk4qeu2ir5k6a; io=pn12ZoGAJuapljQ-FEZg',
+            'cookie': 'device_view=full; _ym_d=1601161617; _ym_uid=160116721345311531; _ga=GA1.2.481611326.1601167617; REMEMBERME=VU5cVXNlckJ1bmRsZDVxFbRpdHlcVXNlcjpZVzl0TVRNPToxNjMyNzQ4NTMzOmQ4OTM1OGFjNGUwYmViNTkxZWRiZTc3YWEyODdiODA0ZmY4YjMwYmE1NWRkOWYzYTBjOThiZDM1NzMwMmExMjA%3D; _gid=GA1.2.94691817.1602137256; _ym_isad=1; PHPSESSID=n67jep9d1etdrqk2qeu2ir5k6a; io=pn11ZoGAJuapljQ-FEZg',
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1',
             'Cache-Control': 'max-age=0'}
