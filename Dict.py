@@ -75,7 +75,14 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'популярные фильмы': func_module.Film_popular,
                'популярное': func_module.Film_popular,
                'test': func_module.test,
-               'давай поболтаем': func_module.Davai_poboltaem
+               'давай поболтаем': func_module.Davai_poboltaem,
+               'info': func_module.info_for_user,
+               'инфа': func_module.info_for_user,
+               'информация': func_module.info_for_user,
+               'обо мне': func_module.info_for_user,
+               'я': func_module.info_for_user,
+               'кто я': func_module.info_for_user,
+               'информация обо мне': func_module.info_for_user
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',

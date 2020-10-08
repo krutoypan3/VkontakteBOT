@@ -87,6 +87,38 @@ zapros_ft_vd()
 
 
 try:
+    def info_for_user(*args):
+        event_func = args[4]
+        data = vk_register_date(event_func.message.from_id)
+        now = datetime.datetime.now()
+        datas = datetime.datetime.strptime(data[0], "%Y-%m-%d")
+        date_time = (now - datas).days
+        years = int(date_time // 365.25)
+        mount = int((date_time - years * 365.25) // 30.4167)
+        days = int((date_time - years * 365.25 - mount * 30.4167) // 1)
+        send_msg_new(event_func.message.peer_id, 'День регистрации: ' + str(data[0]) + '\nВремя регистрации: '
+                     + str(data[1]) + '\nВремени со дня регистрации: ' + str(years) + ' лет ' + str(mount) + ' месяц '
+                     + str(days) + ' дней')
+
+    def vk_register_date(from_id):
+        url = 'https://vk.com/foaf.php?id=' + str(from_id)
+        response = requests.get(url).text.split()
+        for i in range(len(response)):
+            if response[i] == '<ya:created':
+                reg_data = response[i + 1]
+                for j in reg_data:
+                    if j == '"':
+                        reg_date, reg_time, reg_chas = '', '', ''
+                        for k in range(10):
+                            reg_date += reg_data[9 + k]
+                        for k in range(8):
+                            reg_time += reg_data[20 + k]
+                        for k in range(6):
+                            reg_chas += reg_data[28 + k]
+                        return [reg_date, reg_time, reg_chas]
+                return None
+        return None
+
 
     def Davai_poboltaem(*args):
         event_func = args[4]
