@@ -166,20 +166,18 @@ try:
     def get_session(host):
         session = requests.Session()
         session.headers = {
-            ':authoriti': host,
-            ':method': 'GET',
-            ':path': '/',
-            ':scheme': 'https',
-            
+            'authoriti': host,
+            'method': 'GET',
+            'path': '/',
+            'scheme': 'https',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
+            'cookie': 'device_view=full; _ym_d=1601167617; _ym_uid=1601167617925311531; _ga=GA1.2.481610226.1601167617; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMyNzQ4NTMzOmQ4OTM1OGFjNGUwYmViNTkxZWRiZTc3YWEyODdiODA0ZmY4YjMwYmE1NWRkOWYzYTBjOThiZDM1NzMwMmExMjA%3D; _gid=GA1.2.94698817.1602157256; _ym_isad=1; PHPSESSID=n67jep9d1etdrqk4qeu2ir5k6a; io=pn12ZoGAJuapljQ-FEZg',
             'DNT': '1',
-            'Connection': 'keep-alive',
             'Upgrade-Insecure-Requests': '1',
-            'Pragma': 'no-cache',
-            'Cache-Control': 'no-cache'}
+            'Cache-Control': 'max-age=0'}
         return cfscrape.create_scraper(sess=session)
 
     def test(*args):
