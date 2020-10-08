@@ -87,6 +87,41 @@ zapros_ft_vd()
 
 
 try:
+
+    def Davai_poboltaem(*args):
+        event_func = args[4]
+        import os
+        import dialogflow
+        send_msg_new(event_func.message.peer_id, 'Запущен режим общения с ботом, для того чтобы остановить болтавню бота напишите "стоп"')
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google.json"
+        project_id = "small-talk-xqju"
+        session_id = str(random.randint(0, 1000000))
+        language_code = "ru"
+        session_client = dialogflow.SessionsClient()
+        session = session_client.session_path(project_id, session_id)
+        for event in longpoll.listen():  # Постоянный листинг сообщений
+            if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
+                if event.message.peer_id == event_func.message.peer_id:
+                    if event.message.text == 'стоп':
+                        send_msg_new(event.message.peer_id, 'Всё! Больше не болтаем!')
+                        break
+                    else:
+                        stop_msg = ''
+                        stop_on = random.randint(0, 3)
+                        if stop_on == 1:
+                            stop_msg = '\n\nЧтобы остановить болтавню бота, напишите "стоп"'
+
+                        text_input = dialogflow.types.TextInput(text=event.message.text, language_code=language_code)
+                        query_input = dialogflow.types.QueryInput(text=text_input)
+                        response_dialogflow = session_client.detect_intent(session=session,
+                                                                           query_input=query_input).query_result.fulfillment_text
+                        # Если есть ответ от бота - присылаем юзеру, если нет - бот его не понял
+                        if response_dialogflow:
+                            vk.messages.send(peer_id=event.message.peer_id, random_id=0, message=response_dialogflow)
+                        else:
+                            vk.messages.send(peer_id=event.message.peer_id, random_id=0,
+                                             message='Б-бака!!! Не хочу понимать тебя!' + stop_msg)
+    
     # Инфа о человеке
     def people_info(people_id):
         if int(people_id) > 0:

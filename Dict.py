@@ -74,7 +74,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'популярный фильм': func_module.Film_popular,
                'популярные фильмы': func_module.Film_popular,
                'популярное': func_module.Film_popular,
-               'test': func_module.test
+               'test': func_module.test,
+               'давай поболтаем': func_module.Davai_poboltaem
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
