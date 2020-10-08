@@ -189,7 +189,7 @@ try:
         session = get_session(host)
         response = session.get(url)
         print(response, url)
-        host = 'anaruto-base.su'
+        host = 'naruto-base.su'
         url = "https://naruto-base.su/"
         session = get_session(host)
         response = session.get(url)
