@@ -180,20 +180,16 @@ try:
 
     def test(*args):
         url = "https://animego.org/"
-        session = get_session()
-        response = session.get(url)
+        response = requests.get(url)
         print(response, url)
         url = "https://yummyanime.club/"
-        session = get_session()
-        response = session.get(url)
+        response = requests.get(url)
         print(response, url)
         url = "https://naruto-base.su/"
-        session = get_session()
-        response = session.get(url)
+        response = requests.get(url)
         print(response, url)
         url = "https://dark-libria.it/"
-        session = get_session()
-        response = session.get(url)
+        response = requests.get(url)
         print(response, url)
 
 
