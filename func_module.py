@@ -179,10 +179,23 @@ try:
         return cfscrape.create_scraper(sess=session)
 
     def test(*args):
-        url = "https://yummyanime.club/filter?status=1&season=0&selected_age=0&sort=1&action=1&page=1"
+        url = "https://animego.org/"
         session = get_session()
         response = session.get(url)
-        print(response)
+        print(response, url)
+        url = "https://yummyanime.club/"
+        session = get_session()
+        response = session.get(url)
+        print(response, url)
+        url = "https://naruto-base.su/"
+        session = get_session()
+        response = session.get(url)
+        print(response, url)
+        url = "https://dark-libria.it/"
+        session = get_session()
+        response = session.get(url)
+        print(response, url)
+
 
     def Film_popular(*args):
         film = KinoPoisk.get_random_popular()
