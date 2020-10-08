@@ -177,6 +177,10 @@ try:
             'cookie': 'device_view=full',
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1',
+            'sec-fetch-user': '?1',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'none',
             'Cache-Control': 'max-age=0'}
         return cfscrape.create_scraper(sess=session)
 
