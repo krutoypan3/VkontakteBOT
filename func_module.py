@@ -163,13 +163,13 @@ try:
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
 
 
-    def get_session():
+    def get_session(host):
         session = requests.Session()
         session.headers = {
-            'Host': 'yummyanime.club',
+            'Host': host,
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'ru,ru-RU;q=0.5',
+            'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
             'DNT': '1',
             'Connection': 'keep-alive',
@@ -179,17 +179,25 @@ try:
         return cfscrape.create_scraper(sess=session)
 
     def test(*args):
+        host = 'animego.org'
         url = "https://animego.org/"
-        response = requests.get(url)
+        session = get_session(host)
+        response = session.get(url)
         print(response, url)
+        host = 'yummyanime.club'
         url = "https://yummyanime.club/"
-        response = requests.get(url)
+        session = get_session(host)
+        response = session.get(url)
         print(response, url)
+        host = 'anaruto-base.su'
         url = "https://naruto-base.su/"
-        response = requests.get(url)
+        session = get_session(host)
+        response = session.get(url)
         print(response, url)
+        host = 'dark-libria.it'
         url = "https://dark-libria.it/"
-        response = requests.get(url)
+        session = get_session(host)
+        response = session.get(url)
         print(response, url)
 
 
