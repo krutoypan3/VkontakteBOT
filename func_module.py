@@ -165,7 +165,6 @@ try:
 
     def get_session(host):
         session = requests.Session()
-        response = session.get('http://google.com')
         session.headers = {
             'authoriti': host,
             'method': 'GET',
@@ -175,7 +174,7 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full',
+            'cookie': 'device_view=full; PHPSESSID=9ebca8bd62c830d3e79272b4f585ff8f',
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
