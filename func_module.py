@@ -165,9 +165,7 @@ try:
 
     def get_session(host):
         session = requests.Session()
-        session.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-            'Host': host}
+        session.headers = {'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Server': 'nginx', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Origin': '*', 'Content-Length': '237', 'Date': 'Wed, 23 Dec 2015 17:56:46 GMT'}
         return cfscrape.create_scraper(sess=session)
 
     def test(*args):
