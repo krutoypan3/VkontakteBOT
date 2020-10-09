@@ -166,11 +166,8 @@ try:
     def get_session(host):
         session = requests.Session()
         session.headers = {
-            'content-type': "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-            'Content-Type': "application/x-www-form-urlencoded",
-            'cache-control': "no-cache",
-            'Postman-Token': "65f888e2-c1e6-4108-ad76-f698aaf2b542"
-            }
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
+            'Host': host}
         return cfscrape.create_scraper(sess=session)
 
     def test(*args):
