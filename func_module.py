@@ -164,11 +164,11 @@ try:
 
 
     def get_session(host):
-        session = requests.Session().post('https://animego.org/')
+        session = requests.Session().get('https://animego.org/')
         print(session)
         k = requests.get('https://animego.org/')
         PHPSESSID = 'ERRORORORO'
-        for cookie in k.cookies:
+        for cookie in session.cookies:
             if cookie.name == 'PHPSESSID':
                 PHPSESSID = cookie.value
         print(PHPSESSID)
