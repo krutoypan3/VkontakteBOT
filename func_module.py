@@ -54,7 +54,11 @@ vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
     photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
-# photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele = '','','','','','','','','','','','','','','',''
+
+
+# photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm,
+# photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele =
+# '','','','','','','','','','','','','','','',''
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
@@ -175,7 +179,7 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; PHPSESSID=ro0qic6tgd1kgsbjjbbcc7lsn2',  # ВАЖНО Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
+            'cookie': 'device_view=full; _ym_d=1601167617; _ym_uid=1601167617925311531; _ga=GA1.2.481610226.1601167617; _gid=GA1.2.94698817.1602157256; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmMThhNGU3Mjk4OTgyZDcwNWU4OWYxNzdmMzRlYzViYzNmZWE2MjY5ZWM2MjY5YmUyYzgzYzU5YWQzOGZlNDk%3D; io=4gGvNab8YEZfd_AkFPhh',  # ВАЖНО Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
             'DNT': '1',                                                          # ЭТОГО КЛЮЧА PHPSESSID
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
