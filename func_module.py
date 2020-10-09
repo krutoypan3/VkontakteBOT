@@ -174,7 +174,7 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; PHPSESSID=n67jep9d1etdrqk4qeu2ir5k6a',
+            'cookie': 'device_view=full; PHPSESSID=n67jep9d1' + str(random.randint(1000, 9999)) + 'qk4qeu2ir5k6a',
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
