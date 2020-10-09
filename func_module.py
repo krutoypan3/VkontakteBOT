@@ -164,12 +164,14 @@ try:
 
 
     def get_session(host):
-        session = requests.Session()
-        k = requests.get('http://index.hu/ident')
-        PHPSESSID = ''
+        session = requests.Session().post('https://animego.org/')
+        print(session)
+        k = requests.get('https://animego.org/')
+        PHPSESSID = 'ERRORORORO'
         for cookie in k.cookies:
             if cookie.name == 'PHPSESSID':
                 PHPSESSID = cookie.value
+        print(PHPSESSID)
         session.headers = {
             'authoriti': host,
             'method': 'GET',
