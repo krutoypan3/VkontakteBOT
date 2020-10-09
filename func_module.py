@@ -5,7 +5,6 @@ import random
 import socket
 import threading
 import time
-
 import cfscrape
 import requests
 import urllib3
@@ -152,8 +151,8 @@ try:
 
                         text_input = dialogflow.types.TextInput(text=event.message.text, language_code=language_code)
                         query_input = dialogflow.types.QueryInput(text=text_input)
-                        response_dialogflow = session_client.detect_intent(session=session,
-                                                                           query_input=query_input).query_result.fulfillment_text
+                        response_dialogflow = session_client.detect_intent(
+                            session=session, query_input=query_input).query_result.fulfillment_text
                         # Если есть ответ от бота - присылаем юзеру, если нет - бот его не понял
                         if response_dialogflow:
                             vk.messages.send(peer_id=event.message.peer_id, random_id=0, message=response_dialogflow)
@@ -178,8 +177,10 @@ try:
             'method': 'GET',
             'path': '/',
             'scheme': 'https',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/85.0.4183.121 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;'
+                      'q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
             'cookie': 'device_view=full; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmM'
@@ -272,7 +273,8 @@ try:
         attachment = f'photo{owner_id}_{photo_id}_{access_key}'
 
         vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
-                         message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nТип аниме: ' + anime_type + '\nГод показа: ' + anime_year +
+                         message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nТип аниме: ' + anime_type +
+                                 '\nГод показа: ' + anime_year +
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
 
 

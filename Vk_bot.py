@@ -3,7 +3,6 @@ import requests
 import urllib3
 from vk_api.bot_longpoll import VkBotEventType
 from Dict import *
-from db_module import con, sql_insert_anime_base
 import func_module
 from func_module import longpoll
 
