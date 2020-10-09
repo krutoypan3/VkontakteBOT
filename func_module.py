@@ -52,9 +52,10 @@ vk_session_SERVISE.server_auth()
 vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
-# global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-#     photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
-photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele = '','','','','','','','','','','','','','','',''
+global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
+    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
+# photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele = '','','','','','','','','','','','','','','',''
+
 
 # Отправка запросов на информацию об фотографиях и видео в группе
 def zapros_ft_vd():
@@ -78,12 +79,12 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
-# print('Импортируем список онгоингов...')
-# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
-# print('Импортируем список всех аниме...')
-# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+print('Импортируем список онгоингов...')
+AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+print('Импортируем список всех аниме...')
+AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
-# zapros_ft_vd()
+zapros_ft_vd()
 
 
 try:
