@@ -52,9 +52,9 @@ vk_session_SERVISE.server_auth()
 vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
-global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
-
+# global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
+#     photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
+photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele = '','','','','','','','','','','','','','','',''
 
 # Отправка запросов на информацию об фотографиях и видео в группе
 def zapros_ft_vd():
@@ -83,7 +83,7 @@ def zapros_ft_vd():
 # print('Импортируем список всех аниме...')
 # AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
-zapros_ft_vd()
+# zapros_ft_vd()
 
 
 try:
@@ -165,6 +165,11 @@ try:
 
     def get_session(host):
         session = requests.Session()
+        k = requests.get('http://index.hu/ident')
+        PHPSESSID = ''
+        for cookie in k.cookies:
+            if cookie.name == 'PHPSESSID':
+                PHPSESSID = cookie.value
         session.headers = {
             'authoriti': host,
             'method': 'GET',
@@ -174,7 +179,7 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; PHPSESSID=tant7f2mson9mq6pprgitor64p',
+            'cookie': 'device_view=full; PHPSESSID=' + str(PHPSESSID),
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
