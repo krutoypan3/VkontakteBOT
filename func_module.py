@@ -174,8 +174,8 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; PHPSESSID=ai6rcruipq1sat0ra6knl0n6dh',
-            'DNT': '1',
+            'cookie': 'device_view=full; PHPSESSID=ro0qic6tgd1kgsbjjbbcc7lsn2',  # ВАЖНО Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
+            'DNT': '1',                                                          # ЭТОГО КЛЮЧА PHPSESSID
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
             'sec-fetch-dest': 'document',
