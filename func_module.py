@@ -51,14 +51,14 @@ vk_session_SERVISE = vk_api.VkApi(app_id=vk_app_id, token=API_SERVICE_KEY, clien
 vk_session_SERVISE.server_auth()
 vk_SERVISE = vk_session_SERVISE.get_api()
 vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
-#
-# global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-#     photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
+
+global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
+    photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
 
 
-photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm,\
-photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele =\
-    '','','','','','','','','','','','','','','',''
+# photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
+# photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele = \
+#     '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
@@ -83,12 +83,12 @@ def zapros_ft_vd():
     photo_gitl = vk_SERVISE.photos.get(owner_id='-' + '196288744', album_id=273184565, count=1000)
 
 
-# print('Импортируем список онгоингов...')
-# AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
-# print('Импортируем список всех аниме...')
-# AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
-# print('Импортируем фото из альбомов...')
-# zapros_ft_vd()
+print('Импортируем список онгоингов...')
+AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
+print('Импортируем список всех аниме...')
+AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
+print('Импортируем фото из альбомов...')
+zapros_ft_vd()
 
 
 try:
@@ -104,6 +104,7 @@ try:
         send_msg_new(event_func.message.peer_id, 'День регистрации: ' + str(data[0]) + '\nВремя регистрации: '
                      + str(data[1]) + '\nВремени со дня регистрации: ' + str(years) + ' лет ' + str(mount) + ' месяц '
                      + str(days) + ' дней')
+
 
     def vk_register_date(from_id):
         url = 'https://vk.com/foaf.php?id=' + str(from_id)
@@ -129,7 +130,8 @@ try:
         event_func = args[4]
         import os
         import dialogflow
-        send_msg_new(event_func.message.peer_id, 'Запущен режим общения с ботом, для того чтобы остановить болтавню бота напишите "стоп"')
+        send_msg_new(event_func.message.peer_id,
+                     'Запущен режим общения с ботом, для того чтобы остановить болтавню бота напишите "стоп"')
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google.json"
         project_id = "small-talk-xqju"
         session_id = str(random.randint(0, 1000000))
@@ -158,7 +160,8 @@ try:
                         else:
                             vk.messages.send(peer_id=event.message.peer_id, random_id=0,
                                              message='Б-бака!!! Не хочу понимать тебя!' + stop_msg)
-    
+
+
     # Инфа о человеке
     def people_info(people_id):
         if int(people_id) > 0:
@@ -179,8 +182,9 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmMThhNGU3Mjk4OTgyZDcwNWU4OWYxNzdmMzRlYzViYzNmZWE2MjY5ZWM2MjY5YmUyYzgzYzU5YWQzOGZlNDk%3D',  # ВАЖНО Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
-            'DNT': '1',                                                          # ЭТОГО КЛЮЧА PHPSESSID
+            'cookie': 'device_view=full; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmM'
+                      'ThhNGU3Mjk4OTgyZDcwNWU4OWYxNzdmMzRlYzViYzNmZWE2MjY5ZWM2MjY5YmUyYzgzYzU5YWQzOGZlNDk%3D',  # ВАЖНО
+            'DNT': '1',  # Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
             'sec-fetch-dest': 'document',
@@ -188,6 +192,7 @@ try:
             'sec-fetch-site': 'none',
             'Cache-Control': 'max-age=0'}
         return cfscrape.create_scraper(sess=session)
+
 
     def test(*args):
         host = 'animego.org'
@@ -236,7 +241,6 @@ try:
                          message='Название: ' + film[0] + '\nРейтинг: ' + str(film[5]) + '\nДата премьеры: ' +
                                  str(film[2]) + '\nЖанры: ' + film_janr + '\n\n' + 'Описание:\n' + film[1] +
                                  '\n\nСсылка на фильм: ' + film[7])
-
 
 
     def AnimeGo_Finish(*args):
