@@ -174,7 +174,7 @@ try:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'ru,ru-ru;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; _ym_d=1601167617; _ym_uid=1601167617925311531; _ga=GA1.2.481610226.1601167617; _gid=GA1.2.94698817.1602157256; _ym_isad=1; PHPSESSID=n67jep9d1etdrqk4qeu2ir5k6a; io=pn12ZoGAJuapljQ-FEZg',
+            'cookie': 'device_view=full; PHPSESSID=n67jep9d1etdrqk4qeu2ir5k6a',
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1',
             'sec-fetch-user': '?1',
