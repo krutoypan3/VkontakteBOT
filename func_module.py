@@ -165,28 +165,12 @@ try:
 
     def get_session(host):
         session = requests.Session()
-        k = requests.get('http://index.hu/ident')
-        PHPSESSID = ''
-        for cookie in k.cookies:
-            if cookie.name == 'PHPSESSID':
-                PHPSESSID = cookie.value
         session.headers = {
-            'authoriti': host,
-            'method': 'GET',
-            'path': '/',
-            'scheme': 'https',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'Accept-Language': 'ru,ru-ru;q=0.5',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; PHPSESSID=' + str(PHPSESSID),
-            'DNT': '1',
-            'Upgrade-Insecure-Requests': '1',
-            'sec-fetch-user': '?1',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'none',
-            'Cache-Control': 'max-age=0'}
+            'content-type': "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+            'Content-Type': "application/x-www-form-urlencoded",
+            'cache-control': "no-cache",
+            'Postman-Token': "65f888e2-c1e6-4108-ad76-f698aaf2b542"
+            }
         return cfscrape.create_scraper(sess=session)
 
     def test(*args):
