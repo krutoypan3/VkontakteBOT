@@ -131,7 +131,7 @@ text_answer = {'db help': "Для вставки новой строки в та
                             '\n'
                             'Полная сборка: https://drive.google.com/drive/folders/1tV0UNeStzMSgUp419xaEafqrgHDfTQ4c?usp=sharing\n'
                             'Или же скачать файлы с расширением .jar и скинуть в папку mods\n'
-                            'Новые моды: https://cloud.mail.ru/public/4Ayz/k1MCK774w\n'
+                            'Новые моды: https://cloud.mail.ru/public/2dxj/RqjcwQreL\n'
                             'Инструкция по подключению: '
                             'https://docs.google.com/document/d/1udSQnv_EJyJ3NSrNxbKWLQYLj7b2tidpfOjsePEcPkQ/edit?usp=sharing \n'
                             '\nСервер работает только когда его включил @aom13(Артем)'}

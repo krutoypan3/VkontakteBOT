@@ -2,6 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 
 
+def series(Anime_urls):
+    try:
+        response2 = requests.request("GET", Anime_urls)
+        soup2 = BeautifulSoup(response2.text, "lxml")
+        anima2 = soup2.find_all('div', {'class': 'anime-info'})  # Получаем все таблицы с вопросами
+        Anime_seri = anima2[0].contents[0].contents[3].next
+        if Anime_seri == 'Тип':
+            Anime_seri = Anime_seri = anima2[0].contents[0].contents[1].contents[1].next
+        return str(Anime_seri)
+    except Exception:
+        return 'неизвестно'
+
+
 class AnimeGo:
     print('Создан экземпляр класса AnimeGo')
 
@@ -59,15 +72,6 @@ class AnimeGo:
                                     1].next  # рейтинг
                             except IndexError:
                                 Anime_rait = 'без рейтинга'
-
-                            '''def series():
-                                response2 = requests.request("GET", Anime_urls)
-                                soup2 = BeautifulSoup(response2.text, "lxml")
-                                anima2 = soup2.find_all('div', {'class': 'anime-info'})  # Получаем все таблицы с вопросами
-                                Anime_ser = anima2[0].contents[0].contents[3].next
-                                return Anime_ser
-                            Anime_seri = series()'''
-
                             try:
                                 for k in range(
                                         len(animeshka.contents[g].next.contents[1].contents[2].contents[4].contents)):
