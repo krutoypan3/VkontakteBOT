@@ -1140,10 +1140,12 @@ try:
         try:
             responseonl = vk.messages.getConversationMembers(peer_id=my_peer)
             liss = 'Пользователи онлайн: \n\n'
+            count = 1
             for n in range(len(responseonl["profiles"])):
                 if responseonl["profiles"][n].get('online'):  # ['vk.com/id'+id|first_name last name]
-                    liss += (str(n + 1) + '💚' + str(responseonl["profiles"][n].get('first_name')) + ' ' +
+                    liss += (str(count) + '💚' + str(responseonl["profiles"][n].get('first_name')) + ' ' +
                              str(responseonl["profiles"][n].get('last_name')) + '\n')
+                    count += 1
             send_msg_new(my_peer, liss)
         except vk_api.exceptions.ApiError:
             send_msg_new(my_peer, 'Для выполнения данной команды боту необходимы права администратора')
