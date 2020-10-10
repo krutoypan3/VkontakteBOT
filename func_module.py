@@ -89,7 +89,6 @@ AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
 print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
-
 try:
     def info_for_user(*args):
         event_func = args[4]
@@ -1141,9 +1140,10 @@ try:
         try:
             responseonl = vk.messages.getConversationMembers(peer_id=my_peer)
             liss = 'Пользователи онлайн: \n\n'
-            for n in responseonl["profiles"]:
-                if n.get('online'):  # ['vk.com/id'+id|first_name last name]
-                    liss += ('💚' + str(n.get('first_name')) + ' ' + str(n.get('last_name')) + '\n')
+            for n in range(len(responseonl["profiles"])):
+                if responseonl["profiles"][n].get('online'):  # ['vk.com/id'+id|first_name last name]
+                    liss += (str(n + 1) + '💚' + str(responseonl["profiles"][n].get('first_name')) + ' ' +
+                             str(responseonl["profiles"][n].get('last_name')) + '\n')
             send_msg_new(my_peer, liss)
         except vk_api.exceptions.ApiError:
             send_msg_new(my_peer, 'Для выполнения данной команды боту необходимы права администратора')
@@ -1350,7 +1350,53 @@ try:
                     break
 
 
-    def test_keyboard(my_peer):
+    def MAFIA_GAME(*args):
+        event_func = args[4]
+        my_peer = event_func.message.peer_id
+        settings = dict(one_time=False, inline=False)
+
+        uchastniki = []
+        keyboard_nabor = VkKeyboard(**settings)
+        # pop-up кнопка заявки на участие
+        keyboard_nabor.add_callback_button(label='Участвовать', color=VkKeyboardColor.SECONDARY,
+                                           payload={"type": "show_snackbar", "text": "Заявка на участие принята!"})
+        keyboard_nabor.add_line()
+        # кнопка смены клавиатуры и начала игры
+        keyboard_nabor.add_callback_button(label='Начать принудительно', color=VkKeyboardColor.PRIMARY,
+                                           payload={"type": "prinuditelno_nachat"})
+        vk.messages.send(
+            random_id=get_random_id(),
+            peer_id=my_peer,
+            keyboard=keyboard_nabor.get_keyboard(),
+            message='Принимаются заявки на участие')
+        for event_nabor in longpoll.listen():
+            # Обрабатываем клики по callback кнопкам
+            if event_nabor.type == VkBotEventType.MESSAGE_EVENT:
+                if event_nabor.object['peer_id'] == my_peer:
+                    if event_nabor.object.payload.get('type') == 'show_snackbar':
+                        if event_nabor.object['user_id'] not in uchastniki:
+                            uchastniki.append(event_nabor.object.user_id)
+                            vk.messages.sendMessageEventAnswer(
+                                event_id=event_nabor.object['event_id'],
+                                user_id=event_nabor.object['user_id'],
+                                peer_id=event_nabor.object['peer_id'],
+                                event_data=json.dumps(event_nabor.object['payload']))
+                            send_msg_new(my_peer, 'Участников: ' + str(len(uchastniki)))
+                        elif event_nabor.object['user_id'] in uchastniki:
+                            event_data = {"type": "show_snackbar", "text": "Заявка на участие уже была принята!"}
+                            vk.messages.sendMessageEventAnswer(
+                                event_id=event_nabor.object['event_id'],
+                                user_id=event_nabor.object['user_id'],
+                                peer_id=event_nabor.object['peer_id'],
+                                event_data=json.dumps(event_data))
+                    elif event_nabor.object.payload.get('type') == 'prinuditelno_nachat':
+                        # keyboard=keyboard_game.get_keyboard())
+                        break
+
+
+
+    def test_keyboard(*args):
+        my_peer = args[0]
         settings = dict(one_time=False, inline=True)
         keyboard_1 = VkKeyboard(**settings)
         # pop-up кнопка
@@ -1368,6 +1414,7 @@ try:
                                        payload={"type": "my_own_100500_type_edit"})
         f_toggle: bool = False
         for event in longpoll.listen():
+            # Обработка входящего сообщение (НЕ CALLBACK)
             if event.type == VkBotEventType.MESSAGE_NEW:
                 if event.obj.message['text'] != '':
                     if event.from_user:
@@ -1377,7 +1424,7 @@ try:
                         vk.messages.send(
                             user_id=event.obj.message['from_id'],
                             random_id=get_random_id(),
-                            peer_id=event.obj.message['peer_id'],
+                            peer_id=my_peer,
                             keyboard=keyboard_1.get_keyboard(),
                             message=event.obj.message['text'])
             # обрабатываем клики по callback кнопкам

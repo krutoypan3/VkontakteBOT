@@ -83,6 +83,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'я': func_module.info_for_user,
                'кто я': func_module.info_for_user,
                'информация обо мне': func_module.info_for_user
+               # 'testkey': func_module.test_keyboard,
+               # 'mafiatest': func_module.MAFIA_GAME
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
