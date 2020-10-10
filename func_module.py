@@ -243,8 +243,12 @@ try:
                                  '\n\nСсылка на фильм: ' + film[7])
 
     def AnimeGo_Search(*args):
-        text = args[4].message.text
-        Anime_searched = AnimeGoParser.search(text)
+        text = args[4].message.text.split()
+        del text[0]
+        text_s = ''
+        for i in text:
+            text_s += text[i]
+        Anime_searched = AnimeGoParser.search(text_s)
         name = Anime_searched[0]
         pict = Anime_searched[1]
         url = Anime_searched[2]
