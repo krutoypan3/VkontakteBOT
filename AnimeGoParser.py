@@ -1,10 +1,29 @@
 import requests
 from bs4 import BeautifulSoup
 
+headers = {'authoriti': 'animego.org',
+           'method': 'GET',
+           'path': '/',
+           'scheme': 'https',
+           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
+           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+           'Accept-Language': 'ru,ru-ru;q=0.5',
+           'Accept-Encoding': 'gzip, deflate, br',
+           'cookie': 'device_view=full; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmM'
+                     'ThhNGU3Mjk4OTgyZDcwNWU4OWYxNzdmMzRlYzViYzNmZWE2MjY5ZWM2MjY5YmUyYzgzYzU5YWQzOGZlNDk%3D',
+           # ВАЖНО Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
+           'DNT': '1',  # ЭТОГО КЛЮЧА PHPSESSID
+           'Upgrade-Insecure-Requests': '1',
+           'sec-fetch-user': '?1',
+           'sec-fetch-dest': 'document',
+           'sec-fetch-mode': 'navigate',
+           'sec-fetch-site': 'none',
+           'Cache-Control': 'max-age=0'}
+
 
 def series(Anime_urls):
     try:
-        response2 = requests.request("GET", Anime_urls)
+        response2 = requests.request("GET", Anime_urls, headers=headers)
         soup2 = BeautifulSoup(response2.text, "lxml")
         anima2 = soup2.find_all('div', {'class': 'anime-info'})  # Получаем все таблицы с вопросами
         Anime_seri = anima2[0].contents[0].contents[3].next
@@ -35,25 +54,6 @@ class AnimeGo:
         for i in range(self.col):
             print('Сканирование тайтлов - ' + str(i) + '%')
             ani = url + str(i + 1)
-            headers = {
-                'authoriti': 'animego.org',
-                'method': 'GET',
-                'path': '/',
-                'scheme': 'https',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'Accept-Language': 'ru,ru-ru;q=0.5',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'cookie': 'device_view=full; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmM'
-                          'ThhNGU3Mjk4OTgyZDcwNWU4OWYxNzdmMzRlYzViYzNmZWE2MjY5ZWM2MjY5YmUyYzgzYzU5YWQzOGZlNDk%3D',
-                # ВАЖНО Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
-                'DNT': '1',  # ЭТОГО КЛЮЧА PHPSESSID
-                'Upgrade-Insecure-Requests': '1',
-                'sec-fetch-user': '?1',
-                'sec-fetch-dest': 'document',
-                'sec-fetch-mode': 'navigate',
-                'sec-fetch-site': 'none',
-                'Cache-Control': 'max-age=0'}
             response = requests.request("get", ani, headers=headers)
             try:
                 soup = BeautifulSoup(response.text, "lxml")
