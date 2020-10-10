@@ -268,13 +268,23 @@ try:
         photo_id = photo[0]['id']
         access_key = photo[0]['access_key']
         attachment = f'photo{owner_id}_{photo_id}_{access_key}'
-
         vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
                          message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nКоличество серий: ' +
                                  AnimeGoParser.series(url) + '\nТип аниме: ' + anime_type +
                                  '\nГод показа: ' + anime_year + '\nСсылка на аниме: ' + url)
+        anime_keyboard(args[4].message.peer_id)
 
 
+    def anime_keyboard(my_peer):
+        settings = dict(one_time=False, inline=True)
+        keyboard_nabor = VkKeyboard(**settings)
+        keyboard_nabor.add_button(label='посоветуй аниме', color=VkKeyboardColor.POSITIVE)
+        keyboard_nabor.add_button(label='онгоинг', color=VkKeyboardColor.POSITIVE)
+        vk.messages.send(
+            random_id=get_random_id(),
+            peer_id=my_peer,
+            keyboard=keyboard_nabor.get_keyboard(),
+            message='Так же я могу:')
 
     # Вывод случайного аниме
     def AnimeGo_Finish(*args):
@@ -310,6 +320,7 @@ try:
                                  AnimeGoParser.series(url) + '\nТип аниме: ' + anime_type +
                                  '\nГод показа: ' + anime_year +
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
+        anime_keyboard(args[4].message.peer_id)
 
     # Вывод случайного онгоинга
     def AnimeGo_Ongoings(*args):
@@ -345,6 +356,7 @@ try:
                                  AnimeGoParser.series(url) + '\nТип аниме: ' + anime_type +
                                  '\nГод показа: ' + anime_year +
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
+        anime_keyboard(args[4].message.peer_id)
 
     # Переводчик
     def translate(text, lang):
