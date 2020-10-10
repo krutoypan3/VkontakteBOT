@@ -98,7 +98,9 @@ func_answer_more_word = {'перевести': func_module.money_send,
                          'ковид': func_module.covid,
                          'коронавирус': func_module.covid,
                          'погода': func_module.weather,
-                         'covid': func_module.covid
+                         'covid': func_module.covid,
+                         'аниме': func_module.AnimeGo_Search,
+                         'anime': func_module.AnimeGo_Search
                          }
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                           "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "

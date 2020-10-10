@@ -34,6 +34,39 @@ def series(Anime_urls):
         return 'неизвестно'
 
 
+def search(Anime_name):
+    Anime_name_q = ''
+    Anime_name = Anime_name.split()
+    for i in range(len(Anime_name)):
+        Anime_name_q += Anime_name[i]
+        if Anime_name[-1] != Anime_name[i]:
+            Anime_name_q += '+'
+    response = requests.request("get", 'https://animego.org/search/all?q=' + Anime_name_q, headers=headers)
+    try:
+        soup = BeautifulSoup(response.text, "lxml")
+        anima = soup.find_all('div', {'class': 'animes-grid-item col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-ul-2'})  # Получаем все таблицы с вопросами
+        for animeshka in anima:
+            try:
+                Anime_name = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['title']  # Название+
+                Anime_type = animeshka.contents[0].contents[1].contents[2].contents[0].contents[0].next  # Тип аниме+
+                Anime_year = animeshka.contents[0].contents[1].contents[2].contents[2].contents[0].next  # год+
+                Anime_urls = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['href']  # Ссылка+
+                try:
+                    Anime_rait = animeshka.contents[0].contents[0].contents[2].contents[0].contents[1].next  # рейтинг+
+                except IndexError:
+                    Anime_rait = 'без рейтинга'
+                try:
+                    Anime_pict = animeshka.contents[0].next.contents[1].contents[0].attrs['data-original']  # Картинка+
+                except KeyError:
+                    Anime_pict = 'https://upload.wikimedia.org/wikipedia/ru/0/04/%D0%9D%D0%95%D0%A2_%D0%94%D0%9E%D0%A1%D0%A2%D0%A3%D0%9F%D0%9D%D0%9E%D0%93%D0%9E_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.jpg'
+
+                return Anime_name, Anime_pict, Anime_urls, Anime_type, Anime_year, Anime_rait
+            except IndexError as ERROR:
+                print(ERROR)
+    except UnicodeEncodeError as ERROR:
+        print(ERROR)
+
+
 class AnimeGo:
     print('Создан экземпляр класса AnimeGo')
 

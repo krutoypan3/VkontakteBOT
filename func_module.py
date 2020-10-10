@@ -242,6 +242,37 @@ try:
                                  str(film[2]) + '\nЖанры: ' + film_janr + '\n\n' + 'Описание:\n' + film[1] +
                                  '\n\nСсылка на фильм: ' + film[7])
 
+    def AnimeGo_Search(*args):
+        text = args[4].message.text.split()
+        del text[0]
+        Anime_searched = AnimeGoParser.search(text)
+        name = Anime_searched[0]
+        pict = Anime_searched[1]
+        url = Anime_searched[2]
+        anime_type = Anime_searched[3]
+        anime_year = Anime_searched[4]
+        anime_reit = Anime_searched[5]
+        # Загрузка фото на комп
+        p = requests.get(pict)
+        out = open("temp.jpg", "wb")
+        out.write(p.content)
+        out.close()
+
+        # Отправка фото в ВК:
+        upload = vk_api.VkUpload(vk)
+        photo = upload.photo_messages('ongoing.jpg')
+        owner_id = photo[0]['owner_id']
+        photo_id = photo[0]['id']
+        access_key = photo[0]['access_key']
+        attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+
+        vk.messages.send(peer_id=args[4].message.peer_id, random_id=0, attachment=attachment,
+                         message='Название: ' + name + '\nРейтинг: ' + anime_reit + '⭐\nКоличество серий: ' +
+                                 AnimeGoParser.series(url) + '\nТип аниме: ' + anime_type +
+                                 '\nГод показа: ' + anime_year + '\nСсылка на аниме: ' + url)
+
+
+
     # Вывод случайного аниме
     def AnimeGo_Finish(*args):
         id_anime = random.randint(0, len(AnimeFinish) - 1)
@@ -259,7 +290,7 @@ try:
 
         # Загрузка фото на комп
         p = requests.get(pict)
-        out = open("ongoing.jpg", "wb")
+        out = open("temp.jpg", "wb")
         out.write(p.content)
         out.close()
 
@@ -294,7 +325,7 @@ try:
 
         # Загрузка фото на комп
         p = requests.get(pict)
-        out = open("ongoing.jpg", "wb")
+        out = open("temp.jpg", "wb")
         out.write(p.content)
         out.close()
 
