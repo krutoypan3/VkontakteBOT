@@ -247,7 +247,7 @@ try:
         del text[0]
         text_s = ''
         for i in text:
-            text_s += i
+            text_s += i + ' '
         Anime_searched = AnimeGoParser.search(text_s)
         name = Anime_searched[0]
         pict = Anime_searched[1]
