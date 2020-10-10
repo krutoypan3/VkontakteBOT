@@ -263,7 +263,7 @@ try:
 
         # Отправка фото в ВК:
         upload = vk_api.VkUpload(vk)
-        photo = upload.photo_messages('ongoing.jpg')
+        photo = upload.photo_messages('temp.jpg')
         owner_id = photo[0]['owner_id']
         photo_id = photo[0]['id']
         access_key = photo[0]['access_key']
@@ -299,7 +299,7 @@ try:
 
         # Отправка фото в ВК:
         upload = vk_api.VkUpload(vk)
-        photo = upload.photo_messages('ongoing.jpg')
+        photo = upload.photo_messages('temp.jpg')
         owner_id = photo[0]['owner_id']
         photo_id = photo[0]['id']
         access_key = photo[0]['access_key']
@@ -334,7 +334,7 @@ try:
 
         # Отправка фото в ВК:
         upload = vk_api.VkUpload(vk)
-        photo = upload.photo_messages('ongoing.jpg')
+        photo = upload.photo_messages('temp.jpg')
         owner_id = photo[0]['owner_id']
         photo_id = photo[0]['id']
         access_key = photo[0]['access_key']
