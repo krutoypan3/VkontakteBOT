@@ -1379,13 +1379,12 @@ try:
         f_toggle = False
         send_msg_new(my_peer, 'ТЕСТО')
         for i in range(10):
-            time.sleep(2)
             vk.messages.edit(
                 peer_id=int(args[4].message.peer_id),
                 message='Рома' if f_toggle else 'гей',
-                conversation_message_id=int(args[4].message.conversation_message_id))
+                conversation_message_id=int(args[4].message.conversation_message_id + 1))
             f_toggle = not f_toggle
-
+            time.sleep(2)
     # Игра в мафию??? В РАЗРАБОТКЕ
     def MAFIA_GAME(*args):
         event_func = args[4]
