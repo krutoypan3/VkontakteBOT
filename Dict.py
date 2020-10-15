@@ -99,7 +99,7 @@ func_answer_more_word = {'перевести': func_module.money_send,
                          'погода': func_module.weather,
                          'covid': func_module.covid,
                          'посоветуй аниме': func_module.AnimeGo_Finish,
-                         'посоветуй онгоинг': func_module.AnimeGo_Finish,
+                         'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                          'аниме': func_module.AnimeGo_Search,
                          'anime': func_module.AnimeGo_Search
                          }

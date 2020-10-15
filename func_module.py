@@ -279,7 +279,7 @@ try:
         settings = dict(one_time=False, inline=True)
         keyboard_nabor = VkKeyboard(**settings)
         keyboard_nabor.add_button(label='посоветуй аниме', color=VkKeyboardColor.POSITIVE)
-        keyboard_nabor.add_button(label='онгоинг', color=VkKeyboardColor.POSITIVE)
+        keyboard_nabor.add_button(label='посоветуй онгоинг', color=VkKeyboardColor.POSITIVE)
         vk.messages.send(
             random_id=get_random_id(),
             peer_id=my_peer,
