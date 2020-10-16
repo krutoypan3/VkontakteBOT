@@ -30,16 +30,15 @@ if __name__ == '__main__':
                     if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
                         if event.message.from_id > 0:
                             def message_chek(event_func):
-                                try:
-                                    if "action" in event.message:
+                                if "action" in event.message:
+                                    if 'member_id' in event.message['action']:
                                         if str(event.message["action"]["member_id"]) == '-' + str(func_module.group_id):
                                             func_module.send_msg_new(event.message.peer_id, 'Ку. Это типа приветствие;)')
-                                    if event.message.from_id in last_messages:  # Если id в списке то завершаем функцию
-                                        return True
-                                    else:
-                                        last_messages.append(event_func.message.from_id)  # Если нет в списке - добавляем
-                                except Exception:
-                                    pass
+
+                                if event.message.from_id in last_messages:  # Если id в списке то завершаем функцию
+                                    return True
+                                else:
+                                    last_messages.append(event_func.message.from_id)  # Если нет в списке - добавляем
                                 # Занесение в переменные значений с события
                                 from_id = event_func.message.from_id  # Кто написал
                                 peer_id = event_func.message.peer_id  # Где написал
