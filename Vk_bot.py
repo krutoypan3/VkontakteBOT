@@ -110,7 +110,7 @@ if __name__ == '__main__':
                                         pass
                                     else:
                                         func_module.thread_start(func_module.main_keyboard_1, peer_id)
-                                time.sleep(2)
+                                time.sleep(1.5)
                                 try:
                                     last_messages.remove(event_func.message.from_id)
                                 except AttributeError:

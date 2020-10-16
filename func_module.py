@@ -1,7 +1,6 @@
 import datetime
 import json
 import os
-import random
 import socket
 import threading
 import time
@@ -18,6 +17,11 @@ import AnimeGoParser
 import Dict
 import db_module
 import KinoPoisk
+import random
+from newsapi import NewsApiClient
+
+# Init
+newsapi = NewsApiClient(api_key='4e44257f0c7c4d51a8efb0c7a0361e1c')
 
 load_dotenv()
 # Функция обработки ошибок
@@ -242,6 +246,7 @@ try:
                                  str(film[2]) + '\nЖанры: ' + film_janr + '\n\n' + 'Описание:\n' + film[1] +
                                  '\n\nСсылка на фильм: ' + film[7])
 
+
     def AnimeGo_Search(*args):
         text = args[4].message.text.split()
         del text[0]
@@ -286,6 +291,7 @@ try:
             keyboard=keyboard_nabor.get_keyboard(),
             message='Так же я могу:')
 
+
     # Вывод случайного аниме
     def AnimeGo_Finish(*args):
         id_anime = random.randint(0, len(AnimeFinish) - 1)
@@ -321,6 +327,7 @@ try:
                                  '\nГод показа: ' + anime_year +
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
         anime_keyboard(args[4].message.peer_id)
+
 
     # Вывод случайного онгоинга
     def AnimeGo_Ongoings(*args):
@@ -358,6 +365,7 @@ try:
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
         anime_keyboard(args[4].message.peer_id)
 
+
     # Переводчик
     def translate(text, lang):
         try:
@@ -366,10 +374,12 @@ try:
         except Exception as error:
             print(error)
 
+
     # Отправка в чат id беседы относительно бота
     def dialog_id(*args):
         event = args[4]
         send_msg_new(event.message.peer_id, 'ID этой беседы относительно меня: ' + str(event.message.peer_id))
+
 
     # Информация о коронавирусе
     def covid(*args):
@@ -411,6 +421,7 @@ try:
         if not a:
             send_msg_new(event.message.peer_id, 'Извините, но информация о ситуации в данной стране мне неизвестна')
 
+
     # Курс евро и доллара
     def curs_value(*args):
         peer_id = args[0]
@@ -424,6 +435,7 @@ try:
                 '&#128182; 1 EUR = ' + str(EUR) + ' Российский рублей\n' + \
                 '&#128180; 1 JPY = ' + str(JPY) + ' Российский рублей'
         send_msg_new(peer_id, forex)
+
 
     # Погода
     def weather(*args):
@@ -487,6 +499,7 @@ try:
                 send_msg_new(event_func.message.peer_id, 'Извините, но я не знаю о таком месте...')
                 pass
 
+
     # Создание клана
     def clan_create(*args):
         my_peer = args[0]
@@ -514,6 +527,7 @@ try:
             send_msg_new(my_peer, 'Для создания клана напишите "Клан создать "название_клана""\n'
                                   'Стоимость создания клана - 5000 монет')
 
+
     # Проверка на число
     def chislo_li_eto(chto):  # Определяет, является ли данный аргумент числом или нет
         a = ''
@@ -535,6 +549,7 @@ try:
             return False
         else:
             return True
+
 
     # Снятие денег с баланса клана rank 4+
     def clan_rem_balance(*args):
@@ -560,6 +575,7 @@ try:
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
+
     # Пополнение баланса клана
     def clan_add_balance(*args):
         if len(args[2]) > 2:
@@ -582,6 +598,7 @@ try:
                     send_msg_new(my_peer, people_info(my_from) + ', введите правильное число!')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
 
     # Баланс клана rank 1+
     def clan_balance(*args):
@@ -610,6 +627,7 @@ try:
                                                                  'выполнения данной команды!')
             else:
                 send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
 
     # Инфо о клане
     def clan_info(*args):
@@ -656,6 +674,7 @@ try:
             else:
                 send_msg_new(my_peer, people_info(my_from) + ' не состоит в клане!')
 
+
     # Баланс клана топ
     def clan_balance_top(*args):
         my_peer = args[0]
@@ -687,6 +706,7 @@ try:
                 mess += str(i + 1) + '. ' + clan[i][0] + ' - ' + str(clan[i][1]) + ' монет\n'
         send_msg_new(my_peer, mess)
 
+
     # rank 2+
     def clan_kick(*args):
         my_peer = args[0]
@@ -717,6 +737,7 @@ try:
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
+
     # rank 5
     def clan_disvorse(*args):
         my_peer = args[0]
@@ -735,6 +756,7 @@ try:
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
 
+
     # Покинуть клан
     def clan_leave(*args):
         my_peer = args[0]
@@ -750,6 +772,7 @@ try:
                 send_msg_new(my_peer, people_info(my_from) + ', вы покинули клан ' + clan_name)
         else:
             send_msg_new(my_peer, people_info(my_from) + ', вы не состоите в клане!')
+
 
     # rank 2+
     def clan_invite(*args):
@@ -1040,8 +1063,34 @@ try:
             if balans_time > 60:
                 balans_minut += str(int(balans_time % 3600 // 60)) + ' минут '
             balans_second += str(int(balans_time % 3600 % 60)) + ' секунд'
-            send_msg_new(my_peer, 'Бро-коины можно получить не чаще, чем 1 раз в 8 часов! Осталось времени: '
-                         + balans_hour + balans_minut + balans_second)
+
+
+            top_headlines = newsapi.get_top_headlines(language='ru')
+            news_current = (top_headlines['articles'][random.randint(0, len(top_headlines['articles']) - 1)])
+            title = news_current['title']
+            description = news_current['description']
+            url = news_current['url']
+            image = news_current['urlToImage']
+
+            # Загрузка фото на комп
+            p = requests.get(image)
+            out = open("temp.jpg", "wb")
+            out.write(p.content)
+            out.close()
+
+            # Отправка фото в ВК:
+            upload = vk_api.VkUpload(vk)
+            photo = upload.photo_messages('temp.jpg')
+            owner_id = photo[0]['owner_id']
+            photo_id = photo[0]['id']
+            access_key = photo[0]['access_key']
+            attachment = f'photo{owner_id}_{photo_id}_{access_key}'
+
+            vk.messages.send(peer_id=my_peer, random_id=0,
+                             attachment=attachment,
+                             message='Бро-коины можно получить не чаще, чем 1 раз в 8 часов! Осталось времени: '
+                                     + balans_hour + balans_minut + balans_second + '\n\nНовость дня:\n' + title +
+                                     '\n' + description + '\nссылка на источник: ' + url)
 
 
     # Добавление n-ой суммы на баланс
@@ -1373,6 +1422,7 @@ try:
     def money_win(win_from, stavka, uchastniki):
         add_balans(str(win_from), str(int(stavka) * len(uchastniki)))
 
+
     # ТЕСТОВОЕ ИЗМЕНЕНИЕ СООБЩЕНИЯ
     def test_edit_message(*args):
         my_peer = args[0]
@@ -1385,6 +1435,8 @@ try:
                 conversation_message_id=int(args[4].message.conversation_message_id + 1))
             f_toggle = not f_toggle
             time.sleep(2)
+
+
     # Игра в мафию??? В РАЗРАБОТКЕ
     def MAFIA_GAME(*args):
         event_func = args[4]
@@ -1572,6 +1624,7 @@ try:
             money_win(uchastniki[priz], stavka, uchastniki)
             zapret_zap_game(my_peer)
 
+
     # Игра казино
     def game_casino(my_peer, my_from):
         dengi_game = 0
@@ -1665,6 +1718,7 @@ try:
         else:
             zapret_zap_game(my_peer)
 
+
     # Игра бросок кубика
     def game_brosok_kubika(my_peer, my_from):
         zapret_zap_game(my_peer)
@@ -1707,6 +1761,7 @@ try:
                 send_msg_new(my_peer, '&#127918;' + people_info(pobeditel) + '&#127881; ' + 'победил!&#127882;')
                 money_win(pobeditel, stavka, uchastniki)
                 zapret_zap_game(my_peer)
+
 
     # Игра математическая викторина
     def game_mat_victorina(my_peer, my_from):
@@ -1797,6 +1852,7 @@ try:
             send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно средств на счете! Получите '
                                                          'бро-коины написав "бро награда"')
 
+
     # Рандомное число от и до
     def random_ot_do_int_chislo(my_peer, ot, do):
         if chislo_li_eto(ot) and chislo_li_eto(do):
@@ -1806,6 +1862,7 @@ try:
                 send_msg_new(my_peer, 'Первое число не может быть меньше второго!')
         else:
             send_msg_new(my_peer, 'Вы ввели неправильные числа!')
+
 
     # Клавиатура со списком игр
     def klava_game(*args):
