@@ -4,7 +4,6 @@ import os
 import socket
 import threading
 import time
-import cfscrape
 import requests
 import urllib3
 import vk_api
@@ -57,11 +56,6 @@ vk_session_SERVISE.token = {'access_token': API_SERVICE_KEY, 'expires_in': 0}
 
 global photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
     photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele
-
-
-# photo_loli, photo_neko, photo_arts, photo_hent, photo_aheg, photo_stik, photo_mart, video_coub, photo_bdsm, \
-# photo_ur18, video_hent, video_tikt, photo_etti, video_tikt2, photo_gitl, oboiv_tele = \
-#     '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
 
 
 # Отправка запросов на информацию об фотографиях и видео в группе
@@ -171,54 +165,6 @@ try:
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
-
-
-    def get_session(host):
-        session = requests.Session()
-        session.headers = {
-            'authoriti': host,
-            'method': 'GET',
-            'path': '/',
-            'scheme': 'https',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/85.0.4183.121 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;'
-                      'q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'Accept-Language': 'ru,ru-ru;q=0.5',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'cookie': 'device_view=full; REMEMBERME=VU5cVXNlckJ1bmRsZVxFbnRpdHlcVXNlcjpZVzl0TVRNPToxNjMzNzQ0NzUzOmZmM'
-                      'ThhNGU3Mjk4OTgyZDcwNWU4OWYxNzdmMzRlYzViYzNmZWE2MjY5ZWM2MjY5YmUyYzgzYzU5YWQzOGZlNDk%3D',  # ВАЖНО
-            'DNT': '1',  # Я ХЗ НАСЧЕТ СТАБИЛЬНОЙ РАБОТЫ
-            'Upgrade-Insecure-Requests': '1',
-            'sec-fetch-user': '?1',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'none',
-            'Cache-Control': 'max-age=0'}
-        return cfscrape.create_scraper(sess=session)
-
-
-    def test(*args):
-        host = 'animego.org'
-        url = "https://animego.org/"
-        session = get_session(host)
-        response = session.get(url)
-        print(response, url)
-        host = 'yummyanime.club'
-        url = "https://yummyanime.club/"
-        session = get_session(host)
-        response = session.get(url)
-        print(response, url)
-        host = 'naruto-base.su'
-        url = "https://naruto-base.su/"
-        session = get_session(host)
-        response = session.get(url)
-        print(response, url)
-        host = 'dark-libria.it'
-        url = "https://dark-libria.it/"
-        session = get_session(host)
-        response = session.get(url)
-        print(response, url)
 
 
     def Film_popular(*args):
