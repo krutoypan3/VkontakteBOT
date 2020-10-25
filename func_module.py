@@ -90,16 +90,112 @@ zapros_ft_vd()
 try:
     def info_for_user(*args):
         event_func = args[4]
-        data = vk_register_date(event_func.message.from_id)
-        now = datetime.datetime.now()
-        datas = datetime.datetime.strptime(data[0], "%Y-%m-%d")
-        date_time = (now - datas).days
-        years = int(date_time // 365.25)
-        mount = int((date_time - years * 365.25) // 30.4167)
-        days = int((date_time - years * 365.25 - mount * 30.4167) // 1)
-        send_msg_new(event_func.message.peer_id, 'День регистрации: ' + str(data[0]) + '\nВремя регистрации: '
-                     + str(data[1]) + '\nВремени со дня регистрации: ' + str(years) + ' лет ' + str(mount) + ' месяц '
-                     + str(days) + ' дней')
+        vk_reg_data = vk_register_date(event_func.message.from_id)
+        vk_reg_now = datetime.datetime.now()
+        vk_reg_datas = datetime.datetime.strptime(vk_reg_data[0], "%Y-%m-%d")
+        vk_reg_date_time = (vk_reg_now - vk_reg_datas).days
+        vk_reg_years = int(vk_reg_date_time // 365.25)
+        vk_reg_mount = int((vk_reg_date_time - vk_reg_years * 365.25) // 30.4167)
+        vk_reg_days = int((vk_reg_date_time - vk_reg_years * 365.25 - vk_reg_mount * 30.4167) // 1)
+        people = vk.users.get(user_ids=input('Введите id:'),
+                              fields=['photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town',
+                                      'has_photo',
+                                      'photo_400_orig', 'photo_max', 'photo_max_orig', 'online', 'domain', 'has_mobile',
+                                      'contacts', 'site', 'education', 'universities', 'schools', 'status', 'last_seen',
+                                      'followers_count', 'occupation', 'nickname', 'relatives', 'relation', 'personal',
+                                      'connections', 'exports', 'activities', 'interests', 'music', 'movies', 'tv',
+                                      'books',
+                                      'games', 'about', 'quotes', 'can_post', 'can_see_all_posts', 'can_see_audio',
+                                      'can_write_private_message', 'can_send_friend_request', 'is_favorite',
+                                      'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo',
+                                      'is_friend', 'friend_status', 'career', 'military', 'blacklisted',
+                                      'blacklisted_by_me',
+                                      'can_be_invited_group'])[0]
+        first_name = people['first_name']
+        last_name = people['last_name']
+        if str(people['sex']) == '1':
+            people['sex'] = 'женский'
+        elif str(people['sex']) == '2':
+            people['sex'] = 'мужской'
+        try:
+            city = people['city']['title']
+        except KeyError:
+            city = 'Неизвестно'
+        try:
+            country = people['country']['title']
+        except KeyError:
+            country = 'Неизвестно'
+        try:
+            photo_max = people['photo_max']
+        except KeyError:
+            photo_max = 'Неизвестно'
+        try:
+            photo_id = people['photo_id']
+        except KeyError:
+            photo_id = '1'
+        try:
+            site = people['site']
+        except KeyError:
+            site = 'Нет'
+        try:
+            status = people['status']
+        except KeyError:
+            status = 'Нет'
+        try:
+            verified = people['verified']
+            if str(verified) == '0':
+                verified = 'нет'
+            elif str(verified) == '1':
+                verified = 'да'
+        except KeyError:
+            verified = 'Неизвестно'
+        try:
+            followers_count = people['followers_count']
+        except KeyError:
+            followers_count = 'Неизвестно'
+        try:
+            occupation_type = people['occupation']['type']
+        except KeyError:
+            occupation_type = 'Неизвестно'
+        try:
+            occupation_name = people['occupation']['name']
+        except KeyError:
+            occupation_name = 'Неизвестно'
+        try:
+            university_name = people['university_name']
+        except KeyError:
+            university_name = 'Неизвестно'
+        try:
+            faculty_name = people['faculty_name']
+        except KeyError:
+            faculty_name = 'Неизвестно'
+        try:
+            personal_langs = people['personal']['langs']
+        except KeyError:
+            personal_langs = 'Неизвестно'
+        try:
+            schools = people['schools']['name']
+        except KeyError:
+            schools = 'Неизвестно'
+        try:
+            about = people['about']
+        except KeyError:
+            about = 'Нет'
+        try:
+            quotes = people['quotes']
+        except KeyError:
+            quotes = 'Нет'
+        send_msg_new(event_func.message.peer_id, str(first_name) + ' ' + str(last_name) + '\nПол: ' + str(people['sex'])
+                     + '\nСтрана: ' + str(country) + '\nГород: ' + str(city) + '\nФото: ' + photo_max +
+                     '\nСайт: ' + str(site) + '\nСтатус: ' + str(status) + '\nВерифицированная страница: ' + str(
+            verified) + '\nКоличество подписчиков: ' + str(followers_count) +
+                     '\nМесто работы: ' + str(occupation_name) + '\nУниверситет: ' + str(
+            university_name) + '\nФакультет: ' + str(
+            faculty_name) + '\nРазговаривает на: ' + str(personal_langs) +
+                     '\nШкола: ' + str(schools) + '\nОбо мне: ' + str(about) + '\nДевиз по жизни: ' + str(
+            quotes) + 'День регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: '
+                     + str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет '
+                     + str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней')
 
 
     def vk_register_date(from_id):
@@ -1009,7 +1105,6 @@ try:
             if balans_time > 60:
                 balans_minut += str(int(balans_time % 3600 // 60)) + ' минут '
             balans_second += str(int(balans_time % 3600 % 60)) + ' секунд'
-
 
             top_headlines = newsapi.get_top_headlines(language='ru')
             news_current = (top_headlines['articles'][random.randint(0, len(top_headlines['articles']) - 1)])
