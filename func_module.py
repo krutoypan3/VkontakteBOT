@@ -97,7 +97,7 @@ try:
         vk_reg_years = int(vk_reg_date_time // 365.25)
         vk_reg_mount = int((vk_reg_date_time - vk_reg_years * 365.25) // 30.4167)
         vk_reg_days = int((vk_reg_date_time - vk_reg_years * 365.25 - vk_reg_mount * 30.4167) // 1)
-        people = vk.users.get(user_ids=input('Введите id:'),
+        people = vk.users.get(user_ids=event_func.message.from_id,
                               fields=['photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town',
                                       'has_photo',
                                       'photo_400_orig', 'photo_max', 'photo_max_orig', 'online', 'domain', 'has_mobile',
