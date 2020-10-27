@@ -49,18 +49,19 @@ def search(Anime_name):
             try:
                 Anime_name = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['title']  # Название+
                 Anime_type = animeshka.contents[0].contents[1].contents[2].contents[0].contents[0].next  # Тип аниме+
-                Anime_year = animeshka.contents[0].contents[1].contents[2].contents[2].contents[0].next  # год+
-                Anime_urls = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['href']  # Ссылка+
-                try:
-                    Anime_rait = animeshka.contents[0].contents[0].contents[2].contents[0].contents[1].next  # рейтинг+
-                except IndexError:
-                    Anime_rait = 'без рейтинга'
-                try:
-                    Anime_pict = animeshka.contents[0].contents[0].contents[1].contents[0].attrs['data-original']  # Картинка+
-                except KeyError:
-                    Anime_pict = 'https://upload.wikimedia.org/wikipedia/ru/0/04/%D0%9D%D0%95%D0%A2_%D0%94%D0%9E%D0%A1%D0%A2%D0%A3%D0%9F%D0%9D%D0%9E%D0%93%D0%9E_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.jpg'
+                if Anime_type != 'Спешл' or Anime_type != 'OVA':
+                    Anime_year = animeshka.contents[0].contents[1].contents[2].contents[2].contents[0].next  # год+
+                    Anime_urls = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['href']  # Ссылка+
+                    try:
+                        Anime_rait = animeshka.contents[0].contents[0].contents[2].contents[0].contents[1].next  # рейтинг+
+                    except IndexError:
+                        Anime_rait = 'без рейтинга'
+                    try:
+                        Anime_pict = animeshka.contents[0].contents[0].contents[1].contents[0].attrs['data-original']  # Картинка+
+                    except KeyError:
+                        Anime_pict = 'https://upload.wikimedia.org/wikipedia/ru/0/04/%D0%9D%D0%95%D0%A2_%D0%94%D0%9E%D0%A1%D0%A2%D0%A3%D0%9F%D0%9D%D0%9E%D0%93%D0%9E_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.jpg'
 
-                return Anime_name, Anime_pict, Anime_urls, Anime_type, Anime_year, Anime_rait
+                    return Anime_name, Anime_pict, Anime_urls, Anime_type, Anime_year, Anime_rait
             except IndexError as ERROR:
                 print(ERROR)
     except UnicodeEncodeError as ERROR:
@@ -74,11 +75,11 @@ class AnimeGo:
 
     def __init__(self, Anime_type):
         if Anime_type == 'ongoing':
-            self.url = 'https://animego.org/anime/filter/status-is-ongoing-or-released/apply?&page='
+            self.url = 'https://animego.org/anime/filter/status-is-ongoing/apply?&page='
             self.col = 3
             print('Инициализация класса AnimeGo ongoing')
         elif Anime_type == 'finish':
-            self.url = 'https://animego.org/anime/filter/status-is-released/apply?&direction=desc&page='
+            self.url = 'https://animego.org/anime/filter/type-is-tv-or-movie/status-is-released/apply?&direction=desc&page='
             self.col = 100
             print('Инициализация класса AnimeGo finish')
 
