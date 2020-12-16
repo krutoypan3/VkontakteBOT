@@ -115,15 +115,15 @@ try:
         last_name = people['last_name']
         pol = ''
         if str(people['sex']) == '1':
-            pol = '\nПол: ' + 'женский'
+            pol = '\n&#128698;Пол: ' + 'женский'
         elif str(people['sex']) == '2':
-            pol = '\nПол: ' + 'мужской'
+            pol = '\n&#128697;Пол: ' + 'мужской'
         try:
-            city = '\nГород: ' + str(people['city']['title'])
+            city = '\n&#127988;Город: ' + str(people['city']['title'])
         except KeyError:
             city = ''
         try:
-            country = '\nСтрана: ' + str(people['country']['title'])
+            country = '\n&#127884;Страна: ' + str(people['country']['title'])
         except KeyError:
             country = ''
         try:
@@ -135,23 +135,23 @@ try:
         except KeyError:
             photo_id = '1'
         try:
-            site = '\nСайт: ' + str(people['site'])
+            site = '\n&#127538;Сайт: ' + str(people['site'])
         except KeyError:
             site = ''
         try:
-            status = '\nСтатус: ' + str(people['status'])
+            status = '\n&#127545;Статус: ' + str(people['status'])
         except KeyError:
             status = ''
         try:
             verified = people['verified']
             if str(verified) == '0':
-                verified = '\nВерифицированная страница: ' + 'нет'
+                verified = '\n&#10060;Верифицированная страница: ' + 'нет'
             elif str(verified) == '1':
-                verified = '\nВерифицированная страница: ' + 'да'
+                verified = '\n&#10004;Верифицированная страница: ' + 'да'
         except KeyError:
             verified = ''
         try:
-            followers_count = '\nКоличество подписчиков: ' + str(people['followers_count'])
+            followers_count = '\n&#128106;Количество подписчиков: ' + str(people['followers_count'])
         except KeyError:
             followers_count = ''
         try:
@@ -159,33 +159,33 @@ try:
         except KeyError:
             occupation_type = 'Неизвестно'
         try:
-            occupation_name = '\nМесто работы: ' + str(people['occupation']['name'])
+            occupation_name = '\n&#128736;Место работы: ' + str(people['occupation']['name'])
         except KeyError:
             occupation_name = ''
         try:
-            university_name = '\nУниверситет: ' + str(people['university_name'])
+            university_name = '\n&#128213;Университет: ' + str(people['university_name'])
         except KeyError:
             university_name = ''
         try:
-            faculty_name = '\nФакультет: ' + str(people['faculty_name'])
+            faculty_name = '\n&#128215;Факультет: ' + str(people['faculty_name'])
         except KeyError:
             faculty_name = ''
         try:
-            personal_langs = '\nРазговаривает на: ' + str(people['personal']['langs'])
+            personal_langs = '\n&#128483;Разговаривает на: ' + str(people['personal']['langs'])
         except KeyError:
             personal_langs = ''
         try:
             schools = ''
             for i in range(len(people['schools'])):
-                schools = '\nШкола: ' + str(people['schools'][i]['name'])
+                schools = '\n&#128216;Школа: ' + str(people['schools'][i]['name'])
         except KeyError:
             schools = ''
         try:
-            about = '\nОбо мне: ' + str(people['about'])
+            about = '\n&#8505;Обо мне: ' + str(people['about'])
         except KeyError:
             about = ''
         try:
-            quotes = '\nДевиз по жизни: ' + str(people['quotes'])
+            quotes = '\n&#127378;Девиз по жизни: ' + str(people['quotes'])
         except KeyError:
             quotes = ''
 
@@ -238,11 +238,11 @@ try:
                 level_line += '-'
         level_line += '|'
 
-        ms_g = str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
+        ms_g = '&#128221;' + str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
                followers_count + occupation_name + university_name + faculty_name + personal_langs + schools + \
                about + quotes + '\nДень регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
                str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
-               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nУровень: ' + str(level) + ' ' + \
+               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\n&#128214;Уровень: ' + str(level) + ' ' + \
                str(level_line)
 
         vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
