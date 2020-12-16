@@ -185,6 +185,8 @@ try:
             quotes = people['quotes']
         except KeyError:
             quotes = 'Нет'
+
+        experience = exp_count(event_func.message.from_id)
         send_msg_new(event_func.message.peer_id, str(first_name) + ' ' + str(last_name) + '\nПол: ' + str(people['sex'])
                      + '\nСтрана: ' + str(country) + '\nГород: ' + str(city) + '\nФото: ' + photo_max +
                      '\nСайт: ' + str(site) + '\nСтатус: ' + str(status) + '\nВерифицированная страница: ' + str(
@@ -195,7 +197,7 @@ try:
                      '\nШкола: ' + str(schools) + '\nОбо мне: ' + str(about) + '\nДевиз по жизни: ' + str(
             quotes) + 'День регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: '
                      + str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет '
-                     + str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней')
+                     + str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nОпыта: ' + str(experience))
 
 
     def vk_register_date(from_id):
@@ -261,6 +263,16 @@ try:
             people = str(people[0]['first_name']) + ' ' + str(people[0]['last_name'])
             return people
         return 'НАЧАЛОСЬ ВОССТАНИЕ МАШИН'
+
+
+    def add_exp(*args):
+        m_count = int(db_module.sql_fetch_from_money(db_module.con, 'm_count', args[1]))
+        m_count += 1
+        db_module.sql_update_from_money_int(db_module.con, 'm_count', str(m_count), args[1])
+
+
+    def exp_count(people_id):
+        return db_module.sql_fetch_from_money(db_module.con, 'm_count', people_id)
 
 
     def Film_popular(*args):

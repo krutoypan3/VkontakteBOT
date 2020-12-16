@@ -23,7 +23,6 @@ if __name__ == '__main__':
         # Первичный запуск
         oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
-        last_messages = []  # массив с id пользователей, который написали сообщение в течении последних 2-х секунд
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
@@ -35,10 +34,6 @@ if __name__ == '__main__':
                                         if str(event.message["action"]["member_id"]) == '-' + str(func_module.group_id):
                                             func_module.send_msg_new(event.message.peer_id, 'Ку. Это типа приветствие;)')
 
-                                if event.message.from_id in last_messages:  # Если id в списке то завершаем функцию
-                                    return True
-                                else:
-                                    last_messages.append(event_func.message.from_id)  # Если нет в списке - добавляем
                                 # Занесение в переменные значений с события
                                 from_id = event_func.message.from_id  # Кто написал
                                 peer_id = event_func.message.peer_id  # Где написал
@@ -49,6 +44,7 @@ if __name__ == '__main__':
                                 else:
                                     our_from = ''
                                 # Логика ответов
+                                func_module.thread_start(func_module.add_exp, peer_id, from_id)
                                 # Игры --------------------------------------------------------------------------------
                                 if len(words) > 5:
                                     if words[0] + ' ' + words[1] + ' ' + words[2] == 'случайное число от' and \
@@ -111,11 +107,6 @@ if __name__ == '__main__':
                                         pass
                                     else:
                                         func_module.thread_start(func_module.main_keyboard_1, peer_id)
-                                time.sleep(1.5)
-                                try:
-                                    last_messages.remove(event_func.message.from_id)
-                                except AttributeError:
-                                    pass
 
                             func_module.thread_start(message_chek, event)
 
