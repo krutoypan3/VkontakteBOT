@@ -192,7 +192,7 @@ try:
         experience = exp_count(event_func.message.from_id)
         ms_g = str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
                followers_count + occupation_name + university_name + faculty_name + personal_langs + schools + \
-               about + quotes + 'День регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
+               about + quotes + '\nДень регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
                str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
                str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nОпыта: ' + str(experience)
 
