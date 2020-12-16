@@ -174,6 +174,7 @@ try:
         except KeyError:
             personal_langs = 'Неизвестно'
         try:
+            schools = ''
             for i in range(len(people['schools'])):
                 schools = people['schools'][i]['name']
         except KeyError:
@@ -188,17 +189,29 @@ try:
             quotes = 'Нет'
 
         experience = exp_count(event_func.message.from_id)
-        send_msg_new(event_func.message.peer_id, str(first_name) + ' ' + str(last_name) + '\nПол: ' + str(people['sex'])
-                     + '\nСтрана: ' + str(country) + '\nГород: ' + str(city) + '\nФото: ' + photo_max +
-                     '\nСайт: ' + str(site) + '\nСтатус: ' + str(status) + '\nВерифицированная страница: ' + str(
-            verified) + '\nКоличество подписчиков: ' + str(followers_count) +
-                     '\nМесто работы: ' + str(occupation_name) + '\nУниверситет: ' + str(
-            university_name) + '\nФакультет: ' + str(
-            faculty_name) + '\nРазговаривает на: ' + str(personal_langs) +
-                     '\nШкола: ' + str(schools) + '\nОбо мне: ' + str(about) + '\nДевиз по жизни: ' + str(
-            quotes) + 'День регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: '
-                     + str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет '
-                     + str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nОпыта: ' + str(experience))
+        ms_g = str(first_name) + ' ' + str(last_name) + \
+               '\nПол: ' + str(people['sex']) + \
+               '\nСтрана: ' + str(country) + \
+               '\nГород: ' + str(city) + \
+               '\nСайт: ' + str(site) + \
+               '\nСтатус: ' + str(status) + \
+               '\nВерифицированная страница: ' + str(verified) + \
+               '\nКоличество подписчиков: ' + str(followers_count) + \
+               '\nМесто работы: ' + str(occupation_name) + \
+               '\nУниверситет: ' + str(university_name) + \
+               '\nФакультет: ' + str(faculty_name) + \
+               '\nРазговаривает на: ' + str(personal_langs) + \
+               '\nШкола: ' + str(schools) + \
+               '\nОбо мне: ' + str(about) + \
+               '\nДевиз по жизни: ' + str(quotes) + \
+               'День регистрации: ' + str(vk_reg_data[0]) + \
+               '\nВремя регистрации: ' + str(vk_reg_data[1]) + \
+               '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + str(vk_reg_mount) + ' месяц ' + \
+               str(vk_reg_days) + ' дней' + \
+               '\nОпыта: ' + str(experience)
+
+        vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
+                         attachment='photo' + event_func.message.from_id + '_' + photo_id)
 
 
     def vk_register_date(from_id):
