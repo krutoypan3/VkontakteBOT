@@ -209,6 +209,7 @@ try:
                '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + str(vk_reg_mount) + ' месяц ' + \
                str(vk_reg_days) + ' дней' + \
                '\nОпыта: ' + str(experience)
+        print(event_func.message.from_id, photo_id)
 
         vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
                          attachment='photo' + str(event_func.message.from_id) + '_' + str(photo_id))
