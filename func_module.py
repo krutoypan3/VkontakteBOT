@@ -240,8 +240,8 @@ try:
 
         ms_g = '&#128221;' + str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
                followers_count + occupation_name + university_name + faculty_name + personal_langs + schools + \
-               about + quotes + '\nДень регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
-               str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
+               about + quotes + '\n&#8987;День регистрации: ' + str(vk_reg_data[0]) + '\n&#9203;Время регистрации: ' + \
+               str(vk_reg_data[1]) + '\n&#128342;Времени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
                str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\n&#128214;Уровень: ' + str(level) + ' ' + \
                str(level_line)
 
