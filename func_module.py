@@ -211,7 +211,7 @@ try:
                '\nОпыта: ' + str(experience)
 
         vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
-                         attachment='photo' + event_func.message.from_id + '_' + photo_id)
+                         attachment='photo' + str(event_func.message.from_id) + '_' + str(photo_id))
 
 
     def vk_register_date(from_id):
