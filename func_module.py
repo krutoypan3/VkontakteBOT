@@ -113,102 +113,88 @@ try:
                                       'can_be_invited_group'])[0]
         first_name = people['first_name']
         last_name = people['last_name']
+        pol = ''
         if str(people['sex']) == '1':
-            people['sex'] = 'женский'
+            pol = '\nПол: ' + 'женский'
         elif str(people['sex']) == '2':
-            people['sex'] = 'мужской'
+            pol = '\nПол: ' + 'мужской'
         try:
-            city = people['city']['title']
+            city = '\nГород: ' + str(people['city']['title'])
         except KeyError:
-            city = 'Неизвестно'
+            city = ''
         try:
-            country = people['country']['title']
+            country = '\nСтрана: ' + str(people['country']['title'])
         except KeyError:
-            country = 'Неизвестно'
+            country = ''
         try:
             photo_max = people['photo_max']
         except KeyError:
-            photo_max = 'Неизвестно'
+            photo_max = ''
         try:
             photo_id = people['photo_id']
         except KeyError:
             photo_id = '1'
         try:
-            site = people['site']
+            site = '\nСайт: ' + str(people['site'])
         except KeyError:
-            site = 'Нет'
+            site = ''
         try:
-            status = people['status']
+            status = '\nСтатус: ' + str(people['status'])
         except KeyError:
-            status = 'Нет'
+            status = ''
         try:
             verified = people['verified']
             if str(verified) == '0':
-                verified = 'нет'
+                verified = '\nВерифицированная страница: ' + 'нет'
             elif str(verified) == '1':
-                verified = 'да'
+                verified = '\nВерифицированная страница: ' + 'да'
         except KeyError:
-            verified = 'Неизвестно'
+            verified = ''
         try:
-            followers_count = people['followers_count']
+            followers_count = '\nКоличество подписчиков: ' + str(people['followers_count'])
         except KeyError:
-            followers_count = 'Неизвестно'
+            followers_count = ''
         try:
             occupation_type = people['occupation']['type']
         except KeyError:
             occupation_type = 'Неизвестно'
         try:
-            occupation_name = people['occupation']['name']
+            occupation_name = '\nМесто работы: ' + str(people['occupation']['name'])
         except KeyError:
-            occupation_name = 'Неизвестно'
+            occupation_name = ''
         try:
-            university_name = people['university_name']
+            university_name = '\nУниверситет: ' + str(people['university_name'])
         except KeyError:
-            university_name = 'Неизвестно'
+            university_name = ''
         try:
-            faculty_name = people['faculty_name']
+            faculty_name = '\nФакультет: ' + str(people['faculty_name'])
         except KeyError:
-            faculty_name = 'Неизвестно'
+            faculty_name = ''
         try:
-            personal_langs = people['personal']['langs']
+            personal_langs = '\nРазговаривает на: ' + str(people['personal']['langs'])
         except KeyError:
-            personal_langs = 'Неизвестно'
+            personal_langs = ''
         try:
             schools = ''
             for i in range(len(people['schools'])):
-                schools = people['schools'][i]['name']
+                schools = '\nШкола: ' + str(people['schools'][i]['name'])
         except KeyError:
-            schools = 'Неизвестно'
+            schools = ''
         try:
-            about = people['about']
+            about = '\nОбо мне: ' + str(people['about'])
         except KeyError:
-            about = 'Нет'
+            about = ''
         try:
-            quotes = people['quotes']
+            quotes = '\nДевиз по жизни: ' + str(people['quotes'])
         except KeyError:
-            quotes = 'Нет'
+            quotes = ''
 
         experience = exp_count(event_func.message.from_id)
-        ms_g = str(first_name) + ' ' + str(last_name) + \
-               '\nПол: ' + str(people['sex']) + \
-               '\nСтрана: ' + str(country) + \
-               '\nГород: ' + str(city) + \
-               '\nСайт: ' + str(site) + \
-               '\nСтатус: ' + str(status) + \
-               '\nВерифицированная страница: ' + str(verified) + \
-               '\nКоличество подписчиков: ' + str(followers_count) + \
-               '\nМесто работы: ' + str(occupation_name) + \
-               '\nУниверситет: ' + str(university_name) + \
-               '\nФакультет: ' + str(faculty_name) + \
-               '\nРазговаривает на: ' + str(personal_langs) + \
-               '\nШкола: ' + str(schools) + \
-               '\nОбо мне: ' + str(about) + \
-               '\nДевиз по жизни: ' + str(quotes) + \
-               'День регистрации: ' + str(vk_reg_data[0]) + \
-               '\nВремя регистрации: ' + str(vk_reg_data[1]) + \
-               '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + str(vk_reg_mount) + ' месяц ' + \
-               str(vk_reg_days) + ' дней' + \
-               '\nОпыта: ' + str(experience)
+        ms_g = str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
+               followers_count + occupation_name + university_name + faculty_name + personal_langs + schools + \
+               about + quotes + 'День регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
+               str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
+               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nОпыта: ' + str(experience)
 
         vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
                          attachment='photo' + str(photo_id))
