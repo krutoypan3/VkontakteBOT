@@ -190,34 +190,60 @@ try:
             quotes = ''
 
         experience = exp_count(event_func.message.from_id)
-        level = '0'
+        level = 0
+        level_porog = 0
         if experience < 100:
-            level = '1 [' + str(experience) + '/' + '100]'
+            level_porog = 100
+            level = 1
         elif experience < 500:
-            level = '2 [' + str(experience) + '/' + '500]'
+            level_porog = 500
+            level = 2
         elif experience < 1500:
-            level = '3 [' + str(experience) + '/' + '1500]'
+            level_porog = 1500
+            level = 3
         elif experience < 5000:
-            level = '5 [' + str(experience) + '/' + '5000]'
+            level_porog = 5000
+            level = 4
         elif experience < 10000:
-            level = '6 [' + str(experience) + '/' + '10000]'
+            level_porog = 10000
+            level = 5
         elif experience < 25000:
-            level = '7 [' + str(experience) + '/' + '25000]'
+            level_porog = 25000
+            level = 6
         elif experience < 75000:
-            level = '8 [' + str(experience) + '/' + '75000]'
+            level_porog = 75000
+            level = 7
         elif experience < 300000:
-            level = '9 [' + str(experience) + '/' + '300000]'
+            level_porog = 300000
+            level = 8
         elif experience < 1000000:
-            level = '10 [' + str(experience) + '/' + '1000000]'
+            level_porog = 1000000
+            level = 9
         elif experience < 5000000:
-            level = '11 [' + str(experience) + '/' + '5000000]'
+            level_porog = 5000000
+            level = 10
         elif experience >= 5000000:
-            level = '12 [' + str(experience) + '/' + '999999999]'
+            level_porog = 999999999
+            level = 11
+
+        level = str(level) + ' [' + str(experience) + '/' + str(level_porog) + ' EXP]'
+        level_persent = round((experience / level_porog) * 10)
+        level_line = '|'
+        for persent in range(10):
+            if level_persent > persent:
+                level_line += '='
+            elif level_persent == persent:
+                level_line += '>'
+            else:
+                level_line += '-'
+        level_line += '|'
+
         ms_g = str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
                followers_count + occupation_name + university_name + faculty_name + personal_langs + schools + \
                about + quotes + '\nДень регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
                str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
-               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nУровень: ' + str(level)
+               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nУровень: ' + str(level) + ' ' + \
+               str(level_line)
 
         vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
                          attachment='photo' + str(photo_id))
