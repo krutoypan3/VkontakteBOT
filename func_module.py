@@ -266,7 +266,7 @@ try:
 
 
     def add_exp(*args):
-        m_count = int(db_module.sql_fetch_from_money(db_module.con, 'm_count', args[1]))
+        m_count = int(db_module.sql_fetch_from_money(db_module.con, 'm_count', args[1])[0])
         m_count += 1
         db_module.sql_update_from_money_int(db_module.con, 'm_count', str(m_count), args[1])
 
