@@ -190,11 +190,34 @@ try:
             quotes = ''
 
         experience = exp_count(event_func.message.from_id)
+        level = '0'
+        if experience < 100:
+            level = '1 [' + str(experience) + '/' + '100]'
+        elif experience < 500:
+            level = '2 [' + str(experience) + '/' + '500]'
+        elif experience < 1500:
+            level = '3 [' + str(experience) + '/' + '1500]'
+        elif experience < 5000:
+            level = '5 [' + str(experience) + '/' + '5000]'
+        elif experience < 10000:
+            level = '6 [' + str(experience) + '/' + '10000]'
+        elif experience < 25000:
+            level = '7 [' + str(experience) + '/' + '25000]'
+        elif experience < 75000:
+            level = '8 [' + str(experience) + '/' + '75000]'
+        elif experience < 300000:
+            level = '9 [' + str(experience) + '/' + '300000]'
+        elif experience < 1000000:
+            level = '10 [' + str(experience) + '/' + '1000000]'
+        elif experience < 5000000:
+            level = '11 [' + str(experience) + '/' + '5000000]'
+        elif experience >= 5000000:
+            level = '12 [' + str(experience) + '/' + '999999999]'
         ms_g = str(first_name) + ' ' + str(last_name) + pol + country + city + site + status + verified + \
                followers_count + occupation_name + university_name + faculty_name + personal_langs + schools + \
                about + quotes + '\nДень регистрации: ' + str(vk_reg_data[0]) + '\nВремя регистрации: ' + \
                str(vk_reg_data[1]) + '\nВремени со дня регистрации: ' + str(vk_reg_years) + ' лет ' + \
-               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nОпыта: ' + str(experience)
+               str(vk_reg_mount) + ' месяц ' + str(vk_reg_days) + ' дней' + '\nУровень: ' + str(level)
 
         vk.messages.send(peer_id=event_func.message.peer_id, random_id=0, message=ms_g,
                          attachment='photo' + str(photo_id))
