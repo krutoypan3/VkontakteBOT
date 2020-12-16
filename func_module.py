@@ -174,7 +174,8 @@ try:
         except KeyError:
             personal_langs = 'Неизвестно'
         try:
-            schools = people['schools']['name']
+            for i in range(len(people['schools'])):
+                schools = people['schools'][i]['name']
         except KeyError:
             schools = 'Неизвестно'
         try:
