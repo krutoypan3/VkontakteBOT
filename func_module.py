@@ -607,19 +607,20 @@ try:
     def clan_create(*args):
         my_peer = args[0]
         my_from = args[1]
-        clan_name = args[4].message.text.split()
+        clan_name = args[4].message.text.split()[2]
+        clan_name = clan_name.replace("'", "&#145;")
         if len(clan_name) >= 3:
             cln_name = str(db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0])
             if (cln_name == 'NULL') or (cln_name is None) or (cln_name == 'None'):
-                if db_module.sql_fetch_clan_info(db_module.con, 'clan_name', clan_name[2]) == 'NULL':
+                if db_module.sql_fetch_clan_info(db_module.con, 'clan_name', clan_name) == 'NULL':
                     if int(db_module.sql_fetch_from_money(db_module.con, 'money', my_from)[0][0]) >= 5000:
-                        db_module.sql_update_from_money_text(db_module.con, 'clan_name', clan_name[2], str(my_from))
+                        db_module.sql_update_from_money_text(db_module.con, 'clan_name', clan_name, str(my_from))
                         db_module.sql_update_from_money_int(db_module.con, 'clan_rank', '5', str(my_from))
                         add_balans(my_from, '-5000')
-                        entities = str(clan_name[2]), '0', str(my_from)
+                        entities = str(clan_name), '0', str(my_from)
                         db_module.sql_insert_clan_info(db_module.con, entities)
-                        db_module.sql_update_clan_info(db_module.con, 'clan_admin', my_from, clan_name[2])
-                        send_msg_new(my_peer, 'Клан ' + clan_name[2] + ' успешно создан!')
+                        db_module.sql_update_clan_info(db_module.con, 'clan_admin', my_from, clan_name)
+                        send_msg_new(my_peer, 'Клан ' + clan_name + ' успешно создан!')
                     else:
                         send_msg_new(my_peer, people_info(my_from) + ', у вас недостаточно монет!')
                 else:
