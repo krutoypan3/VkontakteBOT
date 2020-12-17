@@ -608,7 +608,7 @@ try:
         my_peer = args[0]
         my_from = args[1]
         clan_name = args[4].message.text.split()[2]
-        clan_name = clan_name.replace("'", "&#145;")
+        clan_name = clan_name.replace("'", "&#039;")
         if len(clan_name) >= 3:
             cln_name = str(db_module.sql_fetch_from_money(db_module.con, 'clan_name', my_from)[0][0])
             if (cln_name == 'NULL') or (cln_name is None) or (cln_name == 'None'):
