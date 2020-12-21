@@ -83,6 +83,8 @@ class AnimeGo:
             print('Инициализация класса AnimeGo finish')
 
     def ongoing_search_series(self):  # Поиск новых серий онгоингов
+        conn = sqlite3.connect('AnimeGo.db')  # Подключение к бд
+        c = conn.cursor()  # Курсор бд
         new = []
         ongoings = self.random_anime()
         for i in range(len(ongoings)):
@@ -168,8 +170,6 @@ class AnimeGo:
         return Anime
 
 
-conn = sqlite3.connect('AnimeGo.db')  # Подключение к бд
-c = conn.cursor()  # Курсор бд
 
 # rec = AnimeGo('ongoing')
 # new_series = rec.ongoing_search_series()
