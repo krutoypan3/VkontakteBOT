@@ -94,9 +94,8 @@ try:
             people = db_module.sql_fetch_from_all_id(db_module.con, 'anime_ongoings', '0')
             for anime in New_Anime:
                 for k in range(len(people)):
-                    if people[k] is not None or people[k] == '0':
-                        if anime in people[k][1]:
-                            send_msg_new(people[k][0], 'Вышла новая серия аниме: ' + anime)
+                    if anime in people[k][1].split(':|:'):
+                        send_msg_new(people[k][0], 'Вышла новая серия аниме: ' + anime)
             time.sleep(60)
 
     def anime_ongoings_list(*args):
@@ -113,7 +112,7 @@ try:
             if int(args[2][1]) < len(AnimeOngoing):
                 anime = AnimeOngoing[int(args[2][1])][0].replace("'", "")
                 print(anime)
-                anime_list_people = str(db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0]).replace("'", "")
+                anime_list_people = db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0][0]
                 print(anime_list_people)
                 if anime not in anime_list_people.split(":|:"):
                     anime_list_people += ':|:' + anime
@@ -123,7 +122,8 @@ try:
                     send_msg_new(from_id, 'Вы уже отслеживаете данное аниме')
             else:
                 send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
-        send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
+        else:
+            send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
 
     def info_for_user(*args):
         event_func = args[4]
