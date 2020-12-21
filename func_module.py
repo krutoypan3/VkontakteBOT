@@ -105,6 +105,15 @@ try:
             mess += str(i) + ') ' + AnimeOngoing[i][0] + '\n'
         send_msg_new(peer_id, mess)
 
+    def anime_ongoing_pesonal_list(*args):
+        peer_id = args[0]
+        from_id = args[1]
+        mess = '***Ваш календарь***\n'
+        personal_anime = db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0][0].split(":|:")
+        for i in range(len(personal_anime)):
+            mess += str(i) + ') ' + personal_anime[i] + '\n'
+        send_msg_new(peer_id, mess)
+
     def add_anime_ongoing_listing(*args):
         peer_id = args[0]
         from_id = args[1]
