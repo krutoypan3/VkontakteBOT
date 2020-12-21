@@ -126,7 +126,7 @@ try:
                     db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
                     send_msg_new(from_id, 'Аниме успешно добавлено в ваш календарь:\n' + anime)
                 else:
-                    anime_list_people -= (':|:' + anime)
+                    anime_list_people.replace(':|:' + anime, '')
                     db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
                     send_msg_new(from_id, 'Аниме успешно удалено из вашего календаря:\n' + anime)
 
