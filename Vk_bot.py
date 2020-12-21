@@ -21,6 +21,7 @@ if __name__ == '__main__':
     # Основной цикл программы
     try:
         # Первичный запуск
+        func_module.thread_start(func_module.listing_new_anime_series)
         oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
         def main():

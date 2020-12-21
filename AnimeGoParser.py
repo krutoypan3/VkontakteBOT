@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import sqlite3
 
 headers = {'authoriti': 'animego.org',
            'method': 'GET',
@@ -21,7 +22,7 @@ headers = {'authoriti': 'animego.org',
            'Cache-Control': 'max-age=0'}
 
 
-def series(Anime_urls):
+def series(Anime_urls):  # Определяет кол-во серий в аниме
     try:
         response2 = requests.request("GET", Anime_urls, headers=headers)
         soup2 = BeautifulSoup(response2.text, "lxml")
@@ -34,7 +35,7 @@ def series(Anime_urls):
         return 'неизвестно'
 
 
-def search(Anime_name):
+def search(Anime_name):  # Поиск аниме по названию
     Anime_name_q = ''
     Anime_name = Anime_name.split()
     for i in range(len(Anime_name)):
@@ -49,19 +50,18 @@ def search(Anime_name):
             try:
                 Anime_name = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['title']  # Название+
                 Anime_type = animeshka.contents[0].contents[1].contents[2].contents[0].contents[0].next  # Тип аниме+
-                if Anime_type != 'Спешл' or Anime_type != 'OVA':
-                    Anime_year = animeshka.contents[0].contents[1].contents[2].contents[2].contents[0].next  # год+
-                    Anime_urls = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['href']  # Ссылка+
-                    try:
-                        Anime_rait = animeshka.contents[0].contents[0].contents[2].contents[0].contents[1].next  # рейтинг+
-                    except IndexError:
-                        Anime_rait = 'без рейтинга'
-                    try:
-                        Anime_pict = animeshka.contents[0].contents[0].contents[1].contents[0].attrs['data-original']  # Картинка+
-                    except KeyError:
-                        Anime_pict = 'https://upload.wikimedia.org/wikipedia/ru/0/04/%D0%9D%D0%95%D0%A2_%D0%94%D0%9E%D0%A1%D0%A2%D0%A3%D0%9F%D0%9D%D0%9E%D0%93%D0%9E_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.jpg'
+                Anime_year = animeshka.contents[0].contents[1].contents[2].contents[2].contents[0].next  # год+
+                Anime_urls = animeshka.contents[0].contents[1].contents[1].contents[0].attrs['href']  # Ссылка+
+                try:
+                    Anime_rait = animeshka.contents[0].contents[0].contents[2].contents[0].contents[1].next  # рейтинг+
+                except IndexError:
+                    Anime_rait = 'без рейтинга'
+                try:
+                    Anime_pict = animeshka.contents[0].contents[0].contents[1].contents[0].attrs['data-original']  # Картинка+
+                except KeyError:
+                    Anime_pict = 'https://upload.wikimedia.org/wikipedia/ru/0/04/%D0%9D%D0%95%D0%A2_%D0%94%D0%9E%D0%A1%D0%A2%D0%A3%D0%9F%D0%9D%D0%9E%D0%93%D0%9E_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.jpg'
 
-                    return Anime_name, Anime_pict, Anime_urls, Anime_type, Anime_year, Anime_rait
+                return Anime_name, Anime_pict, Anime_urls, Anime_type, Anime_year, Anime_rait
             except IndexError as ERROR:
                 print(ERROR)
     except UnicodeEncodeError as ERROR:
@@ -70,18 +70,43 @@ def search(Anime_name):
 
 search('Akame ga kill')
 
-class AnimeGo:
-    print('Создан экземпляр класса AnimeGo')
 
+class AnimeGo:
     def __init__(self, Anime_type):
         if Anime_type == 'ongoing':
-            self.url = 'https://animego.org/anime/filter/status-is-ongoing/apply?&page='
+            self.url = 'https://animego.org/anime/filter/status-is-ongoing-or-released/apply?&page='
             self.col = 3
             print('Инициализация класса AnimeGo ongoing')
         elif Anime_type == 'finish':
-            self.url = 'https://animego.org/anime/filter/type-is-tv-or-movie/status-is-released/apply?&direction=desc&page='
+            self.url = 'https://animego.org/anime/filter/status-is-released/apply?&direction=desc&page='
             self.col = 100
             print('Инициализация класса AnimeGo finish')
+
+    def ongoing_search_series(self):  # Поиск новых серий онгоингов
+        new = []
+        ongoings = self.random_anime()
+        for i in range(len(ongoings)):
+            series_ong = series(ongoings[i][2])
+            if 'ожидается выход' in series_ong:
+                x = (str(ongoings[i][0]))
+                x.replace("'", "")
+                db_cur_ongoings = c.execute("SELECT * FROM ongoings WHERE Name = '" + str(x) + "'").fetchone()
+                if db_cur_ongoings is None:
+                    c.execute("INSERT INTO ongoings VALUES (?,?)", (str(ongoings[i][0]), str(series_ong)))
+                    conn.commit()
+                    print('Аниме ' + str(ongoings[i][0]) + ' добавлено в базу данных!')
+                elif db_cur_ongoings[1] != str(series_ong):
+                    c.execute("UPDATE ongoings SET series = '" + str(series_ong) + "' WHERE Name = "
+                              + str(ongoings[i][0]))
+                    conn.commit()
+                    new.append(str(ongoings[i][0]))
+                    print('Вышла новая серия ' + str(ongoings[i][0]))
+            elif c.execute("SELECT * FROM ongoings WHERE Name = '" + str((str(ongoings[i][0])).replace("'", "")) + "'").fetchone() is not None:
+                c.execute('DELETE FROM ongoings WHERE Name = ' + str((str(ongoings[i][0]))))
+                conn.commit()
+                new.append(str(ongoings[i][0]))
+                print('Вышла последняя серия ' + str(ongoings[i][0]))
+        return new
 
     def random_anime(self):
         Anime = []
@@ -142,16 +167,28 @@ class AnimeGo:
         print('Количество аниме в базе - ' + str(len(Anime)))
         return Anime
 
+
+conn = sqlite3.connect('AnimeGo.db')  # Подключение к бд
+c = conn.cursor()  # Курсор бд
+
+# rec = AnimeGo('ongoing')
+# new_series = rec.ongoing_search_series()
+
+# Create table
+# c.execute('''CREATE TABLE ongoings
+#              (Name text, series text)''')
+
 # rec = AnimeGo('finish')
-# print(len(rec.random_anime()))
+# # print(len(rec.random_anime()))
 # ric = AnimeGo('ongoing')
-# print(len(ric.random_anime()))
+# print((ric.random_anime()[1][0]))
+# print((series(ric.random_anime()[1][2])))
 # 0 0 - Название
 # 0 1 - Картинка
 # 0 2 - Ссылка
 # 0 3 - Описание
 # 0 4 - Тип аниме
-# 0 4 - Год выхода
-# 0 5 - Жанр аниме
-# 0 6 - Рейтинг аниме
+# 0 5 - Год выхода
+# 0 6 - Жанр аниме
+# 0 7 - Рейтинг аниме
 # 0 7 - Кол-во серий

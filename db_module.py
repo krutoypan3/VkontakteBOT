@@ -69,8 +69,8 @@ try:
     def sql_insert_from_money(conc2, entities):
         cursorObj3 = conc2.cursor()
         cursorObj3.execute(
-            'INSERT INTO from_money(from_id, money, m_time, clan_name, first_name, last_name, clan_rank, m_count) '
-            'VALUES(%s, %s, %s, %s, %s, %s, %s, %s)',
+            'INSERT INTO from_money(from_id, money, m_time, clan_name, first_name, last_name, clan_rank, m_count, anime_ongoings) '
+            'VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)',
             entities)
         conc2.commit()
 
@@ -180,7 +180,7 @@ try:
             if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
                 from func_module import vk
                 entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), \
-                           str(vk.users.get(user_ids=from_id)[0]['last_name']), '0', '0'
+                           str(vk.users.get(user_ids=from_id)[0]['last_name']), '0', '0', '0'
                 sql_insert_from_money(conc, entities)
                 rows = sql_fetch_from_money(conc, what_return, from_id)
             return rows
@@ -208,6 +208,12 @@ try:
         rows = cursorObj1.fetchall()
         return rows
 
+    # Получение параметров из таблицы from_money
+    def sql_fetch_from_all_id(conc, what_return, peer_id_val):
+        cursorObj1 = conc.cursor()
+        cursorObj1.execute('SELECT from_id AND ' + str(what_return) + ' FROM from_money')
+        rows = cursorObj1.fetchall()
+        return rows
 
     # Получение параметров из таблицы clan_info
     def sql_fetch_clan_all(conc, what_return):

@@ -88,6 +88,40 @@ print('Импортируем фото из альбомов...')
 zapros_ft_vd()
 
 try:
+    def listing_new_anime_series():
+        while True:
+            New_Anime = AnimeGoParser.AnimeGo('ongoing').ongoing_search_series()
+            people = db_module.sql_fetch_from_all_id(db_module.con, 'anime_ongoings', '0')
+            for anime in New_Anime:
+                for k in range(len(people)):
+                    if anime in people[k][1]:
+                        send_msg_new(people[k][0], 'Вышла новая серия аниме: ' + anime)
+            time.sleep(60)
+
+    def anime_ongoings_list(*args):
+        peer_id = args[0]
+        mess = '***Список онгоингов***:\n'
+        for i in range(len(AnimeOngoing)):
+            mess += str(i) + ') ' + AnimeOngoing[i][0] + '\n'
+        send_msg_new(peer_id, mess)
+
+    def add_anime_ongoing_listing(*args):
+        peer_id = args[0]
+        from_id = args[1]
+        if args[2][1].isdigit():
+            if int(args[2][1]) < len(AnimeOngoing):
+                anime = AnimeOngoing[args[2]][0]
+                anime_list_people = db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)
+                if anime not in anime_list_people:
+                    anime_list_people.append(anime)
+                    db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
+                    send_msg_new(from_id, 'Аниме успешно добавлено в ваш календарь')
+                else:
+                    send_msg_new(from_id, 'Вы уже отслеживаете данное аниме')
+            else:
+                send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
+        send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
+
     def info_for_user(*args):
         event_func = args[4]
         vk_reg_data = vk_register_date(event_func.message.from_id)
