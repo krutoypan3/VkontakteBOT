@@ -94,7 +94,7 @@ try:
             people = db_module.sql_fetch_from_all_id(db_module.con, 'anime_ongoings', '0')
             for anime in New_Anime:
                 for k in range(len(people)):
-                    if people[k] is not None:
+                    if people[k] is not None or people[k] == '0':
                         if anime in people[k][1]:
                             send_msg_new(people[k][0], 'Вышла новая серия аниме: ' + anime)
             time.sleep(60)
