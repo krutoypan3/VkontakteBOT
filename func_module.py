@@ -112,7 +112,7 @@ try:
             if int(args[2][1]) < len(AnimeOngoing):
                 anime = AnimeOngoing[int(args[2][1])][0].replace("'", "")
                 print(anime)
-                anime_list_people = str(db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0])
+                anime_list_people = str(db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0]).replace("'", "")
                 print(anime_list_people)
                 if anime not in anime_list_people.split(":|:"):
                     anime_list_people += ':|:' + anime
