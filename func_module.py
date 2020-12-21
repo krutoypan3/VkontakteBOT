@@ -112,7 +112,7 @@ try:
         mess = '***Ваш календарь***\n'
         personal_anime = db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0][0].split(":|:")
         for i in range(len(personal_anime)):
-            if i != 1:
+            if i != 0:
                 mess += str(i) + ') ' + personal_anime[i] + '\n'
         send_msg_new(peer_id, mess)
 
