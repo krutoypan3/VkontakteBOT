@@ -103,7 +103,8 @@ try:
         mess = '***Список онгоингов***:\n'
         for i in range(len(AnimeOngoing)):
             mess += str(i) + ') ' + AnimeOngoing[i][0] + '\n'
-        send_msg_new(peer_id, mess)
+        send_msg_new(peer_id, mess + '\nЧтобы бот присылал вам информацию о новых сериях напишите "смотрю (номер '
+                                     'онгоинга)", например: "смотрю 12", тоже самое чтобы отписаться от информирования')
 
     def anime_ongoing_pesonal_list(*args):
         peer_id = args[0]
