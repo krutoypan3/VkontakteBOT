@@ -115,7 +115,7 @@ try:
                 anime_list_people = [db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)[0]]
                 print(anime_list_people)
                 if anime not in anime_list_people:
-                    anime_list_people.append([anime])
+                    anime_list_people.append(anime)
                     db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
                     send_msg_new(from_id, 'Аниме успешно добавлено в ваш календарь')
                 else:
