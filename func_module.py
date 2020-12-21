@@ -112,7 +112,10 @@ try:
             if int(args[2][1]) < len(AnimeOngoing):
                 anime = AnimeOngoing[int(args[2][1])][0]
                 print(anime)
-                anime_list_people = [str(db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id))]
+                anime_list_people = (db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id))
+                print(anime_list_people)
+                if anime_list_people is None:
+                    anime_list_people = []
                 if anime not in anime_list_people:
                     anime_list_people.append([anime])
                     db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
