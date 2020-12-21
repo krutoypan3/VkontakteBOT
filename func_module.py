@@ -110,7 +110,8 @@ try:
         from_id = args[1]
         if args[2][1].isdigit():
             if int(args[2][1]) < len(AnimeOngoing):
-                anime = AnimeOngoing[int(args[2][1])][0].replace("'", '')
+                anime = AnimeOngoing[int(args[2][1])][0]
+                print(anime)
                 anime_list_people = db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', from_id)
                 if anime not in anime_list_people:
                     anime_list_people += anime
