@@ -211,7 +211,7 @@ try:
     # Получение параметров из таблицы from_money
     def sql_fetch_from_all_id(conc, what_return, peer_id_val):
         cursorObj1 = conc.cursor()
-        cursorObj1.execute('SELECT from_id AND ' + str(what_return) + ' FROM from_money')
+        cursorObj1.execute('SELECT from_id, ' + str(what_return) + ' FROM from_money')
         rows = cursorObj1.fetchall()
         return rows
 
