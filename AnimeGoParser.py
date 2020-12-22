@@ -102,11 +102,13 @@ class AnimeGo:
                               + str(ongoings[i][0]) + "'")
                     conn.commit()
                     new.append(str(ongoings[i][0]))
+                    print(series_ong)
                     print('Вышла новая серия ' + str(ongoings[i][0]))
             elif c.execute("SELECT * FROM ongoings WHERE Name = '" + str((str(ongoings[i][0])).replace("'", "")) + "'").fetchone() is not None:
                 c.execute("DELETE FROM ongoings WHERE Name = '" + str(ongoings[i][0]) + "'")
                 conn.commit()
                 new.append(str(ongoings[i][0]))
+                print(series_ong)
                 print('Вышла последняя серия ' + str(ongoings[i][0]))
         return new
 
