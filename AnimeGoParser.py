@@ -98,8 +98,8 @@ class AnimeGo:
                     conn.commit()
                     print('Аниме ' + str(ongoings[i][0]) + ' добавлено в базу данных!')
                 elif db_cur_ongoings[1] != str(series_ong):
-                    c.execute("UPDATE ongoings SET series = '" + str(series_ong) + "' WHERE Name = "
-                              + str(ongoings[i][0]))
+                    c.execute("UPDATE ongoings SET series = '" + str(series_ong) + "' WHERE Name = '"
+                              + str(ongoings[i][0]) + "'")
                     conn.commit()
                     new.append(str(ongoings[i][0]))
                     print('Вышла новая серия ' + str(ongoings[i][0]))
