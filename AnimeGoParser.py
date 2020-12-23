@@ -27,10 +27,13 @@ def series(Anime_urls):  # Определяет кол-во серий в ани
         response2 = requests.request("GET", Anime_urls, headers=headers)
         soup2 = BeautifulSoup(response2.text, "lxml")
         anima2 = soup2.find_all('div', {'class': 'anime-info'})  # Получаем все таблицы с вопросами
-        Anime_seri = anima2[0].contents[0].contents[3].next
-        if Anime_seri == 'Тип':
-            Anime_seri = Anime_seri = anima2[0].contents[0].contents[1].contents[1].next
-        return str(Anime_seri)
+        Anime_seri = ''
+        for i in range(len(anima2[0].contents[0].contents)):
+            Anime_seri = anima2[0].contents[0].contents[i].next
+            if Anime_seri == 'Эпизоды':
+                Anime_seri = anima2[0].contents[0].contents[i+1].next
+                return Anime_seri
+        return 'неизвестно'
     except Exception:
         return 'неизвестно'
 
