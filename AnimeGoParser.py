@@ -92,7 +92,7 @@ class AnimeGo:
         ongoings = self.random_anime()
         for i in range(len(ongoings)):
             series_ong = series(ongoings[i][2])
-            if 'ожидается выход' in series_ong:
+            if '/' in series_ong:
                 x = (str(ongoings[i][0]))
                 x.replace("'", "")
                 db_cur_ongoings = c.execute("SELECT * FROM ongoings WHERE Name = '" + str(x) + "'").fetchone()
