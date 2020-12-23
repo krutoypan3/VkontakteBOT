@@ -94,8 +94,17 @@ try:
             people = db_module.sql_fetch_from_all_id(db_module.con, 'anime_ongoings', '0')
             for anime in New_Anime:
                 for k in range(len(people)):
-                    if anime in people[k][1].split(':|:'):
-                        send_msg_new(people[k][0], 'Вышла новая серия аниме: ' + anime)
+                    if anime[0] in people[k][1].split(':|:'):
+                        send_msg_new(people[k][0], 'Вышла новая серия аниме: ' + anime[0])
+                        if not anime[1]:
+                            anime = anime[0].replace("'", "")
+                            anime_list_people = \
+                            db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', people[k][0])[0][0]
+                            animesh = ':|:' + anime
+                            anime_list_people = anime_list_people.replace(animesh, '')
+                            db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people,
+                                                                 people[k][0])
+                            send_msg_new(people[k][0], 'Это была последняя серия - удаляю аниме из вашего календаря:\n' + anime)
             time.sleep(60)
 
     def anime_ongoings_list(*args):
