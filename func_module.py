@@ -1597,6 +1597,20 @@ try:
             f_toggle = not f_toggle
             time.sleep(2)
 
+    # ТЕСТОВОЕ ИЗМЕНЕНИЕ СООБЩЕНИЯ
+    def ahegao_edit_message(*args):
+        my_peer = args[0]
+        f_toggle = False
+        send_msg_new(my_peer, 'Все для вас, мои любимые!')
+        for i in range(10):
+            photo_id = photo_aheg[random.randint(0, len(photo_aheg) - 1)]
+            vk.messages.edit(
+                peer_id=int(args[4].message.peer_id),
+                attachment='photo' + str(photo_id),
+                conversation_message_id=int(args[4].message.conversation_message_id + 1))
+            f_toggle = not f_toggle
+            time.sleep(2)
+
 
     # Игра в мафию??? В РАЗРАБОТКЕ
     def MAFIA_GAME(*args):
