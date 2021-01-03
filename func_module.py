@@ -1603,8 +1603,8 @@ try:
         f_toggle = False
         send_msg_new(my_peer, 'Все для вас, мои любимые!')
         for i in range(10):
-            photo_id = photo_aheg[random.randint(0, photo_aheg['count'] - 1)]
-            idphoto = (photo_aheg['items'][photo_id]['id'])
+            randid = (random.randint(0, photo_aheg['count'] - 1))
+            idphoto = (photo_aheg['items'][randid]['id'])
             vk.messages.edit(
                 peer_id=int(args[4].message.peer_id),
                 attachment='photo' + str(idphoto),
