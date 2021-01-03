@@ -1607,7 +1607,7 @@ try:
             idphoto = (photo_aheg['items'][randid]['id'])
             vk.messages.edit(
                 peer_id=int(args[4].message.peer_id),
-                attachment='photo' + str(idphoto),
+                attachment='photo' + str(idphoto), message='Все для вас, мои любимые!',
                 conversation_message_id=int(args[4].message.conversation_message_id + 1))
             f_toggle = not f_toggle
             time.sleep(2)
