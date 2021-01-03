@@ -84,7 +84,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'кто я': func_module.info_for_user,
                'информация обо мне': func_module.info_for_user,
                'следить за аниме': func_module.anime_ongoings_list,
-               'мой календарь': func_module.anime_ongoing_pesonal_list
+               'мой календарь': func_module.anime_ongoing_pesonal_list,
+               '!ахегао': func_module.ahegao_edit_message
                # 'testkey': func_module.test_keyboard,
                # 'mafiatest': func_module.MAFIA_GAME
                }
