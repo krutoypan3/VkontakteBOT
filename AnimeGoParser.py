@@ -77,11 +77,11 @@ search('Akame ga kill')
 class AnimeGo:
     def __init__(self, Anime_type):
         if Anime_type == 'ongoing':
-            self.url = 'https://animego.org/anime/filter/status-is-ongoing-or-released/apply?&page='
+            self.url = 'https://animego.org/anime/filter/type-is-tv-or-movie/status-is-ongoing-or-released/apply?&page='
             self.col = 3
             print('Инициализация класса AnimeGo ongoing')
         elif Anime_type == 'finish':
-            self.url = 'https://animego.org/anime/filter/status-is-released/apply?&direction=desc&page='
+            self.url = 'https://animego.org/anime/filter/type-is-tv-or-movie/status-is-released/apply?&direction=desc&page='
             self.col = 100
             print('Инициализация класса AnimeGo finish')
 
