@@ -82,7 +82,9 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'информация обо мне': func_module.info_for_user,
                'следить за аниме': func_module.anime_ongoings_list,
                'мой календарь': func_module.anime_ongoing_pesonal_list,
-               '!ахегао': func_module.ahegao_edit_message
+               '!ахегао': func_module.ahegao_edit_message,
+               'посоветуй аниме': func_module.AnimeGo_Finish,
+               'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                # 'testkey': func_module.test_keyboard,
                # 'mafiatest': func_module.MAFIA_GAME
                }
@@ -102,8 +104,6 @@ func_answer_more_word = {'перевести': func_module.money_send,
                          'аниме': func_module.AnimeGo_Search,
                          'anime': func_module.AnimeGo_Search,
                          'смотрю': func_module.add_anime_ongoing_listing,
-                         'посоветуй аниме': func_module.AnimeGo_Finish,
-                         'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                          }
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                           "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
