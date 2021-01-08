@@ -72,12 +72,7 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'фильм': func_module.Film_popular,
                'популярный фильм': func_module.Film_popular,
                'популярные фильмы': func_module.Film_popular,
-               'посоветуй аниме': func_module.AnimeGo_Finish,
-               'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
-               '@bratikbot посоветуй аниме': func_module.AnimeGo_Finish,
-               '@bratikbot посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                'популярное': func_module.Film_popular,
-               'давай поболтаем': func_module.Davai_poboltaem,
                'info': func_module.info_for_user,
                'инфа': func_module.info_for_user,
                'информация': func_module.info_for_user,
@@ -106,7 +101,9 @@ func_answer_more_word = {'перевести': func_module.money_send,
                          'covid': func_module.covid,
                          'аниме': func_module.AnimeGo_Search,
                          'anime': func_module.AnimeGo_Search,
-                         'смотрю': func_module.add_anime_ongoing_listing
+                         'смотрю': func_module.add_anime_ongoing_listing,
+                         'посоветуй аниме': func_module.AnimeGo_Finish,
+                         'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                          }
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                           "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
