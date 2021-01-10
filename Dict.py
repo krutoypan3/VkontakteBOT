@@ -85,8 +85,6 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                '!ахегао': func_module.ahegao_edit_message,
                'посоветуй аниме': func_module.AnimeGo_Finish,
                'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
-               func_module.group_sob + ' посоветуй аниме': func_module.AnimeGo_Finish,
-               func_module.group_sob + ' посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                # 'testkey': func_module.test_keyboard,
                # 'mafiatest': func_module.MAFIA_GAME
                }
@@ -142,3 +140,8 @@ text_answer = {'db help': "Для вставки новой строки в та
                             'Инструкция по подключению: '
                             'https://docs.google.com/document/d/1udSQnv_EJyJ3NSrNxbKWLQYLj7b2tidpfOjsePEcPkQ/edit?usp=sharing \n'
                             '\nСервер работает только когда его включил @aom13(Артем)'}
+
+payload_button = {
+    '"sovet_anime"': func_module.AnimeGo_Finish,
+    '"sovet_ongoing"': func_module.AnimeGo_Ongoings,
+}

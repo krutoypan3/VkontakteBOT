@@ -408,13 +408,16 @@ try:
     def anime_keyboard(my_peer):
         settings = dict(one_time=False, inline=True)
         keyboard_nabor = VkKeyboard(**settings)
-        keyboard_nabor.add_button(label='посоветуй аниме', color=VkKeyboardColor.POSITIVE)
-        keyboard_nabor.add_button(label='посоветуй онгоинг', color=VkKeyboardColor.POSITIVE)
+        keyboard_nabor.add_button(label='посоветуй аниме', color=VkKeyboardColor.POSITIVE,
+                                  payload=json.dumps('sovet_anime'))
+        keyboard_nabor.add_button(label='посоветуй онгоинг', color=VkKeyboardColor.POSITIVE,
+                                  payload=json.dumps('sovet_ongoing'))
         vk.messages.send(
             random_id=get_random_id(),
             peer_id=my_peer,
             keyboard=keyboard_nabor.get_keyboard(),
-            message='Так же я могу:')
+            message='Так же я могу:',
+            payload=json.dumps('anime_keyboard'))
 
 
     # Вывод случайного аниме

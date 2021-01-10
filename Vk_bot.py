@@ -46,7 +46,12 @@ if __name__ == '__main__':
                                     our_from = ''
                                 # Логика ответов
                                 func_module.thread_start(func_module.add_exp, peer_id, from_id)
-                                # Игры --------------------------------------------------------------------------------
+
+                                if 'payload' in event_func.message:
+                                    if peer_id > 2000000000:
+                                        if event_func.message['payload'] in payload_button:
+                                            func_module.thread_start(payload_button[event_func.message['payload']], peer_id, from_id, words, our_from,
+                                                                     event_func)
                                 if len(words) > 5:
                                     if words[0] + ' ' + words[1] + ' ' + words[2] == 'случайное число от' and \
                                             words[4] == 'до':
