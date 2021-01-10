@@ -85,6 +85,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                '!ахегао': func_module.ahegao_edit_message,
                'посоветуй аниме': func_module.AnimeGo_Finish,
                'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
+               func_module.group_sob + ' посоветуй аниме': func_module.AnimeGo_Finish,
+               func_module.group_sob + ' посоветуй онгоинг': func_module.AnimeGo_Ongoings,
                # 'testkey': func_module.test_keyboard,
                # 'mafiatest': func_module.MAFIA_GAME
                }
