@@ -84,7 +84,7 @@ print('Импортируем список онгоингов...')
 AnimeOngoing = AnimeGoParser.AnimeGo('ongoing').random_anime()
 print('Импортируем список всех аниме...')
 AnimeFinish = AnimeGoParser.AnimeGo('finish').random_anime()
-print('Импортируем фото из альбомов...')
+print('Имспортируем фото из альбомов...')
 zapros_ft_vd()
 
 try:
@@ -99,21 +99,37 @@ try:
                         if not anime[1]:
                             anime = anime[0].replace("'", "")
                             anime_list_people = \
-                            db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', people[k][0])[0][0]
+                                db_module.sql_fetch_from_money(db_module.con, 'anime_ongoings', people[k][0])[0][0]
                             animesh = ':|:' + anime
                             anime_list_people = anime_list_people.replace(animesh, '')
                             db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people,
                                                                  people[k][0])
-                            send_msg_new(people[k][0], 'Это была последняя серия - удаляю аниме из вашего календаря:\n' + anime)
+                            send_msg_new(people[k][0],
+                                         'Это была последняя серия - удаляю аниме из вашего календаря:\n' + anime)
             time.sleep(60)
+
 
     def anime_ongoings_list(*args):
         peer_id = args[0]
         mess = '***Список онгоингов***:\n'
+        settings = dict(one_time=False, inline=False)
+        keyboard = VkKeyboard(**settings)
         for i in range(len(AnimeOngoing)):
+            if i < 40:
+                if (i % 5) == 0 and i != 0:
+                    keyboard.add_line()
+                keyboard.add_callback_button(label=str(i), color=VkKeyboardColor.POSITIVE,
+                                             payload={"type": 'payload_button_anime_follow_' + str(i),
+                                                      'text': ('Добавлено ' + str(AnimeOngoing[i][0]))[:30]})
             mess += str(i) + ') ' + AnimeOngoing[i][0] + '\n'
-        send_msg_new(peer_id, mess + '\nЧтобы бот присылал вам информацию о новых сериях напишите "смотрю (номер '
-                                     'онгоинга)", например: "смотрю 12", тоже самое чтобы отписаться от информирования')
+        time.sleep(1)
+        vk.messages.send(
+            random_id=get_random_id(),
+            peer_id=peer_id,
+            keyboard=keyboard.get_keyboard(),
+            message=mess + '\nЧтобы бот присылал вам информацию о новых сериях напишите "смотрю (номер '
+                           'онгоинга)", например: "смотрю 12", тоже самое чтобы отписаться от информирования')
+
 
     def anime_ongoing_pesonal_list(*args):
         peer_id = args[0]
@@ -125,6 +141,7 @@ try:
                 mess += str(i) + ') ' + personal_anime[i] + '\n'
         send_msg_new(peer_id, mess)
 
+
     def add_anime_ongoing_listing(*args):
         peer_id = args[0]
         from_id = args[1]
@@ -135,16 +152,27 @@ try:
                 if anime not in anime_list_people.split(":|:"):
                     anime_list_people += ':|:' + anime
                     db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
-                    send_msg_new(from_id, 'Аниме успешно добавлено в ваш календарь:\n' + anime)
+                    send_msg_new(peer_id, 'Аниме успешно добавленно в ваш календарь:\n' + anime)
+                    vk.messages.sendMessageEventAnswer(
+                        event_id=args[4].object.event_id,
+                        user_id=args[4].object.user_id,
+                        peer_id=args[4].object.peer_id,
+                        event_data=json.dumps(args[4].object.payload['text']))
                 else:
                     animesh = ':|:' + anime
                     anime_list_people = anime_list_people.replace(animesh, '')
                     db_module.sql_update_from_money_text(db_module.con, 'anime_ongoings', anime_list_people, from_id)
-                    send_msg_new(from_id, 'Аниме успешно удалено из вашего календаря:\n' + anime)
+                    send_msg_new(peer_id, 'Аниме успешно удалено из вашего календаря:\n' + anime)
+                    vk.messages.sendMessageEventAnswer(
+                        event_id=args[4].object.event_id,
+                        user_id=args[4].object.user_id,
+                        peer_id=args[4].object.peer_id,
+                        event_data=json.dumps(args[4].object.payload['text']))
             else:
                 send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
         else:
             send_msg_new(peer_id, 'Вы ввели неверный номер онгоинга')
+
 
     def info_for_user(*args):
         event_func = args[4]
@@ -989,7 +1017,7 @@ try:
             if db_module.sql_fetch_from_money(db_module.con, 'clan_name', our_from)[0][0] == clan_name:
                 my_rank = int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(my_from))[0][0])
                 our_rank = int(db_module.sql_fetch_from_money(db_module.con, 'clan_rank', str(our_from))[0][0])
-                if my_rank > our_rank:
+                if my_rank > our_rank + 1:
                     if my_rank >= 3:
                         if up_or_down:
                             db_module.sql_update_from_money_int(db_module.con, 'clan_rank', str(our_rank + 1), our_from)
@@ -1563,6 +1591,7 @@ try:
                 conversation_message_id=int(args[4].message.conversation_message_id + 1))
             f_toggle = not f_toggle
             time.sleep(2)
+
 
     # ТЕСТОВОЕ ИЗМЕНЕНИЕ СООБЩЕНИЯ
     def ahegao_edit_message(*args):

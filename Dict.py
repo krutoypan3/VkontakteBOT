@@ -108,6 +108,8 @@ func_answer_more_word = {'перевести': func_module.money_send,
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                           "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
                           "Исекай Приключения 24",
+               'идея': '&#127880;Скажите, что вы хотели бы увидеть в боте нового?&#127880;\n'
+                       'https://forms.gle/Q5ahBpR8csVAnRMM7',
                'клан': 'Клановые команды:\n\n'
                        '⭐⭐⭐⭐⭐\n&#9209;Клан распад\n'
                        '⭐⭐⭐⭐\n&#128183;Клан вывести "сумма"\n '
@@ -141,7 +143,7 @@ text_answer = {'db help': "Для вставки новой строки в та
                             'https://docs.google.com/document/d/1udSQnv_EJyJ3NSrNxbKWLQYLj7b2tidpfOjsePEcPkQ/edit?usp=sharing \n'
                             '\nСервер работает только когда его включил @aom13(Артем)'}
 
-payload_button = {
+payload_button_group = {
     '"sovet_anime"': func_module.AnimeGo_Finish,
     '"sovet_ongoing"': func_module.AnimeGo_Ongoings,
 }

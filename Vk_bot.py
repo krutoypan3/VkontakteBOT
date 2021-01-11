@@ -27,13 +27,13 @@ if __name__ == '__main__':
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
-                    if event.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
-                        if event.message.from_id > 0:
-                            def message_chek(event_func):
-                                if "action" in event.message:
-                                    if 'member_id' in event.message['action']:
-                                        if str(event.message["action"]["member_id"]) == '-' + str(func_module.group_id):
-                                            func_module.send_msg_new(event.message.peer_id, 'Ку. Это типа приветствие;)')
+                    def message_chek(event_func):
+                        if event_func.type == VkBotEventType.MESSAGE_NEW:  # Проверка на приход сообщения
+                            if event_func.message.from_id > 0:
+                                if "action" in event_func.message:
+                                    if 'member_id' in event_func.message['action']:
+                                        if str(event_func.message["action"]["member_id"]) == '-' + str(func_module.group_id):
+                                            func_module.send_msg_new(event_func.message.peer_id, 'Ку. Это типа приветствие;)')
 
                                 # Занесение в переменные значений с события
                                 from_id = event_func.message.from_id  # Кто написал
@@ -49,9 +49,12 @@ if __name__ == '__main__':
 
                                 if 'payload' in event_func.message:
                                     if peer_id > 2000000000:
-                                        if event_func.message['payload'] in payload_button:
-                                            func_module.thread_start(payload_button[event_func.message['payload']], peer_id, from_id, words, our_from,
+                                        if event_func.message['payload'] in payload_button_group:
+                                            func_module.thread_start(payload_button_group[event_func.message['payload']], peer_id, from_id, words, our_from,
                                                                      event_func)
+                                if 'payload' in event_func.message:
+                                    if 'payload_button_anime_follow_' in event_func.message['payload']:
+                                        pass
                                 if len(words) > 5:
                                     if words[0] + ' ' + words[1] + ' ' + words[2] == 'случайное число от' and \
                                             words[4] == 'до':
@@ -114,7 +117,16 @@ if __name__ == '__main__':
                                     else:
                                         func_module.thread_start(func_module.main_keyboard_1, peer_id)
 
-                            func_module.thread_start(message_chek, event)
+                        if event_func.type == VkBotEventType.MESSAGE_EVENT:
+                            from_id = event_func.object.user_id  # Кто написал
+                            peer_id = event_func.object.peer_id  # Где написал
+                            if 'payload_button_anime_follow_' in event_func.object.payload.get('type'):
+                                words = ('смотрю ' + event_func.object.payload.get('type')[28:]).split()
+                                func_module.thread_start(func_module.add_anime_ongoing_listing, peer_id, from_id,
+                                                         words, '', event_func)
+
+                    func_module.thread_start(message_chek, event)
+
 
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):
