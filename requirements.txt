@@ -9,3 +9,4 @@ dialogflow
 cfscrape~=2.1.1
 vk_api~=11.9.0
 newsapi-python
+Pillow

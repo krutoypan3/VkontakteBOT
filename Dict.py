@@ -85,6 +85,10 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                '!ахегао': func_module.ahegao_edit_message,
                'посоветуй аниме': func_module.AnimeGo_Finish,
                'посоветуй онгоинг': func_module.AnimeGo_Ongoings,
+               'что за аниме': func_module.anime_search_from_image,
+               'что это': func_module.anime_search_from_image,
+               'что это за аниме': func_module.anime_search_from_image,
+               'кто это': func_module.anime_search_from_image,
                # 'testkey': func_module.test_keyboard,
                # 'mafiatest': func_module.MAFIA_GAME
                }
@@ -93,7 +97,6 @@ func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скоро
                       'Тебя тут никто не держит', 'Бывай']
 func_bye_bye_second = ['гнилой ананас', 'нелюдь', 'семпай', 'кохай', 'извращенец', 'б-бака!', 'сладенький', 'братишка',
                        'неудачник', 'бро', 'девственник']
-
 
 func_answer_more_word = {'перевести': func_module.money_send,
                          'брак': func_module.marry_create,

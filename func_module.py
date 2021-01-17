@@ -109,6 +109,32 @@ try:
             time.sleep(60)
 
 
+    def anime_search_from_image(*args):
+        try:
+            event = args[4]
+            pict = event.message['attachments'][0]['photo']['sizes'][-1]['url']
+            p = requests.get(pict)
+            path_img = str(random.randint(1000, 10000))
+            out = open(path_img, "wb")
+            out.write(p.content)
+            out.close()
+            with open(path_img, 'rb') as img:
+                name_img = os.path.basename(path_img)
+                files = {'image': (name_img, img, 'multipart/form-data', {'Expires': '0'})}
+                with requests.Session() as s:
+                    r = s.post('https://trace.moe/api/search', files=files)
+            y = json.loads(r.text)
+            text = ''
+            mass_text = []
+            for i in range(len(y['docs'])):
+                if i < 4 and y['docs'][i]['title_english'] not in mass_text:
+                    text += str(i + 1) + ') ' + y['docs'][i]['title_english'] + '\n'
+                    mass_text.append(y['docs'][i]['title_english'])
+            send_msg_new(args[0], 'Возможно это:\n\n' + text)
+            os.remove(path_img)
+        except:
+            pass
+
     def anime_ongoings_list(*args):
         peer_id = args[0]
         mess = '***Список онгоингов***:\n'
