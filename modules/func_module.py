@@ -12,10 +12,10 @@ from googletrans import Translator
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
-import AnimeGoParser
-import Dict
-import db_module
-import KinoPoisk
+from modules import AnimeGoParser
+from modules import Dict
+from modules import db_module
+from modules import KinoPoisk
 import random
 from newsapi import NewsApiClient
 

@@ -2,9 +2,9 @@ import socket
 import requests
 import urllib3
 from vk_api.bot_longpoll import VkBotEventType
-from Dict import *
-import func_module
-from func_module import longpoll
+from modules.Dict import *
+from modules import func_module
+from modules.func_module import longpoll
 
 
 # Функция обработки ошибок

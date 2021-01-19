@@ -1,5 +1,5 @@
 import time
-import func_module
+from modules import func_module
 
 games = {'1': func_module.game_ugadai_chislo,
          '2': func_module.game_kto_kruche,
