@@ -5,6 +5,7 @@ from vk_api.bot_longpoll import VkBotEventType
 from modules.Dict import *
 from modules import func_module
 from modules.func_module import longpoll
+from modules import autowall
 
 
 # Функция обработки ошибок
@@ -22,6 +23,7 @@ if __name__ == '__main__':
     try:
         # Первичный запуск
         func_module.thread_start(func_module.listing_new_anime_series)
+        func_module.thread_start(autowall.create_post)
         oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
         def main():
@@ -105,8 +107,6 @@ if __name__ == '__main__':
                                             func_module.send_msg_new(peer_id, 'Да, ты админ')
                                         else:
                                             func_module.send_msg_new(peer_id, 'Увы но нет')
-                                    elif text == "админ хентай":
-                                        func_module.thread_start(func_module.admin_hentai, peer_id)
                                     elif len(words) > 1:
                                         if words[0] == 'запрет':
                                             func_module.adm_prov_and_zapret(peer_id, from_id, words[1])

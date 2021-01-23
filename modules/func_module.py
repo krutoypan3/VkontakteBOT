@@ -457,7 +457,7 @@ try:
                                  AnimeGoParser.series(url) + '\nТип аниме: ' + anime_type +
                                  '\nГод показа: ' + anime_year + '\nСсылка на аниме: ' + url)
         anime_keyboard(args[4].message.peer_id)
-
+        os.remove("temp.jpg")
 
     def anime_keyboard(my_peer):
         settings = dict(one_time=False, inline=True)
@@ -509,7 +509,7 @@ try:
                                  '\nГод показа: ' + anime_year +
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
         anime_keyboard(args[4].message.peer_id)
-
+        os.remove("temp.jpg")
 
     # Вывод случайного онгоинга
     def AnimeGo_Ongoings(*args):
@@ -546,7 +546,7 @@ try:
                                  '\nГод показа: ' + anime_year +
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
         anime_keyboard(args[4].message.peer_id)
-
+        os.remove("temp.jpg")
 
     # Переводчик
     def translate(text, lang):
@@ -1273,7 +1273,7 @@ try:
                              message='Бро-коины можно получить не чаще, чем 1 раз в 8 часов! Осталось времени: '
                                      + balans_hour + balans_minut + balans_second + '\n\nНовость дня:\n' + title +
                                      '\n' + description + '\nссылка на источник: ' + url)
-
+            os.remove("temp.jpg")
 
     # Добавление n-ой суммы на баланс
     def add_balans(my_from, zp_balans):
@@ -1519,8 +1519,6 @@ try:
             keyboard.add_button('юри+', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_button('этти', color=VkKeyboardColor.POSITIVE)
             keyboard.add_button('хентай', color=VkKeyboardColor.NEGATIVE)
-            keyboard.add_line()  # Отступ строки
-            keyboard.add_button('админ хентай', color=VkKeyboardColor.NEGATIVE)
             keyboard.add_line()
             keyboard.add_button('главная', color=VkKeyboardColor.PRIMARY)
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
