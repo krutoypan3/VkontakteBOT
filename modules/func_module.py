@@ -1505,7 +1505,7 @@ try:
             keyboard.add_line()
             keyboard.add_button('посоветуй аниме', color=VkKeyboardColor.POSITIVE)
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
-                             keyboard=keyboard.get_keyboard())
+                             keyboard=keyboard.get_keyboard(), message='')
 
 
     def main_keyboard_video(my_peer):
