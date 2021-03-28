@@ -474,6 +474,14 @@ try:
             payload=json.dumps('anime_keyboard'))
 
 
+    def remove_chat_user(*args):
+        peer_id = args[0]
+        our_from = args[3]
+        try:
+            vk.messages.remove_chat_user(chat_id=peer_id, member_id=our_from)
+        except:
+            send_msg_new(peer_id, 'Недостаточно прав')
+
     # Вывод случайного аниме
     def AnimeGo_Finish(*args):
         id_anime = random.randint(0, len(AnimeFinish) - 1)

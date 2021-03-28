@@ -68,11 +68,15 @@ try:
     # Вставка СТРОКИ в ТАБЛИЦУ from_money в БД
     def sql_insert_from_money(conc2, entities):
         cursorObj3 = conc2.cursor()
-        cursorObj3.execute(
-            'INSERT INTO from_money(from_id, money, m_time, clan_name, first_name, last_name, clan_rank, m_count, anime_ongoings) '
-            'VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)',
-            entities)
-        conc2.commit()
+        try:
+            cursorObj3.execute(
+                'INSERT INTO from_money(from_id, money, m_time, clan_name, first_name, last_name, clan_rank, m_count, anime_ongoings) '
+                'VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                entities)
+            conc2.commit()
+        except Exception as error:
+            cursorObj3.execute("ROLLBACK")
+            conc2.commit()
 
 
     # Обновление параметра в таблице peer_params
@@ -178,17 +182,17 @@ try:
             cursorObj1.execute('SELECT ' + str(what_return) + ' FROM from_money WHERE from_id = ' + str(from_id))
             rows = cursorObj1.fetchall()
             if len(rows) == 0:  # Проверка на наличие записи в таблице и при ее отсутствии, создание новой
-                from func_module import vk
+                from modules.func_module import vk
                 entities = str(from_id), '0', '0', 'NULL', str(vk.users.get(user_ids=from_id)[0]['first_name']), \
                            str(vk.users.get(user_ids=from_id)[0]['last_name']), '0', '0', '0'
                 sql_insert_from_money(conc, entities)
                 rows = sql_fetch_from_money(conc, what_return, from_id)
             return rows
-        except 'psycopg2.errors.InFailedSqlTransaction':
+        except Exception as err:
             cursorObj1 = conc.cursor()
             cursorObj1.execute("ROLLBACK")
             conc.commit()
-            print('что хотели вернуть - ', + what_return + ' \nкого - ' + from_id)
+            print('что хотели вернуть - ', + str(what_return) + ' \nкого - ' + str(from_id) + '\n' + str(err))
             return 'NULL'
 
 

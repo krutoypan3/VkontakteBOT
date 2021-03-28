@@ -6,6 +6,7 @@ from modules.Dict import *
 from modules import func_module
 from modules.func_module import longpoll
 from modules import autowall
+from modules.RandMessage import random_message
 
 
 # Функция обработки ошибок
@@ -23,9 +24,10 @@ if __name__ == '__main__':
     try:
         # Первичный запуск
         func_module.thread_start(func_module.listing_new_anime_series)
-        func_module.thread_start(autowall.create_post)
+        # func_module.thread_start(autowall.create_post)
         oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
+
         def main():
             try:
                 for event in longpoll.listen():  # Постоянный листинг сообщений
@@ -74,6 +76,8 @@ if __name__ == '__main__':
                                             func_module.thread_start(clan[words[1]], peer_id, from_id, words, our_from,
                                                                      event_func)
                                 if len(words) > 0:
+                                    if text != 'rand':
+                                        func_module.thread_start(random_message.add_mess, peer_id, text)
                                     '''if text == '+tt':
                                         func_module.video_save(peer_id, from_id, words, our_from, event_func)'''
                                     if text == 'биржа':
@@ -126,7 +130,6 @@ if __name__ == '__main__':
                                                          words, '', event_func)
 
                     func_module.thread_start(message_chek, event)
-
 
             except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError,
                     urllib3.exceptions.NewConnectionError, socket.gaierror):

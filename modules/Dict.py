@@ -1,5 +1,7 @@
 import time
 from modules import func_module
+from modules.RandMessage import random_message
+from modules.Games import rus_ruletka
 
 games = {'1': func_module.game_ugadai_chislo,
          '2': func_module.game_kto_kruche,
@@ -89,6 +91,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'что это': func_module.anime_search_from_image,
                'что это за аниме': func_module.anime_search_from_image,
                'кто это': func_module.anime_search_from_image,
+               'rand': random_message.get_mess,
+               # 'дуэль': rus_ruletka.game_rus_ruletka,
                # 'testkey': func_module.test_keyboard,
                # 'mafiatest': func_module.MAFIA_GAME
                }
