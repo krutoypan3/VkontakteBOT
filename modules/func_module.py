@@ -484,7 +484,7 @@ try:
 
     def send_commnad_to_minecraft_server_password(*args):
         from mcrcon import MCRcon
-        password = args[4].message.text.split[1]
+        password = args[4].message.text.split()[1]
         command = args[4].message.text.replace('minep ' + password + ' ', '')
         mcr = MCRcon("sql-serverartem.ddns.net", password, 25595)
         mcr.connect()
@@ -1505,7 +1505,7 @@ try:
             keyboard.add_line()
             keyboard.add_button('посоветуй аниме', color=VkKeyboardColor.POSITIVE)
             vk.messages.send(peer_id=my_peer, random_id=get_random_id(),
-                             keyboard=keyboard.get_keyboard(), message='')
+                             keyboard=keyboard.get_keyboard(), message='Выберите комманду:')
 
 
     def main_keyboard_video(my_peer):
