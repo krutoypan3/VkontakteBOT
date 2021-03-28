@@ -474,6 +474,24 @@ try:
             payload=json.dumps('anime_keyboard'))
 
 
+    def send_command_to_minecraft_server_lite(*args):
+        from mcrcon import MCRcon
+        command = args[4].message.text.replace('mine ')
+        mcr = MCRcon("sql-serverartem.ddns.net", "290418", 25595)
+        mcr.connect()
+        resp = mcr.command(command)
+        send_msg_new(args[0], resp)
+
+    def send_commnad_to_minecraft_server_password(*args):
+        from mcrcon import MCRcon
+        password = args[4].message.text.split[1]
+        command = args[4].message.text.replace('minep ' + password + ' ')
+        mcr = MCRcon("sql-serverartem.ddns.net", password, 25595)
+        mcr.connect()
+        resp = mcr.command(command)
+        send_msg_new(args[0], resp)
+
+
     def remove_chat_user(*args):
         peer_id = args[0]
         our_from = args[3]

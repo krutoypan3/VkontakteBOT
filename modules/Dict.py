@@ -94,7 +94,8 @@ func_answer = {'бро награда': func_module.add_balans_every_day,
                'rand': random_message.get_mess,
                # 'дуэль': rus_ruletka.game_rus_ruletka,
                # 'testkey': func_module.test_keyboard,
-               # 'mafiatest': func_module.MAFIA_GAME
+               # 'mafiatest': func_module.MAFIA_GAME,
+               'mine list': func_module.send_command_to_minecraft_server_lite,
                }
 
 func_bye_bye_first = ['Пока', 'Прощай', 'Удачи', 'До скорого', 'Скоро увидимся',
@@ -111,6 +112,7 @@ func_answer_more_word = {'перевести': func_module.money_send,
                          'аниме': func_module.AnimeGo_Search,
                          'anime': func_module.AnimeGo_Search,
                          'смотрю': func_module.add_anime_ongoing_listing,
+                         'minep': func_module.send_commnad_to_minecraft_server_password,
                          }
 text_answer = {'db help': "Для вставки новой строки в таблицу напишите:\nDB insert 'Название' 'жанр1' 'жанр2' "
                           "'жанр3' 'кол-во серий'\n\nНапример:\nDB insert Этот замечательный мир Комедия "
