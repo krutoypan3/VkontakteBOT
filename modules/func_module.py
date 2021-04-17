@@ -128,7 +128,10 @@ try:
             mass_text = []
             for i in range(len(y['docs'])):
                 if i < 4 and y['docs'][i]['title_english'] not in mass_text:
-                    text += str(i + 1) + ') ' + y['docs'][i]['title_english'] + '\n'
+                    if y['docs'][i]['title_english'] is None:
+                        text += str(i + 1) + ') ' + y['docs'][i]['title'] + '\n'
+                    else:
+                        text += str(i + 1) + ') ' + y['docs'][i]['title_english'] + '\n'
                     mass_text.append(y['docs'][i]['title_english'])
             send_msg_new(args[0], 'Возможно это:\n\n' + text)
             os.remove(path_img)

@@ -125,3 +125,6 @@ dmypy.json
 .pyre/
 .idea
 .vs
+*.txt
+AnimeGo.db
+temp.jpg
