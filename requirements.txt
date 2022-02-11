@@ -2,7 +2,7 @@ git+https://github.com/psf/requests
 python-dotenv~=0.14.0
 googletrans~=3.0.0
 urllib3~=1.25.10
-psycopg2~=2.8.6
+psycopg2
 beautifulsoup4~=4.9.3
 lxml
 dialogflow

@@ -14,6 +14,6 @@ def create_post():
             attachment = f'photo{owner_id}_{photo_id}'
             vk_polzovat.wall.post(owner_id='-' + group_id, from_group='1', attachments=attachment,
                                   publish_date=str(int(time.time()) + 86400))
-            time.sleep(86400)
+            time.sleep(10800)
         except Exception as err:
             print('autowall.py | ' + str(err))

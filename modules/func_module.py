@@ -118,25 +118,23 @@ try:
             out = open(path_img, "wb")
             out.write(p.content)
             out.close()
-            with open(path_img, 'rb') as img:
-                name_img = os.path.basename(path_img)
-                files = {'image': (name_img, img, 'multipart/form-data', {'Expires': '0'})}
-                with requests.Session() as s:
-                    r = s.post('https://trace.moe/api/search', files=files)
-            y = json.loads(r.text)
+            with requests.Session() as s:
+                r = s.post("https://api.trace.moe/search",
+                           data=open(path_img, "rb"),
+                           headers={"Content-Type": "image/jpeg"}
+                           ).json()
             text = ''
             mass_text = []
-            for i in range(len(y['docs'])):
-                if i < 4 and y['docs'][i]['title_english'] not in mass_text:
-                    if y['docs'][i]['title_english'] is None:
-                        text += str(i + 1) + ') ' + y['docs'][i]['title'] + '\n'
-                    else:
-                        text += str(i + 1) + ') ' + y['docs'][i]['title_english'] + '\n'
-                    mass_text.append(y['docs'][i]['title_english'])
+            for i in range(len(r['result'])):
+                if i < 4 and r['result'][i]['filename'] not in mass_text:
+                    if r['result'][i]['filename'] is not None:
+                        text += str(i + 1) + ') ' + r['result'][i]['filename'] + '\n'
+                    mass_text.append(r['result'][i]['filename'])
             send_msg_new(args[0], 'Возможно это:\n\n' + text)
             os.remove(path_img)
         except:
             pass
+
 
     def anime_ongoings_list(*args):
         peer_id = args[0]
@@ -462,6 +460,7 @@ try:
         anime_keyboard(args[4].message.peer_id)
         os.remove("temp.jpg")
 
+
     def anime_keyboard(my_peer):
         settings = dict(one_time=False, inline=True)
         keyboard_nabor = VkKeyboard(**settings)
@@ -485,6 +484,7 @@ try:
         resp = mcr.command(command)
         send_msg_new(args[0], resp)
 
+
     def send_commnad_to_minecraft_server_password(*args):
         from mcrcon import MCRcon
         password = args[4].message.text.split()[1]
@@ -502,6 +502,7 @@ try:
             vk.messages.remove_chat_user(chat_id=peer_id, member_id=our_from)
         except:
             send_msg_new(peer_id, 'Недостаточно прав')
+
 
     # Вывод случайного аниме
     def AnimeGo_Finish(*args):
@@ -540,6 +541,7 @@ try:
         anime_keyboard(args[4].message.peer_id)
         os.remove("temp.jpg")
 
+
     # Вывод случайного онгоинга
     def AnimeGo_Ongoings(*args):
         id_anime = random.randint(0, len(AnimeOngoing) - 1)
@@ -576,6 +578,7 @@ try:
                                  '\nЖанр: ' + anime_janr + '\n\n' + dics + '\n\nСсылка на аниме: ' + url)
         anime_keyboard(args[4].message.peer_id)
         os.remove("temp.jpg")
+
 
     # Переводчик
     def translate(text, lang):
@@ -1303,6 +1306,7 @@ try:
                                      + balans_hour + balans_minut + balans_second + '\n\nНовость дня:\n' + title +
                                      '\n' + description + '\nссылка на источник: ' + url)
             os.remove("temp.jpg")
+
 
     # Добавление n-ой суммы на баланс
     def add_balans(my_from, zp_balans):

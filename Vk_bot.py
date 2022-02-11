@@ -24,7 +24,7 @@ if __name__ == '__main__':
     try:
         # Первичный запуск
         func_module.thread_start(func_module.listing_new_anime_series)
-        # func_module.thread_start(autowall.create_post)
+        func_module.thread_start(autowall.create_post)
         oshibka = 0  # обнуление счетчика ошибок | не трогать
         print("Бот работает...")
 
